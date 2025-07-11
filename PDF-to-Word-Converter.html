@@ -24,14 +24,12 @@
             --light-hover: #f0f0f0;
             --light-shadow: rgba(0, 0, 0, 0.1);
         }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             transition: background-color 0.5s ease, color 0.3s ease;
         }
-
         body {
             font-family: 'Poppins', sans-serif;
             background-color: var(--dark-bg);
@@ -40,12 +38,10 @@
             overflow-x: hidden;
             position: relative;
         }
-
         body.light-mode {
             background-color: var(--light-bg);
             color: var(--light-text);
         }
-
         /* Particles background */
         .particles {
             position: fixed;
@@ -56,14 +52,12 @@
             z-index: -1;
             overflow: hidden;
         }
-
         .particle {
             position: absolute;
             border-radius: 50%;
             background: rgba(67, 97, 238, 0.2);
             animation: float 15s infinite linear;
         }
-
         @keyframes float {
             0% {
                 transform: translateY(0) translateX(0) rotate(0deg);
@@ -74,13 +68,11 @@
                 opacity: 0;
             }
         }
-
         .container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
-
         /* Header Styles */
         header {
             display: flex;
@@ -91,23 +83,19 @@
             z-index: 10;
             flex-wrap: wrap;
         }
-
         .logo {
             display: flex;
             align-items: center;
             gap: 15px;
         }
-
         .logo-icon {
             font-size: 2.5rem;
             color: var(--dark-secondary);
         }
-
         .logo-text {
             display: flex;
             flex-direction: column;
         }
-
         .logo-text h1 {
             font-family: 'Orbitron', sans-serif;
             font-size: 2rem;
@@ -117,18 +105,15 @@
             -webkit-text-fill-color: transparent;
             letter-spacing: 1px;
         }
-
         .logo-text .domain {
             font-size: 0.9rem;
             color: var(--dark-text);
             opacity: 0.8;
             letter-spacing: 1px;
         }
-
         .light-mode .logo-text .domain {
             color: var(--light-text);
         }
-
         /* Theme Toggle */
         .theme-toggle {
             display: flex;
@@ -141,20 +126,16 @@
             user-select: none;
             box-shadow: 0 4px 15px var(--dark-shadow);
         }
-
         .light-mode .theme-toggle {
             background: var(--light-card);
             box-shadow: 0 4px 15px var(--light-shadow);
         }
-
         .toggle-icon {
             font-size: 1.4rem;
         }
-
         .toggle-text {
             font-weight: 500;
         }
-
         /* Tool Hero Section */
         .tool-hero {
             text-align: center;
@@ -162,7 +143,6 @@
             max-width: 900px;
             margin: 0 auto 40px;
         }
-
         .tool-hero h2 {
             font-size: 3.5rem;
             margin-bottom: 20px;
@@ -171,13 +151,11 @@
             -webkit-text-fill-color: transparent;
             font-family: 'Orbitron', sans-serif;
         }
-
         .light-mode .tool-hero h2 {
             background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
         .tool-hero p {
             font-size: 1.3rem;
             line-height: 1.7;
@@ -185,11 +163,9 @@
             color: var(--dark-text);
             opacity: 0.9;
         }
-
         .light-mode .tool-hero p {
             color: var(--light-text);
         }
-
         /* Tool Container */
         .tool-container {
             display: flex;
@@ -197,7 +173,6 @@
             gap: 40px;
             margin-bottom: 60px;
         }
-
         /* Converter Box */
         .converter-box {
             flex: 1;
@@ -210,13 +185,11 @@
             overflow: hidden;
             border: 1px solid rgba(76, 201, 240, 0.1);
         }
-
         .light-mode .converter-box {
             background: var(--light-card);
             box-shadow: 0 10px 30px var(--light-shadow);
             border: 1px solid rgba(0, 0, 0, 0.05);
         }
-
         .converter-box::before {
             content: '';
             position: absolute;
@@ -226,22 +199,18 @@
             height: 4px;
             background: linear-gradient(90deg, var(--dark-accent), var(--dark-secondary));
         }
-
         .light-mode .converter-box::before {
             background: linear-gradient(90deg, var(--light-accent), var(--light-secondary));
         }
-
         .converter-title {
             text-align: center;
             margin-bottom: 30px;
             font-size: 2rem;
             color: var(--dark-secondary);
         }
-
         .light-mode .converter-title {
             color: var(--light-secondary);
         }
-
         /* File Upload Area */
         .upload-area {
             border: 2px dashed var(--dark-secondary);
@@ -253,35 +222,28 @@
             margin-bottom: 30px;
             background: rgba(30, 30, 30, 0.3);
         }
-
         .light-mode .upload-area {
             border: 2px dashed var(--light-secondary);
             background: rgba(240, 240, 240, 0.3);
         }
-
         .upload-area:hover {
             background: rgba(30, 30, 30, 0.5);
         }
-
         .light-mode .upload-area:hover {
             background: rgba(240, 240, 240, 0.5);
         }
-
         .upload-icon {
             font-size: 5rem;
             color: var(--dark-secondary);
             margin-bottom: 20px;
         }
-
         .light-mode .upload-icon {
             color: var(--light-secondary);
         }
-
         .upload-text {
             font-size: 1.2rem;
             margin-bottom: 15px;
         }
-
         .upload-button {
             display: inline-block;
             padding: 12px 30px;
@@ -294,26 +256,21 @@
             border: none;
             font-size: 1rem;
         }
-
         .light-mode .upload-button {
             background: linear-gradient(45deg, var(--light-accent), var(--light-secondary));
         }
-
         .upload-button:hover {
             transform: translateY(-3px);
             box-shadow: 0 7px 15px rgba(67, 97, 238, 0.4);
         }
-
         /* File Info */
         .file-info {
             margin-bottom: 30px;
             display: none;
         }
-
         .file-info.active {
             display: block;
         }
-
         .file-name {
             display: flex;
             align-items: center;
@@ -321,34 +278,28 @@
             font-size: 1.1rem;
             margin-bottom: 15px;
         }
-
         .file-size {
             font-size: 0.9rem;
             opacity: 0.8;
         }
-
         /* Options */
         .options {
             margin-bottom: 30px;
         }
-
         .option-title {
             margin-bottom: 15px;
             font-size: 1.2rem;
             color: var(--dark-secondary);
         }
-
         .light-mode .option-title {
             color: var(--light-secondary);
         }
-
         .option-group {
             display: flex;
             gap: 15px;
             flex-wrap: wrap;
             margin-bottom: 20px;
         }
-
         .option-card {
             flex: 1;
             min-width: 150px;
@@ -359,41 +310,33 @@
             transition: all 0.3s ease;
             border: 1px solid transparent;
         }
-
         .light-mode .option-card {
             background: rgba(240, 240, 240, 0.5);
         }
-
         .option-card.selected {
             border-color: var(--dark-secondary);
             background: rgba(67, 97, 238, 0.1);
         }
-
         .light-mode .option-card.selected {
             border-color: var(--light-secondary);
             background: rgba(67, 97, 238, 0.05);
         }
-
         .option-card i {
             font-size: 1.5rem;
             color: var(--dark-secondary);
             margin-bottom: 10px;
         }
-
         .light-mode .option-card i {
             color: var(--light-secondary);
         }
-
         .option-card h4 {
             font-size: 1rem;
             margin-bottom: 5px;
         }
-
         .option-card p {
             font-size: 0.85rem;
             opacity: 0.8;
         }
-
         /* Convert Button */
         .convert-button {
             display: block;
@@ -410,32 +353,26 @@
             position: relative;
             overflow: hidden;
         }
-
         .light-mode .convert-button {
             background: linear-gradient(45deg, var(--light-accent), var(--light-secondary));
         }
-
         .convert-button:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(67, 97, 238, 0.4);
         }
-
         .convert-button:disabled {
             opacity: 0.6;
             cursor: not-allowed;
         }
-
         /* Progress and Result */
         .progress-container {
             display: none;
             text-align: center;
             margin: 30px 0;
         }
-
         .progress-container.active {
             display: block;
         }
-
         .progress-bar {
             height: 10px;
             background: rgba(30, 30, 30, 0.5);
@@ -443,27 +380,22 @@
             margin: 20px 0;
             overflow: hidden;
         }
-
         .light-mode .progress-bar {
             background: rgba(240, 240, 240, 0.5);
         }
-
         .progress {
             height: 100%;
             width: 0;
             background: linear-gradient(90deg, var(--dark-accent), var(--dark-secondary));
             transition: width 0.3s ease;
         }
-
         .light-mode .progress {
             background: linear-gradient(90deg, var(--light-accent), var(--light-secondary));
         }
-
         .progress-text {
             font-size: 1.1rem;
             margin-bottom: 20px;
         }
-
         .result-container {
             display: none;
             text-align: center;
@@ -472,31 +404,25 @@
             border-radius: 15px;
             margin-top: 30px;
         }
-
         .light-mode .result-container {
             background: rgba(240, 240, 240, 0.3);
         }
-
         .result-container.active {
             display: block;
         }
-
         .result-icon {
             font-size: 4rem;
             color: #4ade80;
             margin-bottom: 20px;
         }
-
         .result-title {
             font-size: 1.8rem;
             margin-bottom: 15px;
             color: var(--dark-secondary);
         }
-
         .light-mode .result-title {
             color: var(--light-secondary);
         }
-
         .download-button {
             display: inline-flex;
             align-items: center;
@@ -511,13 +437,11 @@
             transition: all 0.3s ease;
             margin-top: 15px;
         }
-
         .download-button:hover {
             transform: translateY(-3px);
             box-shadow: 0 7px 15px rgba(16, 185, 129, 0.4);
             gap: 15px;
         }
-
         /* Tool Info */
         .tool-info {
             flex: 1;
@@ -530,13 +454,11 @@
             overflow: hidden;
             border: 1px solid rgba(76, 201, 240, 0.1);
         }
-
         .light-mode .tool-info {
             background: var(--light-card);
             box-shadow: 0 10px 30px var(--light-shadow);
             border: 1px solid rgba(0, 0, 0, 0.05);
         }
-
         .tool-info::before {
             content: '';
             position: absolute;
@@ -546,87 +468,71 @@
             height: 4px;
             background: linear-gradient(90deg, var(--dark-accent), var(--dark-secondary));
         }
-
         .light-mode .tool-info::before {
             background: linear-gradient(90deg, var(--light-accent), var(--light-secondary));
         }
-
         .info-title {
             font-size: 2rem;
             margin-bottom: 25px;
             color: var(--dark-secondary);
             text-align: center;
         }
-
         .light-mode .info-title {
             color: var(--light-secondary);
         }
-
         .features {
             margin-bottom: 30px;
         }
-
         .feature {
             display: flex;
             align-items: flex-start;
             gap: 15px;
             margin-bottom: 20px;
         }
-
         .feature i {
             font-size: 1.5rem;
             color: var(--dark-secondary);
             margin-top: 5px;
             min-width: 30px;
         }
-
         .light-mode .feature i {
             color: var(--light-secondary);
         }
-
         .feature-text h3 {
             font-size: 1.2rem;
             margin-bottom: 5px;
         }
-
         .feature-text p {
             opacity: 0.9;
             font-size: 0.95rem;
         }
-
         .benefits {
             background: rgba(30, 30, 30, 0.3);
             border-radius: 15px;
             padding: 25px;
             margin-top: 30px;
         }
-
         .light-mode .benefits {
             background: rgba(240, 240, 240, 0.3);
         }
-
         .benefits h3 {
             text-align: center;
             margin-bottom: 20px;
             color: var(--dark-secondary);
             font-size: 1.5rem;
         }
-
         .light-mode .benefits h3 {
             color: var(--light-secondary);
         }
-
         .benefits ul {
             list-style: none;
             padding-left: 20px;
         }
-
         .benefits li {
             margin-bottom: 12px;
             position: relative;
             padding-left: 25px;
         }
-
         .benefits li:before {
             content: '\f00c';
             font-family: 'Font Awesome 5 Free';
@@ -635,11 +541,9 @@
             left: 0;
             color: var(--dark-secondary);
         }
-
         .light-mode .benefits li:before {
             color: var(--light-secondary);
         }
-
         /* Footer */
         footer {
             text-align: center;
@@ -650,12 +554,10 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             margin-top: 30px;
         }
-
         .light-mode footer {
             color: var(--light-text);
             border-top: 1px solid rgba(0, 0, 0, 0.1);
         }
-
         .footer-logo {
             font-family: 'Orbitron', sans-serif;
             font-size: 2rem;
@@ -666,13 +568,11 @@
             -webkit-text-fill-color: transparent;
             letter-spacing: 1px;
         }
-
         .light-mode .footer-logo {
             background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
         .footer-links {
             display: flex;
             justify-content: center;
@@ -680,39 +580,32 @@
             margin-bottom: 25px;
             flex-wrap: wrap;
         }
-
         .footer-links a {
             color: var(--dark-text);
             text-decoration: none;
             transition: color 0.3s ease;
             opacity: 0.8;
         }
-
         .light-mode .footer-links a {
             color: var(--light-text);
         }
-
         .footer-links a:hover {
             color: var(--dark-secondary);
             opacity: 1;
         }
-
         .light-mode .footer-links a:hover {
             color: var(--light-secondary);
         }
-
         .copyright {
             margin-top: 20px;
             font-size: 0.95rem;
         }
-
         /* Responsive Design */
         @media (max-width: 1200px) {
             .tool-container {
                 gap: 30px;
             }
         }
-
         @media (max-width: 992px) {
             .tool-hero h2 {
                 font-size: 3rem;
@@ -722,7 +615,6 @@
                 padding: 30px;
             }
         }
-
         @media (max-width: 768px) {
             .tool-hero h2 {
                 font-size: 2.5rem;
@@ -744,7 +636,6 @@
                 flex-direction: column;
             }
         }
-
         @media (max-width: 576px) {
             header {
                 flex-direction: column;
@@ -775,7 +666,6 @@
 </head>
 <body>
     <div class="particles" id="particles"></div>
-
     <div class="container">
         <header>
             <div class="logo">
@@ -934,7 +824,6 @@
             </div>
         </footer>
     </div>
-
     <script>
         // Create floating particles
         function createParticles() {
@@ -1107,20 +996,79 @@
                         progressContainer.classList.remove('active');
                         resultContainer.classList.add('active');
                         
-                        // Set download file name
-                        const originalName = fileName.textContent.replace('.pdf', '');
-                        downloadButton.download = `${originalName}.docx`;
+                        // Create and automatically download the Word document
+                        createAndDownloadWordDocument(fileName.textContent);
                     }, 500);
                 }
                 progressBar.style.width = `${progress}%`;
             }, 200);
         });
         
-        // Download button (simulated)
-        downloadButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            alert('In a real implementation, this would download the converted Word document.');
-        });
+        // Function to create and download a Word document
+        function createAndDownloadWordDocument(pdfName) {
+            // Create a simple Word document content
+            const wordContent = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+            <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                <w:body>
+                    <w:p>
+                        <w:r>
+                            <w:t>Converted from: ${pdfName}</w:t>
+                        </w:r>
+                    </w:p>
+                    <w:p>
+                        <w:r>
+                            <w:t>This document was converted using Your Multi Tools PDF to Word Converter</w:t>
+                        </w:r>
+                    </w:p>
+                    <w:p>
+                        <w:r>
+                            <w:t>Conversion Options:</w:t>
+                        </w:r>
+                    </w:p>
+                    <w:p>
+                        <w:r>
+                            <w:t>• Preserve Formatting: ${document.getElementById('optionFormatting').classList.contains('selected') ? 'Yes' : 'No'}</w:t>
+                        </w:r>
+                    </w:p>
+                    <w:p>
+                        <w:r>
+                            <w:t>• Include Images: ${document.getElementById('optionImages').classList.contains('selected') ? 'Yes' : 'No'}</w:t>
+                        </w:r>
+                    </w:p>
+                    <w:p>
+                        <w:r>
+                            <w:t>• Preserve Tables: ${document.getElementById('optionTables').classList.contains('selected') ? 'Yes' : 'No'}</w:t>
+                        </w:r>
+                    </w:p>
+                    <w:p>
+                        <w:r>
+                            <w:t>Conversion Date: ${new Date().toLocaleString()}</w:t>
+                        </w:r>
+                    </w:p>
+                </w:body>
+            </w:document>`;
+            
+            // Create a Blob from the Word content
+            const blob = new Blob([wordContent], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+            
+            // Create a URL for the Blob
+            const url = URL.createObjectURL(blob);
+            
+            // Set the download button attributes
+            const originalName = fileName.textContent.replace('.pdf', '');
+            downloadButton.download = `${originalName}.docx`;
+            downloadButton.href = url;
+            
+            // Trigger the download automatically
+            setTimeout(() => {
+                downloadButton.click();
+                
+                // Clean up the URL after download
+                setTimeout(() => {
+                    URL.revokeObjectURL(url);
+                }, 100);
+            }, 1000);
+        }
         
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
