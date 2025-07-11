@@ -440,6 +440,7 @@
             gap: 15px;
             transition: all 0.3s ease;
             border-left: 4px solid var(--dark-secondary);
+            cursor: pointer;
         }
 
         .light-mode .top-tool-item {
@@ -533,6 +534,34 @@
             margin-top: 20px;
             font-size: 0.95rem;
         }
+        
+        /* Link Added Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--dark-card);
+            color: var(--dark-text);
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .light-mode .notification {
+            background: var(--light-card);
+            color: var(--light-text);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
 
         /* Responsive Design */
         @media (max-width: 1200px) {
@@ -619,6 +648,10 @@
 </head>
 <body>
     <div class="particles" id="particles"></div>
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span>All tool links have been added!</span>
+    </div>
 
     <div class="container">
         <header>
@@ -662,43 +695,43 @@
                 <p>The most popular tools based on global search volume</p>
             </div>
             <div class="top-tools-grid">
-                <div class="top-tool-item">
+                <div class="top-tool-item" data-tool="PDF to Word Converter">
                     <div class="top-tool-rank">1</div>
                     <div class="top-tool-name">PDF to Word Converter</div>
                 </div>
-                <div class="top-tool-item">
+                <div class="top-tool-item" data-tool="Image Compressor">
                     <div class="top-tool-rank">2</div>
                     <div class="top-tool-name">Image Compressor</div>
                 </div>
-                <div class="top-tool-item">
+                <div class="top-tool-item" data-tool="QR Code Generator">
                     <div class="top-tool-rank">3</div>
                     <div class="top-tool-name">QR Code Generator</div>
                 </div>
-                <div class="top-tool-item">
+                <div class="top-tool-item" data-tool="Password Generator">
                     <div class="top-tool-rank">4</div>
                     <div class="top-tool-name">Password Generator</div>
                 </div>
-                <div class="top-tool-item">
+                <div class="top-tool-item" data-tool="Text to Speech">
                     <div class="top-tool-rank">5</div>
                     <div class="top-tool-name">Text to Speech</div>
                 </div>
-                <div class="top-tool-item">
+                <div class="top-tool-item" data-tool="Word Counter">
                     <div class="top-tool-rank">6</div>
                     <div class="top-tool-name">Word Counter</div>
                 </div>
-                <div class="top-tool-item">
+                <div class="top-tool-item" data-tool="Remove Background from Image">
                     <div class="top-tool-rank">7</div>
                     <div class="top-tool-name">Remove Background from Image</div>
                 </div>
-                <div class="top-tool-item">
+                <div class="top-tool-item" data-tool="URL Encoder/Decoder">
                     <div class="top-tool-rank">8</div>
                     <div class="top-tool-name">URL Encoder/Decoder</div>
                 </div>
-                <div class="top-tool-item">
+                <div class="top-tool-item" data-tool="Age Calculator">
                     <div class="top-tool-rank">9</div>
                     <div class="top-tool-name">Age Calculator</div>
                 </div>
-                <div class="top-tool-item">
+                <div class="top-tool-item" data-tool="PNG to JPG Converter">
                     <div class="top-tool-rank">10</div>
                     <div class="top-tool-name">PNG to JPG Converter</div>
                 </div>
@@ -712,28 +745,28 @@
                     <i class="fas fa-file-pdf tool-icon"></i>
                     <h3>PDF to Word Converter</h3>
                     <p>Convert any PDF document to editable Word format with perfect formatting preserved.</p>
-                    <a href="PDF-to-Word-Converter" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="PDF-to-Word-Converter.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="pdf">
                     <i class="fas fa-file-contract tool-icon"></i>
                     <h3>PDF Compressor</h3>
                     <p>Reduce PDF file size without quality loss. Perfect for email attachments.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="PDF-Compressor.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="pdf">
                     <i class="fas fa-lock tool-icon"></i>
                     <h3>PDF Password Protector</h3>
                     <p>Add password protection to your PDF documents to secure sensitive information.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="PDF-Password-Protector.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="pdf">
                     <i class="fas fa-file-signature tool-icon"></i>
                     <h3>PDF Signer</h3>
                     <p>Digitally sign PDF documents with your electronic signature.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="PDF-Signer.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <!-- Image Tools -->
@@ -741,28 +774,28 @@
                     <i class="fas fa-image tool-icon"></i>
                     <h3>Image Compressor</h3>
                     <p>Reduce image file size without compromising quality. Supports JPG, PNG, and WebP.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Image-Compressor.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="image">
                     <i class="fas fa-crop-alt tool-icon"></i>
                     <h3>Image Resizer</h3>
                     <p>Resize images to exact dimensions while maintaining aspect ratio.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Image-Resizer.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="image">
                     <i class="fas fa-eraser tool-icon"></i>
                     <h3>Background Remover</h3>
                     <p>Remove backgrounds from images automatically with AI-powered precision.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Background-Remover.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="image">
                     <i class="fas fa-paint-brush tool-icon"></i>
                     <h3>Image Editor</h3>
                     <p>Crop, rotate, flip, and apply filters to images online.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Image-Editor.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <!-- Text Tools -->
@@ -770,28 +803,28 @@
                     <i class="fas fa-exchange-alt tool-icon"></i>
                     <h3>Case Converter</h3>
                     <p>Transform text between uppercase, lowercase, title case, and more with one click.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Case-Converter.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="text">
                     <i class="fas fa-font tool-icon"></i>
                     <h3>Word Counter</h3>
                     <p>Count words, characters, sentences, and paragraphs in your text instantly.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Word-Counter.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="text">
                     <i class="fas fa-spell-check tool-icon"></i>
                     <h3>Grammar Checker</h3>
                     <p>Check grammar, spelling, and punctuation errors in your text.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Grammar-Checker.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="text">
                     <i class="fas fa-paragraph tool-icon"></i>
                     <h3>Text Summarizer</h3>
                     <p>Generate concise summaries from long articles or documents.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Text-Summarizer.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <!-- Developer Tools -->
@@ -799,28 +832,28 @@
                     <i class="fas fa-code tool-icon"></i>
                     <h3>HTML Formatter</h3>
                     <p>Format and beautify your HTML code for better readability.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="HTML-Formatter.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="developer">
                     <i class="fas fa-file-code tool-icon"></i>
                     <h3>JSON Validator</h3>
                     <p>Validate and format JSON data with syntax highlighting.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="JSON-Validator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="developer">
                     <i class="fas fa-keyboard tool-icon"></i>
                     <h3>Regex Tester</h3>
                     <p>Test and debug regular expressions in real-time.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Regex-Tester.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="developer">
                     <i class="fas fa-server tool-icon"></i>
                     <h3>API Tester</h3>
                     <p>Test RESTful APIs with various HTTP methods and parameters.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="API-Tester.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <!-- Utilities -->
@@ -828,28 +861,28 @@
                     <i class="fas fa-qrcode tool-icon"></i>
                     <h3>QR Code Generator</h3>
                     <p>Create customizable QR codes for URLs, contact info, WiFi, and more.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="QR-Code-Generator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-key tool-icon"></i>
                     <h3>Password Generator</h3>
                     <p>Generate strong, secure passwords with customizable length and character types.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Password-Generator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-headphones tool-icon"></i>
                     <h3>Text to Speech</h3>
                     <p>Convert written text into natural-sounding speech in multiple languages.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Text-to-Speech.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-clock tool-icon"></i>
                     <h3>Time Zone Converter</h3>
                     <p>Convert times between different time zones worldwide.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Time-Zone-Converter.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <!-- Additional Tools (80 more) -->
@@ -857,147 +890,147 @@
                     <i class="fas fa-text-height tool-icon"></i>
                     <h3>Text Reverser</h3>
                     <p>Reverse text or strings with a single click.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Text-Reverser.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="text">
                     <i class="fas fa-space-shuttle tool-icon"></i>
                     <h3>Remove Extra Spaces</h3>
                     <p>Clean up text by removing unnecessary spaces.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Remove-Extra-Spaces.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="text">
                     <i class="fas fa-copy tool-icon"></i>
                     <h3>Plagiarism Checker</h3>
                     <p>Check text for plagiarism against online sources.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Plagiarism-Checker.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="text">
                     <i class="fas fa-quote-right tool-icon"></i>
                     <h3>Lorem Ipsum Generator</h3>
                     <p>Generate placeholder text for your designs.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Lorem-Ipsum-Generator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="text">
                     <i class="fas fa-pen tool-icon"></i>
                     <h3>Text to Handwriting</h3>
                     <p>Convert typed text into realistic handwriting.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Text-to-Handwriting.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="text">
                     <i class="fas fa-code tool-icon"></i>
                     <h3>Markdown to HTML</h3>
                     <p>Convert Markdown formatted text to HTML.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Markdown-to-HTML.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="image">
                     <i class="fas fa-exchange-alt tool-icon"></i>
                     <h3>JPG to PNG Converter</h3>
                     <p>Convert JPG images to PNG format with transparency support.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="JPG-to-PNG-Converter.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="image">
                     <i class="fas fa-font tool-icon"></i>
                     <h3>Image to Text (OCR)</h3>
                     <p>Extract text from images using optical character recognition.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Image-to-Text-OCR.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="image">
                     <i class="fas fa-smile tool-icon"></i>
                     <h3>Meme Generator</h3>
                     <p>Create custom memes with popular templates.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Meme-Generator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="image">
                     <i class="fas fa-sliders-h tool-icon"></i>
                     <h3>Photo Editor Online</h3>
                     <p>Edit photos directly in your browser without installation.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Photo-Editor-Online.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="image">
                     <i class="fas fa-eye-dropper tool-icon"></i>
                     <h3>Color Picker</h3>
                     <p>Pick colors from images and get HEX, RGB values.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Color-Picker.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="image">
                     <i class="fas fa-palette tool-icon"></i>
                     <h3>HEX to RGB Converter</h3>
                     <p>Convert HEX color codes to RGB values.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="HEX-to-RGB-Converter.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="image">
                     <i class="fas fa-film tool-icon"></i>
                     <h3>GIF Maker</h3>
                     <p>Create animated GIFs from images or videos.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="GIF-Maker.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="pdf">
                     <i class="fas fa-object-group tool-icon"></i>
                     <h3>Merge PDF</h3>
                     <p>Combine multiple PDF files into a single document.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Merge-PDF.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="pdf">
                     <i class="fas fa-cut tool-icon"></i>
                     <h3>Split PDF</h3>
                     <p>Divide a PDF into multiple files by pages or sections.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Split-PDF.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="pdf">
                     <i class="fas fa-file-word tool-icon"></i>
                     <h3>Word to PDF</h3>
                     <p>Convert Microsoft Word documents to PDF format.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Word-to-PDF.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="pdf">
                     <i class="fas fa-file-excel tool-icon"></i>
                     <h3>Excel to PDF</h3>
                     <p>Convert Excel spreadsheets to PDF documents.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Excel-to-PDF.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="pdf">
                     <i class="fas fa-compress tool-icon"></i>
                     <h3>Compress PDF</h3>
                     <p>Reduce PDF file size while maintaining quality.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Compress-PDF.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="pdf">
                     <i class="fas fa-file-export tool-icon"></i>
                     <h3>PDF to Excel</h3>
                     <p>Convert PDF tables to Excel spreadsheets.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="PDF-to-Excel.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="pdf">
                     <i class="fas fa-unlock tool-icon"></i>
                     <h3>PDF Unlocker</h3>
                     <p>Remove password protection from PDF files.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="PDF-Unlocker.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="pdf">
                     <i class="fas fa-file-code tool-icon"></i>
                     <h3>HTML to PDF</h3>
                     <p>Convert web pages and HTML files to PDF format.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="HTML-to-PDF.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <!-- Developer Tools -->
@@ -1005,49 +1038,49 @@
                     <i class="fas fa-brackets-curly tool-icon"></i>
                     <h3>JSON Formatter</h3>
                     <p>Format and validate JSON data with syntax highlighting.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="JSON-Formatter.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="developer">
                     <i class="fas fa-lock tool-icon"></i>
                     <h3>Base64 Decoder</h3>
                     <p>Decode Base64 strings to their original content.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Base64-Decoder.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="developer">
                     <i class="fas fa-code tool-icon"></i>
                     <h3>HTML Escape/Unescape</h3>
                     <p>Convert HTML entities to characters and vice versa.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="HTML-Escape-Unescape.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="developer">
                     <i class="fas fa-database tool-icon"></i>
                     <h3>SQL Beautifier</h3>
                     <p>Format SQL queries for better readability.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="SQL-Beautifier.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="developer">
                     <i class="fas fa-check-circle tool-icon"></i>
                     <h3>XML Validator</h3>
                     <p>Validate XML documents and check for errors.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="XML-Validator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="developer">
                     <i class="fas fa-terminal tool-icon"></i>
                     <h3>RegEx Tester</h3>
                     <p>Test and debug regular expressions in real-time.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="RegEx-Tester.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="developer">
                     <i class="fas fa-server tool-icon"></i>
                     <h3>HTTP Header Checker</h3>
                     <p>Inspect HTTP headers of any URL.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="HTTP-Header-Checker.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <!-- Security Tools -->
@@ -1055,28 +1088,28 @@
                     <i class="fas fa-shield-alt tool-icon"></i>
                     <h3>Password Strength Checker</h3>
                     <p>Evaluate the strength of your passwords.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Password-Strength-Checker.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-fingerprint tool-icon"></i>
                     <h3>MD5 Generator</h3>
                     <p>Generate MD5 hashes from text.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="MD5-Generator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-hashtag tool-icon"></i>
                     <h3>SHA256 Hash Generator</h3>
                     <p>Generate SHA256 hashes for security purposes.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="SHA256-Hash-Generator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-user-shield tool-icon"></i>
                     <h3>VPN Checker</h3>
                     <p>Check if you're connected through a VPN.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="VPN-Checker.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <!-- File & Data Tools -->
@@ -1084,28 +1117,28 @@
                     <i class="fas fa-file-import tool-icon"></i>
                     <h3>File Converter</h3>
                     <p>Convert files between various formats (images, documents, audio).</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="File-Converter.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-file-archive tool-icon"></i>
                     <h3>ZIP File Extractor</h3>
                     <p>Extract files from ZIP archives online.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="ZIP-File-Extractor.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-exchange-alt tool-icon"></i>
                     <h3>CSV to JSON Converter</h3>
                     <p>Convert CSV data to JSON format.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="CSV-to-JSON-Converter.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-hdd tool-icon"></i>
                     <h3>Data Unit Converter</h3>
                     <p>Convert between MB, GB, TB, and other data units.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Data-Unit-Converter.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <!-- Calculators & Converters -->
@@ -1113,42 +1146,42 @@
                     <i class="fas fa-money-bill-wave tool-icon"></i>
                     <h3>Currency Converter</h3>
                     <p>Convert between world currencies with up-to-date rates.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Currency-Converter.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-ruler-combined tool-icon"></i>
                     <h3>Unit Converter</h3>
                     <p>Convert between length, weight, volume, and other units.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Unit-Converter.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-weight tool-icon"></i>
                     <h3>BMI Calculator</h3>
                     <p>Calculate your Body Mass Index based on height and weight.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="BMI-Calculator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-percentage tool-icon"></i>
                     <h3>Percentage Calculator</h3>
                     <p>Calculate percentages, increases, and discounts.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Percentage-Calculator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-home tool-icon"></i>
                     <h3>Loan EMI Calculator</h3>
                     <p>Calculate Equated Monthly Installments for loans.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Loan-EMI-Calculator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-calendar-alt tool-icon"></i>
                     <h3>Date Calculator</h3>
                     <p>Add or subtract days from a specific date.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Date-Calculator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <!-- Web & SEO Tools -->
@@ -1156,35 +1189,35 @@
                     <i class="fas fa-desktop tool-icon"></i>
                     <h3>Website Screenshot</h3>
                     <p>Capture screenshots of any website.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Website-Screenshot.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="developer">
                     <i class="fas fa-tags tool-icon"></i>
                     <h3>Meta Tags Generator</h3>
                     <p>Generate SEO-friendly meta tags for your website.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Meta-Tags-Generator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="developer">
                     <i class="fas fa-link tool-icon"></i>
                     <h3>Backlink Checker</h3>
                     <p>Check backlinks pointing to your website.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Backlink-Checker.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="developer">
                     <i class="fas fa-chart-line tool-icon"></i>
                     <h3>Alexa Rank Checker</h3>
                     <p>Check Alexa ranking of any website.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Alexa-Rank-Checker.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="developer">
                     <i class="fas fa-globe tool-icon"></i>
                     <h3>Google Cache Checker</h3>
                     <p>Check when a website was last cached by Google.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Google-Cache-Checker.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <!-- Design Tools -->
@@ -1192,28 +1225,28 @@
                     <i class="fas fa-icons tool-icon"></i>
                     <h3>Favicon Generator</h3>
                     <p>Create favicons for websites from images.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Favicon-Generator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="developer">
                     <i class="fas fa-paint-roller tool-icon"></i>
                     <h3>Gradient Generator</h3>
                     <p>Create beautiful CSS gradients with custom colors.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Gradient-Generator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="developer">
                     <i class="fas fa-square tool-icon"></i>
                     <h3>Box Shadow Generator</h3>
                     <p>Create custom CSS box shadows with live preview.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Box-Shadow-Generator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="developer">
                     <i class="fas fa-font tool-icon"></i>
                     <h3>Font Pairing Tool</h3>
                     <p>Find perfect font combinations for your designs.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Font-Pairing-Tool.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <!-- Audio/Video Tools -->
@@ -1221,28 +1254,28 @@
                     <i class="fas fa-photo-video tool-icon"></i>
                     <h3>YouTube Thumbnail Downloader</h3>
                     <p>Download high-quality thumbnails from YouTube videos.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="YouTube-Thumbnail-Downloader.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-music tool-icon"></i>
                     <h3>MP3 Cutter</h3>
                     <p>Trim and cut MP3 audio files online.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="MP3-Cutter.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-compress-arrows-alt tool-icon"></i>
                     <h3>Video Compressor</h3>
                     <p>Reduce video file size without losing quality.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Video-Compressor.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-microphone-alt tool-icon"></i>
                     <h3>Audio to Text (Transcription)</h3>
                     <p>Convert speech in audio files to text.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Audio-to-Text-Transcription.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <!-- AI & Emerging Tools -->
@@ -1250,21 +1283,21 @@
                     <i class="fas fa-robot tool-icon"></i>
                     <h3>AI Text Generator</h3>
                     <p>Generate human-like text using AI technology.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="AI-Text-Generator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-video-slash tool-icon"></i>
                     <h3>Deepfake Detector</h3>
                     <p>Detect AI-generated deepfake videos.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Deepfake-Detector.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-palette tool-icon"></i>
                     <h3>AI Image Generator</h3>
                     <p>Generate images from text descriptions using AI.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="AI-Image-Generator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <!-- Social Media Tools -->
@@ -1272,21 +1305,21 @@
                     <i class="fab fa-instagram tool-icon"></i>
                     <h3>Instagram Hashtag Generator</h3>
                     <p>Generate relevant hashtags for Instagram posts.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Instagram-Hashtag-Generator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fab fa-facebook tool-icon"></i>
                     <h3>Facebook Cover Maker</h3>
                     <p>Create custom Facebook cover photos.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Facebook-Cover-Maker.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fab fa-tiktok tool-icon"></i>
                     <h3>TikTok Video Downloader</h3>
                     <p>Download TikTok videos without watermark.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="TikTok-Video-Downloader.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <!-- Business Tools -->
@@ -1294,21 +1327,21 @@
                     <i class="fas fa-file-invoice tool-icon"></i>
                     <h3>Invoice Generator</h3>
                     <p>Create professional invoices for your business.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Invoice-Generator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-barcode tool-icon"></i>
                     <h3>Barcode Generator</h3>
                     <p>Create barcodes in various formats.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Barcode-Generator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-money-check-alt tool-icon"></i>
                     <h3>VAT Calculator</h3>
                     <p>Calculate Value Added Tax for invoices.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="VAT-Calculator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <!-- Education Tools -->
@@ -1316,21 +1349,21 @@
                     <i class="fas fa-square-root-alt tool-icon"></i>
                     <h3>Equation Solver</h3>
                     <p>Solve mathematical equations step by step.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Equation-Solver.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="text">
                     <i class="fas fa-book tool-icon"></i>
                     <h3>Citation Generator</h3>
                     <p>Generate citations in APA, MLA, Chicago formats.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Citation-Generator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="text">
                     <i class="fas fa-spell-check tool-icon"></i>
                     <h3>Grammar Checker</h3>
                     <p>Check grammar, spelling, and punctuation.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Grammar-Checker.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <!-- Productivity Tools -->
@@ -1338,21 +1371,21 @@
                     <i class="fas fa-hourglass-half tool-icon"></i>
                     <h3>Countdown Timer</h3>
                     <p>Set and manage countdown timers for tasks.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Countdown-Timer.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-globe-americas tool-icon"></i>
                     <h3>Time Zone Converter</h3>
                     <p>Convert times between different time zones.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Time-Zone-Converter.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-calendar-check tool-icon"></i>
                     <h3>Meeting Scheduler</h3>
                     <p>Schedule meetings across different time zones.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Meeting-Scheduler.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <!-- Lifestyle Tools -->
@@ -1360,21 +1393,21 @@
                     <i class="fas fa-thermometer-half tool-icon"></i>
                     <h3>Weather Converter</h3>
                     <p>Convert between Celsius and Fahrenheit.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Weather-Converter.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-sun tool-icon"></i>
                     <h3>Sunrise/Sunset Calculator</h3>
                     <p>Calculate sunrise and sunset times for any location.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Sunrise-Sunset-Calculator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-baby tool-icon"></i>
                     <h3>Pregnancy Calculator</h3>
                     <p>Calculate due date and pregnancy timeline.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Pregnancy-Calculator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <!-- Science Tools -->
@@ -1382,14 +1415,14 @@
                     <i class="fas fa-flask tool-icon"></i>
                     <h3>Chemical Equation Balancer</h3>
                     <p>Balance chemical equations with step-by-step solution.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Chemical-Equation-Balancer.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-atom tool-icon"></i>
                     <h3>Molecular Weight Calculator</h3>
                     <p>Calculate molecular weight of chemical compounds.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Molecular-Weight-Calculator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <!-- Fun & Misc Tools -->
@@ -1397,28 +1430,28 @@
                     <i class="fas fa-random tool-icon"></i>
                     <h3>Random Picker</h3>
                     <p>Randomly select items from a list.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Random-Picker.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-cube tool-icon"></i>
                     <h3>Minecraft Skin Generator</h3>
                     <p>Create custom Minecraft character skins.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Minecraft-Skin-Generator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-music tool-icon"></i>
                     <h3>Lyrics Finder</h3>
                     <p>Find song lyrics by title or artist.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Lyrics-Finder.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-wifi tool-icon"></i>
                     <h3>WiFi Password Generator</h3>
                     <p>Generate secure WiFi passwords.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="WiFi-Password-Generator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <!-- Final Top 100 -->
@@ -1426,63 +1459,63 @@
                     <i class="fas fa-map-marker-alt tool-icon"></i>
                     <h3>IP Address Lookup</h3>
                     <p>Find location and details of any IP address.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="IP-Address-Lookup.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-envelope tool-icon"></i>
                     <h3>Email Validator</h3>
                     <p>Verify if an email address is valid and exists.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Email-Validator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="developer">
                     <i class="fas fa-globe tool-icon"></i>
                     <h3>Domain Age Checker</h3>
                     <p>Check how old a domain name is.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Domain-Age-Checker.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-network-wired tool-icon"></i>
                     <h3>MAC Address Lookup</h3>
                     <p>Find manufacturer details from MAC address.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="MAC-Address-Lookup.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-unlock-alt tool-icon"></i>
                     <h3>RAR Password Remover</h3>
                     <p>Recover passwords for encrypted RAR archives.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="RAR-Password-Remover.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fab fa-youtube tool-icon"></i>
                     <h3>YouTube to MP3</h3>
                     <p>Convert YouTube videos to MP3 audio files.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="YouTube-to-MP3.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-film tool-icon"></i>
                     <h3>Video to GIF Converter</h3>
                     <p>Convert video clips to animated GIFs.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Video-to-GIF-Converter.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="pdf">
                     <i class="fas fa-book-open tool-icon"></i>
                     <h3>EPUB to PDF</h3>
                     <p>Convert EPUB ebooks to PDF format.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="EPUB-to-PDF.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="tool-card" data-category="utilities">
                     <i class="fas fa-home tool-icon"></i>
                     <h3>Biweekly Mortgage Calculator</h3>
                     <p>Calculate mortgage payments on a biweekly schedule.</p>
-                    <a href="#" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
+                    <a href="Biweekly-Mortgage-Calculator.html" class="tool-link">Use Tool <i class="fas fa-arrow-right"></i></a>
                 </div>
             </div>
         </main>
@@ -1614,6 +1647,25 @@
                 });
             });
         });
+        
+        // Set top tool links
+        const topToolItems = document.querySelectorAll('.top-tool-item');
+        topToolItems.forEach(item => {
+            const toolName = item.getAttribute('data-tool');
+            const filename = toolName.replace(/\s+/g, '-') + '.html';
+            item.addEventListener('click', () => {
+                window.location.href = filename;
+            });
+        });
+        
+        // Show notification that links are added
+        const notification = document.getElementById('notification');
+        setTimeout(() => {
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }, 1000);
         
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
