@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word Counter - Your Multi Tools</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+--dark-bg: #121212;
+--dark-card: #1e1e1e;
+--dark-text: #f0f0f0;
+--dark-accent: #4361ee;
+--dark-secondary: #4cc9f0;
+--dark-hover: #2a2a2a;
+--dark-shadow: rgba(0, 0, 0, 0.5);
+--light-bg: #f8f9fa;
+--light-card: #ffffff;
+--light-text: #333333;
+--light-accent: #4361ee;
+--light-secondary: #3a86ff;
+--light-hover: #f0f0f0;
+--light-shadow: rgba(0, 0, 0, 0.1);
+}
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+transition: background-color 0.5s ease, color 0.3s ease;
+}
+body {
+font-family: 'Poppins', sans-serif;
+background-color: var(--dark-bg);
+color: var(--dark-text);
+min-height: 100vh;
+overflow-x: hidden;
+position: relative;
+}
+body.light-mode {
+background-color: var(--light-bg);
+color: var(--light-text);
+}
+/* Particles background */
+.particles {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+z-index: -1;
+overflow: hidden;
+}
+.particle {
+position: absolute;
+border-radius: 50%;
+background: rgba(67, 97, 238, 0.2);
+animation: float 15s infinite linear;
+}
+@keyframes float {
+0% {
+transform: translateY(0) translateX(0) rotate(0deg);
+opacity: 1;
+}
+100% {
+transform: translateY(-100vh) translateX(100px) rotate(360deg);
+opacity: 0;
+}
+}
+.container {
+max-width: 1200px;
+margin: 0 auto;
+padding: 20px;
+}
+/* Header Styles */
+header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 25px 20px;
+position: relative;
+z-index: 10;
+flex-wrap: wrap;
+}
+.logo {
+display: flex;
+align-items: center;
+gap: 15px;
+}
+.logo-icon {
+font-size: 2.5rem;
+color: var(--dark-secondary);
+}
+.logo-text {
+display: flex;
+flex-direction: column;
+}
+.logo-text h1 {
+font-family: 'Orbitron', sans-serif;
+font-size: 2rem;
+font-weight: 700;
+background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+letter-spacing: 1px;
+}
+.logo-text .domain {
+font-size: 0.9rem;
+color: var(--dark-text);
+opacity: 0.8;
+letter-spacing: 1px;
+}
+.light-mode .logo-text .domain {
+color: var(--light-text);
+}
+/* Theme Toggle */
+.theme-toggle {
+display: flex;
+align-items: center;
+gap: 10px;
+background: var(--dark-card);
+padding: 8px 15px;
+border-radius: 50px;
+cursor: pointer;
+user-select: none;
+box-shadow: 0 4px 15px var(--dark-shadow);
+}
+.light-mode .theme-toggle {
+background: var(--light-card);
+box-shadow: 0 4px 15px var(--light-shadow);
+}
+.toggle-icon {
+font-size: 1.4rem;
+}
+.toggle-text {
+font-weight: 500;
+}
+/* Main Content */
+.main-content {
+display: flex;
+flex-direction: column;
+align-items: center;
+padding: 40px 20px;
+}
+.main-content h2 {
+font-size: 2.8rem;
+margin-bottom: 15px;
+background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+font-family: 'Orbitron', sans-serif;
+text-align: center;
+}
+.light-mode .main-content h2 {
+background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.main-content p {
+font-size: 1.2rem;
+line-height: 1.7;
+text-align: center;
+max-width: 800px;
+margin-bottom: 40px;
+color: var(--dark-text);
+opacity: 0.9;
+}
+.light-mode .main-content p {
+color: var(--light-text);
+}
+/* Text Input Area */
+.text-input-container {
+width: 100%;
+max-width: 800px;
+margin-bottom: 30px;
+}
+.text-area {
+width: 100%;
+height: 200px;
+padding: 20px;
+border-radius: 15px;
+border: 3px solid var(--dark-accent);
+background: var(--dark-card);
+color: var(--dark-text);
+font-size: 1rem;
+font-family: 'Poppins', sans-serif;
+resize: none;
+box-shadow: 0 8px 25px var(--dark-shadow);
+transition: all 0.3s ease;
+}
+.light-mode .text-area {
+background: var(--light-card);
+border-color: var(--light-accent);
+color: var(--light-text);
+box-shadow: 0 8px 25px var(--light-shadow);
+}
+.text-area:focus {
+outline: none;
+border-color: var(--dark-secondary);
+box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.3);
+}
+.light-mode .text-area:focus {
+border-color: var(--light-secondary);
+box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+}
+/* Statistics Container */
+.stats-container {
+width: 100%;
+max-width: 800px;
+background: var(--dark-card);
+border-radius: 15px;
+padding: 25px;
+box-shadow: 0 8px 25px var(--dark-shadow);
+margin-bottom: 30px;
+border: 1px solid rgba(76, 201, 240, 0.1);
+}
+.light-mode .stats-container {
+background: var(--light-card);
+box-shadow: 0 8px 25px var(--light-shadow);
+border: 1px solid rgba(0, 0, 0, 0.05);
+}
+.stats-row {
+display: flex;
+flex-wrap: wrap;
+gap: 20px;
+margin-bottom: 20px;
+}
+.stats-row:last-child {
+margin-bottom: 0;
+}
+.stat-group {
+flex: 1;
+min-width: 200px;
+}
+.stat-group label {
+display: block;
+margin-bottom: 8px;
+font-weight: 500;
+font-size: 1rem;
+}
+.stat-group .stat-value {
+font-size: 2rem;
+font-weight: 700;
+color: var(--dark-secondary);
+margin-bottom: 5px;
+}
+.light-mode .stat-group .stat-value {
+color: var(--light-secondary);
+}
+.stat-group .stat-label {
+font-size: 0.9rem;
+color: var(--dark-text);
+opacity: 0.8;
+}
+.light-mode .stat-group .stat-label {
+color: var(--light-text);
+}
+/* Text Analysis */
+.analysis-container {
+width: 100%;
+max-width: 800px;
+margin-bottom: 30px;
+}
+.analysis-title {
+font-size: 1.3rem;
+margin-bottom: 15px;
+font-weight: 600;
+color: var(--dark-secondary);
+}
+.light-mode .analysis-title {
+color: var(--light-secondary);
+}
+.analysis-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+gap: 15px;
+}
+.analysis-item {
+background: var(--dark-card);
+border: 1px solid rgba(76, 201, 240, 0.3);
+border-radius: 10px;
+padding: 15px;
+text-align: center;
+cursor: pointer;
+transition: all 0.3s ease;
+}
+.light-mode .analysis-item {
+background: var(--light-card);
+border-color: rgba(67, 97, 238, 0.3);
+}
+.analysis-item:hover {
+background: rgba(67, 97, 238, 0.2);
+transform: translateY(-3px);
+}
+.analysis-item i {
+font-size: 1.5rem;
+margin-bottom: 8px;
+color: var(--dark-secondary);
+}
+.light-mode .analysis-item i {
+color: var(--light-secondary);
+}
+.analysis-item-name {
+font-weight: 500;
+font-size: 0.9rem;
+}
+.analysis-item-value {
+font-size: 1.5rem;
+font-weight: 700;
+margin-top: 5px;
+color: var(--dark-accent);
+}
+.light-mode .analysis-item-value {
+color: var(--light-accent);
+}
+/* Action Buttons */
+.action-container {
+width: 100%;
+max-width: 800px;
+display: flex;
+justify-content: center;
+gap: 20px;
+margin-bottom: 30px;
+flex-wrap: wrap;
+}
+.action-btn {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 12px;
+padding: 15px 30px;
+background: linear-gradient(45deg, var(--dark-accent), var(--dark-secondary));
+color: white;
+text-decoration: none;
+border-radius: 50px;
+font-weight: 600;
+font-size: 1.1rem;
+transition: all 0.3s ease;
+box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
+cursor: pointer;
+}
+.light-mode .action-btn {
+background: linear-gradient(45deg, var(--light-accent), var(--light-secondary));
+box-shadow: 0 5px 15px rgba(67, 97, 238, 0.2);
+}
+.action-btn:hover {
+transform: translateY(-3px);
+box-shadow: 0 8px 20px rgba(67, 97, 238, 0.5);
+gap: 15px;
+}
+.action-btn:disabled {
+opacity: 0.6;
+cursor: not-allowed;
+transform: none;
+}
+/* Reading Time */
+.reading-time-container {
+width: 100%;
+max-width: 800px;
+margin-bottom: 30px;
+background: var(--dark-card);
+border-radius: 15px;
+padding: 20px;
+box-shadow: 0 8px 25px var(--dark-shadow);
+border: 1px solid rgba(76, 201, 240, 0.1);
+}
+.light-mode .reading-time-container {
+background: var(--light-card);
+box-shadow: 0 8px 25px var(--light-shadow);
+border: 1px solid rgba(0, 0, 0, 0.05);
+}
+.reading-time-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+width: 100%;
+margin-bottom: 15px;
+}
+.reading-time-header h3 {
+margin: 0;
+font-size: 1.1rem;
+color: var(--dark-secondary);
+}
+.light-mode .reading-time-header h3 {
+color: var(--light-secondary);
+}
+.reading-time-header .reading-info {
+font-size: 0.9rem;
+color: var(--dark-text);
+opacity: 0.8;
+}
+.light-mode .reading-time-header .reading-info {
+color: var(--light-text);
+}
+.reading-time-bar {
+width: 100%;
+height: 10px;
+background: rgba(255, 255, 255, 0.1);
+border-radius: 5px;
+overflow: hidden;
+}
+.reading-time-progress {
+height: 100%;
+background: linear-gradient(90deg, var(--dark-secondary), var(--dark-accent));
+width: 0%;
+transition: width 0.5s ease;
+}
+.light-mode .reading-time-progress {
+background: linear-gradient(90deg, var(--light-secondary), var(--light-accent));
+}
+.reading-time-details {
+display: flex;
+justify-content: space-between;
+margin-top: 10px;
+font-size: 0.9rem;
+color: var(--dark-text);
+opacity: 0.8;
+}
+.light-mode .reading-time-details {
+color: var(--light-text);
+}
+/* Font Controls */
+.font-controls-container {
+width: 100%;
+max-width: 800px;
+margin-bottom: 30px;
+}
+.font-controls-title {
+font-size: 1.3rem;
+margin-bottom: 15px;
+font-weight: 600;
+color: var(--dark-secondary);
+}
+.light-mode .font-controls-title {
+color: var(--light-secondary);
+}
+.font-controls-row {
+display: flex;
+flex-wrap: wrap;
+gap: 20px;
+}
+.font-control-group {
+flex: 1;
+min-width: 200px;
+}
+.font-control-group label {
+display: block;
+margin-bottom: 8px;
+font-weight: 500;
+font-size: 1rem;
+}
+.font-control-group select {
+width: 100%;
+padding: 10px;
+border-radius: 8px;
+border: 1px solid rgba(76, 201, 240, 0.3);
+background: rgba(30, 30, 30, 0.7);
+color: var(--dark-text);
+font-size: 1rem;
+}
+.light-mode .font-control-group select {
+background: rgba(255, 255, 255, 0.7);
+color: var(--light-text);
+border: 1px solid rgba(67, 97, 238, 0.3);
+}
+/* Footer */
+footer {
+text-align: center;
+padding: 60px 20px 40px;
+color: var(--dark-text);
+opacity: 0.7;
+font-size: 1.1rem;
+border-top: 1px solid rgba(255, 255, 255, 0.1);
+margin-top: 30px;
+}
+.light-mode footer {
+color: var(--light-text);
+border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+.footer-logo {
+font-family: 'Orbitron', sans-serif;
+font-size: 2rem;
+font-weight: 700;
+margin-bottom: 20px;
+background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+letter-spacing: 1px;
+}
+.light-mode .footer-logo {
+background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.footer-links {
+display: flex;
+justify-content: center;
+gap: 30px;
+margin-bottom: 25px;
+flex-wrap: wrap;
+}
+.footer-links a {
+color: var(--dark-text);
+text-decoration: none;
+transition: color 0.3s ease;
+opacity: 0.8;
+}
+.light-mode .footer-links a {
+color: var(--light-text);
+}
+.footer-links a:hover {
+color: var(--dark-secondary);
+opacity: 1;
+}
+.light-mode .footer-links a:hover {
+color: var(--light-secondary);
+}
+.copyright {
+margin-top: 20px;
+font-size: 0.95rem;
+}
+/* Notification */
+.notification {
+position: fixed;
+top: 20px;
+right: 20px;
+background: var(--dark-card);
+color: var(--dark-text);
+padding: 15px 25px;
+border-radius: 10px;
+box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+transform: translateX(120%);
+transition: transform 0.3s ease;
+z-index: 1000;
+display: flex;
+align-items: center;
+gap: 10px;
+}
+.notification.show {
+transform: translateX(0);
+}
+.light-mode .notification {
+background: var(--light-card);
+color: var(--light-text);
+box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+/* Responsive Design */
+@media (max-width: 992px) {
+.main-content h2 {
+font-size: 2.5rem;
+}
+}
+@media (max-width: 768px) {
+.main-content h2 {
+font-size: 2rem;
+}
+.stats-row {
+flex-direction: column;
+gap: 15px;
+}
+}
+@media (max-width: 576px) {
+header {
+flex-direction: column;
+gap: 20px;
+text-align: center;
+}
+.logo-text h1 {
+font-size: 1.6rem;
+}
+.main-content h2 {
+font-size: 1.8rem;
+}
+}
+</style>
+</head>
+<body>
+<div class="particles" id="particles"></div>
+<div class="notification" id="notification">
+<i class="fas fa-check-circle"></i>
+<span id="notification-text">Text copied to clipboard!</span>
+</div>
+<div class="container">
+<header>
+<div class="logo">
+<i class="fas fa-tools logo-icon"></i>
+<div class="logo-text">
+<h1>Your Multi Tools</h1>
+<div class="domain">www.yourmultitools.space</div>
+</div>
+</div>
+<div class="theme-toggle" id="themeToggle">
+<i class="fa-moon toggle-icon"></i>
+<div class="toggle-text">Dark Mode</div>
+</header>
+<section class="main-content">
+<h2>Word Counter</h2>
+<p>Instantly analyze your text with our powerful word counter tool. Get detailed statistics including word count, character count, reading time, and more.</p>
+<div class="text-input-container">
+<textarea class="text-area" id="textInput" placeholder="Enter or paste your text here..."></textarea>
+</div>
+<div class="stats-container">
+<div class="stats-row">
+<div class="stat-group">
+<label>Words</label>
+<div class="stat-value" id="wordCount">0</div>
+<div class="stat-label">words</div>
+</div>
+<div class="stat-group">
+<label>Characters</label>
+<div class="stat-value" id="charCount">0</div>
+<div class="stat-label">characters (with spaces)</div>
+</div>
+<div class="stat-group">
+<label>Characters (No Spaces)</label>
+<div class="stat-value" id="charNoSpaceCount">0</div>
+<div class="stat-label">characters</div>
+</div>
+</div>
+<div class="stats-row">
+<div class="stat-group">
+<label>Paragraphs</label>
+<div class="stat-value" id="paragraphCount">0</div>
+<div class="stat-label">paragraphs</div>
+</div>
+<div class="stat-group">
+<label>Sentences</label>
+<div class="stat-value" id="sentenceCount">0</div>
+<div class="stat-label">sentences</div>
+</div>
+<div class="stat-group">
+<label>Lines</label>
+<div class="stat-value" id="lineCount">0</div>
+<div class="stat-label">lines</div>
+</div>
+</div>
+</div>
+<div class="analysis-container">
+<div class="analysis-title">Text Analysis</div>
+<div class="analysis-grid">
+<div class="analysis-item">
+<i class="fas fa-book"></i>
+<div class="analysis-item-name">Average Word Length</div>
+<div class="analysis-item-value" id="avgWordLength">0</div>
+</div>
+<div class="analysis-item">
+<i class="fas fa-font"></i>
+<div class="analysis-item-name">Average Sentence Length</div>
+<div class="analysis-item-value" id="avgSentenceLength">0</div>
+</div>
+<div class="analysis-item">
+<i class="fas fa-stopwatch"></i>
+<div class="analysis-item-name">Reading Time</div>
+<div class="analysis-item-value" id="readingTime">0 min</div>
+</div>
+<div class="analysis-item">
+<i class="fas fa-tachometer-alt"></i>
+<div class="analysis-item-name">Reading Speed</div>
+<div class="analysis-item-value" id="readingSpeed">0 wpm</div>
+</div>
+</div>
+</div>
+<div class="reading-time-container">
+<div class="reading-time-header">
+<h3>Reading Progress</h3>
+<div class="reading-info">Based on average reading speed of 200 words per minute</div>
+</div>
+<div class="reading-time-bar">
+<div class="reading-time-progress" id="readingProgress"></div>
+</div>
+<div class="reading-time-details">
+<div>0 min</div>
+<div id="estimatedTime">0 min</div>
+<div>5 min</div>
+</div>
+</div>
+<div class="font-controls-container">
+<div class="font-controls-title">Font Controls</div>
+<div class="font-controls-row">
+<div class="font-control-group">
+<label for="fontSelect">Font Style</label>
+<select id="fontSelect">
+<option value="poppins">Poppins (Default)</option>
+<option value="arial">Arial</option>
+<option value="courier">Courier New</option>
+<option value="georgia">Georgia</option>
+<option value="verdana">Verdana</option>
+</select>
+</div>
+<div class="font-control-group">
+<label for="fontSizeSelect">Font Size</label>
+<select id="fontSizeSelect">
+<option value="14px">14px</option>
+<option value="16px" selected>16px</option>
+<option value="18px">18px</option>
+<option value="20px">20px</option>
+<option value="24px">24px</option>
+</select>
+</div>
+</div>
+</div>
+<div class="action-container">
+<a class="action-btn" id="copyBtn">
+<i class="fas fa-copy"></i>
+Copy Text
+</a>
+<a class="action-btn" id="clearBtn">
+<i class="fas fa-trash-alt"></i>
+Clear Text
+</a>
+<a class="action-btn" id="saveBtn">
+<i class="fas fa-save"></i>
+Save Text
+</a>
+</div>
+</section>
+<footer>
+<div class="footer-logo">Your Multi Tools</div>
+<div class="footer-links">
+<a href="#"><i class="fas fa-home"></i> Home</a>
+<a href="#"><i class="fas fa-info-circle"></i> About</a>
+<a href="#"><i class="fas fa-envelope"></i> Contact</a>
+<a href="#"><i class="fas fa-lock"></i> Privacy Policy</a>
+<a href="#"><i class="fas fa-file-alt"></i> Terms of Service</a>
+</div>
+<div class="copyright">
+&copy; 2023 www.yourmultitools.space. All rights reserved.
+</div>
+</footer>
+</div>
+<script>
+// Create floating particles
+function createParticles() {
+    const particlesContainer = document.getElementById('particles');
+    const particleCount = 50;
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        // Random size
+        const size = Math.random() * 20 + 5;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        // Random position
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.top = `${Math.random() * 100}%`;
+        // Random animation duration
+        const duration = Math.random() * 20 + 10;
+        particle.style.animationDuration = `${duration}s`;
+        // Random animation delay
+        const delay = Math.random() * 5;
+        particle.style.animationDelay = `${delay}s`;
+        particlesContainer.appendChild(particle);
+    }
+}
+// Theme Toggle Functionality
+const themeToggle = document.getElementById('themeToggle');
+const body = document.body;
+const toggleIcon = themeToggle.querySelector('.toggle-icon');
+const toggleText = themeToggle.querySelector('.toggle-text');
+// Check for saved theme preference
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'light') {
+    body.classList.add('light-mode');
+    toggleIcon.classList.replace('fa-moon', 'fa-sun');
+    toggleText.textContent = 'Light Mode';
+}
+themeToggle.addEventListener('click', () => {
+    body.classList.toggle('light-mode');
+    if (body.classList.contains('light-mode')) {
+        toggleIcon.classList.replace('fa-moon', 'fa-sun');
+        toggleText.textContent = 'Light Mode';
+        localStorage.setItem('theme', 'light');
+    } else {
+        toggleIcon.classList.replace('fa-sun', 'fa-moon');
+        toggleText.textContent = 'Dark Mode';
+        localStorage.setItem('theme', 'dark');
+    }
+});
+// Text Analysis Functions
+const textInput = document.getElementById('textInput');
+const wordCount = document.getElementById('wordCount');
+const charCount = document.getElementById('charCount');
+const charNoSpaceCount = document.getElementById('charNoSpaceCount');
+const paragraphCount = document.getElementById('paragraphCount');
+const sentenceCount = document.getElementById('sentenceCount');
+const lineCount = document.getElementById('lineCount');
+const avgWordLength = document.getElementById('avgWordLength');
+const avgSentenceLength = document.getElementById('avgSentenceLength');
+const readingTime = document.getElementById('readingTime');
+const readingSpeed = document.getElementById('readingSpeed');
+const readingProgress = document.getElementById('readingProgress');
+const estimatedTime = document.getElementById('estimatedTime');
+const copyBtn = document.getElementById('copyBtn');
+const clearBtn = document.getElementById('clearBtn');
+const saveBtn = document.getElementById('saveBtn');
+const fontSelect = document.getElementById('fontSelect');
+const fontSizeSelect = document.getElementById('fontSizeSelect');
+const notification = document.getElementById('notification');
+const notificationText = document.getElementById('notification-text');
+// Update statistics function
+function updateStats() {
+    const text = textInput.value;
+    
+    // Word count
+    const words = text.trim() === '' ? [] : text.trim().split(/\s+/);
+    wordCount.textContent = words.length;
+    
+    // Character count (with spaces)
+    charCount.textContent = text.length;
+    
+    // Character count (without spaces)
+    charNoSpaceCount.textContent = text.replace(/\s/g, '').length;
+    
+    // Paragraph count
+    const paragraphs = text.trim() === '' ? [] : text.trim().split(/\n\s*\n/);
+    paragraphCount.textContent = paragraphs.length;
+    
+    // Sentence count
+    const sentences = text.trim() === '' ? [] : text.trim().split(/[.!?]+/).filter(sentence => sentence.trim() !== '');
+    sentenceCount.textContent = sentences.length;
+    
+    // Line count
+    const lines = text.trim() === '' ? [] : text.trim().split('\n');
+    lineCount.textContent = lines.length;
+    
+    // Average word length
+    if (words.length > 0) {
+        const totalChars = words.reduce((total, word) => total + word.length, 0);
+        avgWordLength.textContent = (totalChars / words.length).toFixed(1);
+    } else {
+        avgWordLength.textContent = '0';
+    }
+    
+    // Average sentence length (in words)
+    if (sentences.length > 0) {
+        const totalWords = sentences.reduce((total, sentence) => total + sentence.trim().split(/\s+/).length, 0);
+        avgSentenceLength.textContent = (totalWords / sentences.length).toFixed(1);
+    } else {
+        avgSentenceLength.textContent = '0';
+    }
+    
+    // Reading time (average 200 words per minute)
+    const readingTimeMinutes = words.length / 200;
+    readingTime.textContent = readingTimeMinutes < 1 ? 
+        (readingTimeMinutes * 60).toFixed(0) + ' sec' : 
+        readingTimeMinutes.toFixed(1) + ' min';
+    
+    // Reading speed
+    readingSpeed.textContent = words.length === 0 ? '0' : '200';
+    
+    // Reading progress bar
+    const maxWords = 1000; // 5 minutes of reading
+    const progress = Math.min((words.length / maxWords) * 100, 100);
+    readingProgress.style.width = `${progress}%`;
+    
+    // Estimated completion time
+    const completionMinutes = readingTimeMinutes;
+    estimatedTime.textContent = completionMinutes < 1 ? 
+        (completionMinutes * 60).toFixed(0) + ' sec' : 
+        completionMinutes.toFixed(1) + ' min';
+    
+    // Update button states
+    copyBtn.disabled = words.length === 0;
+    clearBtn.disabled = words.length === 0;
+    saveBtn.disabled = words.length === 0;
+}
+// Event listeners for text input
+textInput.addEventListener('input', updateStats);
+textInput.addEventListener('paste', () => {
+    setTimeout(updateStats, 0); // Slight delay to ensure paste is complete
+});
+// Copy text to clipboard
+copyBtn.addEventListener('click', () => {
+    if (textInput.value.trim() === '') {
+        showNotification('No text to copy!', 'error');
+        return;
+    }
+    
+    navigator.clipboard.writeText(textInput.value)
+        .then(() => {
+            showNotification('Text copied to clipboard!');
+        })
+        .catch(err => {
+            console.error('Failed to copy text: ', err);
+            showNotification('Failed to copy text', 'error');
+        });
+});
+// Clear text
+clearBtn.addEventListener('click', () => {
+    if (textInput.value.trim() === '') {
+        showNotification('Text area is already empty', 'error');
+        return;
+    }
+    
+    textInput.value = '';
+    updateStats();
+    showNotification('Text cleared!');
+});
+// Save text
+saveBtn.addEventListener('click', () => {
+    if (textInput.value.trim() === '') {
+        showNotification('No text to save!', 'error');
+        return;
+    }
+    
+    const blob = new Blob([textInput.value], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `text-${new Date().toISOString().slice(0, 10)}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    showNotification('Text saved as file!');
+});
+// Font controls
+fontSelect.addEventListener('change', () => {
+    textInput.style.fontFamily = fontSelect.value;
+});
+fontSizeSelect.addEventListener('change', () => {
+    textInput.style.fontSize = fontSizeSelect.value;
+});
+// Show notification
+function showNotification(message, type = 'success') {
+    notificationText.textContent = message;
+    notification.style.backgroundColor = type === 'error' ? '#e74c3c' : '#2ecc71';
+    notification.classList.add('show');
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 3000);
+}
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    createParticles();
+    updateStats();
+});
+</script>
+</body>
+</html>
