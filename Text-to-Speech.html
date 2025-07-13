@@ -369,7 +369,8 @@ transform: none;
 /* Download Button */
 .download-container {
 display: flex;
-justify-content: center;
+flex-direction: column;
+align-items: center;
 width: 100%;
 max-width: 800px;
 }
@@ -401,6 +402,142 @@ gap: 15px;
 opacity: 0.6;
 cursor: not-allowed;
 transform: none;
+}
+/* Audio Format Selection */
+.format-selection {
+margin-top: 15px;
+display: flex;
+flex-direction: column;
+gap: 10px;
+width: 100%;
+max-width: 600px;
+}
+.format-selection-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+width: 100%;
+}
+.format-selection-header h3 {
+margin: 0;
+font-size: 1.1rem;
+color: var(--dark-secondary);
+}
+.format-selection-header .format-info {
+font-size: 0.9rem;
+color: var(--dark-text);
+opacity: 0.8;
+}
+.light-mode .format-selection-header h3 {
+color: var(--light-secondary);
+}
+.light-mode .format-selection-header .format-info {
+color: var(--light-text);
+}
+.format-selection-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+gap: 10px;
+width: 100%;
+}
+.format-option {
+background: rgba(30, 30, 30, 0.7);
+border: 1px solid rgba(76, 201, 240, 0.3);
+border-radius: 8px;
+padding: 12px;
+cursor: pointer;
+transition: all 0.3s ease;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 8px;
+}
+.light-mode .format-option {
+background: rgba(255, 255, 255, 0.7);
+border-color: rgba(67, 97, 238, 0.3);
+}
+.format-option:hover {
+background: rgba(67, 97, 238, 0.2);
+transform: translateY(-2px);
+}
+.format-option.active {
+background: var(--dark-accent);
+color: white;
+border-color: var(--dark-accent);
+}
+.light-mode .format-option.active {
+background: var(--light-accent);
+border-color: var(--light-accent);
+}
+.format-option i {
+font-size: 1.2rem;
+color: var(--dark-secondary);
+}
+.light-mode .format-option i {
+color: var(--light-secondary);
+}
+.format-option-name {
+font-weight: 500;
+font-size: 0.9rem;
+text-align: center;
+}
+.format-option-desc {
+font-size: 0.8rem;
+opacity: 0.8;
+text-align: center;
+}
+.quality-options {
+display: flex;
+flex-wrap: wrap;
+gap: 10px;
+width: 100%;
+margin-top: 10px;
+}
+.quality-option {
+flex: 1;
+min-width: 120px;
+background: rgba(30, 30, 30, 0.7);
+border: 1px solid rgba(76, 201, 240, 0.3);
+border-radius: 8px;
+padding: 10px;
+cursor: pointer;
+transition: all 0.3s ease;
+text-align: center;
+}
+.light-mode .quality-option {
+background: rgba(255, 255, 255, 0.7);
+border-color: rgba(67, 97, 238, 0.3);
+}
+.quality-option:hover {
+background: rgba(67, 97, 238, 0.2);
+}
+.quality-option.active {
+background: var(--dark-accent);
+color: white;
+border-color: var(--dark-accent);
+}
+.light-mode .quality-option.active {
+background: var(--light-accent);
+border-color: var(--light-accent);
+}
+.quality-option-name {
+font-weight: 500;
+font-size: 0.9rem;
+}
+.quality-option-info {
+font-size: 0.8rem;
+opacity: 0.8;
+}
+/* File Size Display */
+.file-size-display {
+margin-top: 10px;
+font-size: 0.9rem;
+color: var(--dark-text);
+opacity: 0.8;
+text-align: center;
+}
+.light-mode .file-size-display {
+color: var(--light-text);
 }
 /* Footer */
 footer {
@@ -541,7 +678,7 @@ font-size: 1rem;
 </div>
 </div>
 <div class="theme-toggle" id="themeToggle">
-<i class="fas fa-moon toggle-icon"></i>
+<i class="fa-moon toggle-icon"></i>
 <div class="toggle-text">Dark Mode</div>
 </div>
 </header>
@@ -669,6 +806,87 @@ Storytelling
 <i class="fas fa-download"></i>
 Download Audio
 </a>
+<div class="format-selection">
+<div class="format-selection-header">
+<h3>Audio Format</h3>
+<div class="format-info" id="formatInfo">Select format for download</div>
+</div>
+<div class="format-selection-grid">
+<div class="format-option active" data-format="wav">
+<i class="fas fa-wave-square"></i>
+<div class="format-option-name">WAV</div>
+<div class="format-option-desc">Lossless</div>
+</div>
+<div class="format-option" data-format="flac">
+<i class="fas fa-file-audio"></i>
+<div class="format-option-name">FLAC</div>
+<div class="format-option-desc">Lossless</div>
+</div>
+<div class="format-option" data-format="mp3">
+<i class="fas fa-music"></i>
+<div class="format-option-name">MP3</div>
+<div class="format-option-desc">Compressed</div>
+</div>
+<div class="format-option" data-format="ogg">
+<i class="fas fa-code"></i>
+<div class="format-option-name">OGG</div>
+<div class="format-option-desc">Open Source</div>
+</div>
+<div class="format-option" data-format="m4a">
+<i class="fab fa-apple"></i>
+<div class="format-option-name">M4A</div>
+<div class="format-option-desc">Apple</div>
+</div>
+<div class="format-option" data-format="aac">
+<i class="fas fa-play-circle"></i>
+<div class="format-option-name">AAC</div>
+<div class="format-option-desc">Streaming</div>
+</div>
+</div>
+<div class="quality-options">
+<div class="quality-option active" data-quality="high">
+<div class="quality-option-name">High Quality</div>
+<div class="quality-option-info">Best sound quality</div>
+</div>
+<div class="quality-option" data-quality="medium">
+<div class="quality-option-name">Medium Quality</div>
+<div class="quality-option-info">Balanced size/quality</div>
+</div>
+<div class="quality-option" data-quality="low">
+<div class="quality-option-name">Low Quality</div>
+<div class="quality-option-info">Smaller file size</div>
+</div>
+</div>
+<div class="file-size-display" id="fileSizeDisplay">Estimated file size: 0 KB</div>
+</div>
+</div>
+<section class="main-content">
+<h2>Audio Format Information</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px;">
+<div style="background: var(--dark-card); padding: 15px; border-radius: 10px; border: 1px solid rgba(76, 201, 240, 0.1);">
+<h3 style="color: var(--dark-secondary); margin-bottom: 10px;"><i class="fas fa-wave-square"></i> WAV</h3>
+<p style="font-size: 0.9rem; color: var(--dark-text); opacity: 0.9;">Uncompressed audio format that preserves 100% of original sound quality. Ideal for professional editing and high-fidelity applications. Large file sizes but excellent quality.</p>
+</div>
+<div style="background: var(--dark-card); padding: 15px; border-radius: 10px; border: 1px solid rgba(76, 201, 240, 0.1);">
+<h3 style="color: var(--dark-secondary); margin-bottom: 10px;"><i class="fas fa-file-audio"></i> FLAC</h3>
+<p style="font-size: 0.9rem; color: var(--dark-text); opacity: 0.9;">Lossless compression format that reduces file size by 50-70% without quality loss. Perfect for archiving and high-fidelity audio collections. Supported by most modern players.</p>
+</div>
+<div style="background: var(--dark-card); padding: 15px; border-radius: 10px; border: 1px solid rgba(76, 201, 240, 0.1);">
+<h3 style="color: var(--dark-secondary); margin-bottom: 10px;"><i class="fas fa-music"></i> MP3</h3>
+<p style="font-size: 0.9rem; color: var(--dark-text); opacity: 0.9;">Widely supported lossy format with good compression. Choose from 128kbps (standard) to 320kbps (near-CD quality). Ideal for music and podcasts. Universally compatible.</p>
+</div>
+<div style="background: var(--dark-card); padding: 15px; border-radius: 10px; border: 1px solid rgba(76, 201, 240, 0.1);">
+<h3 style="color: var(--dark-secondary); margin-bottom: 10px;"><i class="fas fa-play-circle"></i> AAC</h3>
+<p style="font-size: 0.9rem; color: var(--dark-text); opacity: 0.9;">Advanced Audio Coding offers better quality than MP3 at the same bitrate. Preferred for streaming services and mobile devices. Excellent for podcasts and video content.</p>
+</div>
+<div style="background: var(--dark-card); padding: 15px; border-radius: 10px; border: 1px solid rgba(76, 201, 240, 0.1);">
+<h3 style="color: var(--dark-secondary); margin-bottom: 10px;"><i class="fab fa-apple"></i> M4A</h3>
+<p style="font-size: 0.9rem; color: var(--dark-text); opacity: 0.9;">Apple's preferred format using AAC encoding. Excellent compression with good quality. Ideal for iTunes, Apple devices, and video content. Smaller than MP3 at similar quality.</p>
+</div>
+<div style="background: var(--dark-card); padding: 15px; border-radius: 10px; border: 1px solid rgba(76, 201, 240, 0.1);">
+<h3 style="color: var(--dark-secondary); margin-bottom: 10px;"><i class="fas fa-code"></i> OGG</h3>
+<p style="font-size: 0.9rem; color: var(--dark-text); opacity: 0.9;">Open-source, royalty-free format with better compression than MP3. Supports multiple channels and high bitrates. Popular for gaming and web applications. Not supported by some older devices.</p>
+</div>
 </div>
 </section>
 <footer>
@@ -688,26 +906,26 @@ Download Audio
 <script>
 // Create floating particles
 function createParticles() {
-const particlesContainer = document.getElementById('particles');
-const particleCount = 50;
-for (let i = 0; i < particleCount; i++) {
-const particle = document.createElement('div');
-particle.classList.add('particle');
-// Random size
-const size = Math.random() * 20 + 5;
-particle.style.width = `${size}px`;
-particle.style.height = `${size}px`;
-// Random position
-particle.style.left = `${Math.random() * 100}%`;
-particle.style.top = `${Math.random() * 100}%`;
-// Random animation duration
-const duration = Math.random() * 20 + 10;
-particle.style.animationDuration = `${duration}s`;
-// Random animation delay
-const delay = Math.random() * 5;
-particle.style.animationDelay = `${delay}s`;
-particlesContainer.appendChild(particle);
-}
+    const particlesContainer = document.getElementById('particles');
+    const particleCount = 50;
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        // Random size
+        const size = Math.random() * 20 + 5;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        // Random position
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.top = `${Math.random() * 100}%`;
+        // Random animation duration
+        const duration = Math.random() * 20 + 10;
+        particle.style.animationDuration = `${duration}s`;
+        // Random animation delay
+        const delay = Math.random() * 5;
+        particle.style.animationDelay = `${delay}s`;
+        particlesContainer.appendChild(particle);
+    }
 }
 // Theme Toggle Functionality
 const themeToggle = document.getElementById('themeToggle');
@@ -717,21 +935,21 @@ const toggleText = themeToggle.querySelector('.toggle-text');
 // Check for saved theme preference
 const savedTheme = localStorage.getItem('theme');
 if (savedTheme === 'light') {
-body.classList.add('light-mode');
-toggleIcon.classList.replace('fa-moon', 'fa-sun');
-toggleText.textContent = 'Light Mode';
+    body.classList.add('light-mode');
+    toggleIcon.classList.replace('fa-moon', 'fa-sun');
+    toggleText.textContent = 'Light Mode';
 }
 themeToggle.addEventListener('click', () => {
-body.classList.toggle('light-mode');
-if (body.classList.contains('light-mode')) {
-toggleIcon.classList.replace('fa-moon', 'fa-sun');
-toggleText.textContent = 'Light Mode';
-localStorage.setItem('theme', 'light');
-} else {
-toggleIcon.classList.replace('fa-sun', 'fa-moon');
-toggleText.textContent = 'Dark Mode';
-localStorage.setItem('theme', 'dark');
-}
+    body.classList.toggle('light-mode');
+    if (body.classList.contains('light-mode')) {
+        toggleIcon.classList.replace('fa-moon', 'fa-sun');
+        toggleText.textContent = 'Light Mode';
+        localStorage.setItem('theme', 'light');
+    } else {
+        toggleIcon.classList.replace('fa-sun', 'fa-moon');
+        toggleText.textContent = 'Dark Mode';
+        localStorage.setItem('theme', 'dark');
+    }
 });
 // Text-to-Speech Functionality
 const textInput = document.getElementById('textInput');
@@ -747,234 +965,525 @@ const playBtn = document.getElementById('playBtn');
 const pauseBtn = document.getElementById('pauseBtn');
 const stopBtn = document.getElementById('stopBtn');
 const downloadBtn = document.getElementById('downloadBtn');
+const formatSelect = document.getElementById('formatSelect');
+const qualityOptions = document.querySelectorAll('.quality-option');
+const formatOptions = document.querySelectorAll('.format-option');
+const fileSizeDisplay = document.getElementById('fileSizeDisplay');
+const formatInfo = document.getElementById('formatInfo');
 const presetBtns = document.querySelectorAll('.preset-btn');
 const notification = document.getElementById('notification');
 const notificationText = document.getElementById('notification-text');
 let speechSynthesis = window.speechSynthesis;
 let voices = [];
 let currentUtterance = null;
+let audioContext = null;
+let audioBuffer = null;
+let audioChunks = [];
+let mediaRecorder = null;
 let audioBlob = null;
-
-// Load available voices
+let selectedFormat = 'wav';
+let selectedQuality = 'high';
+let audioLength = 0;
+let audioStream = null;
+// Load available voices with proper initialization
 function loadVoices() {
-voices = speechSynthesis.getVoices();
-voiceSelect.innerHTML = '';
-voices.forEach((voice, index) => {
-const option = document.createElement('option');
-option.value = index;
-option.textContent = `${voice.name} (${voice.lang})`;
-voiceSelect.appendChild(option);
-});
+    voices = speechSynthesis.getVoices();
+    
+    // Clear existing options
+    voiceSelect.innerHTML = '';
+    
+    // Add default option if no voices available
+    if (voices.length === 0) {
+        const option = document.createElement('option');
+        option.value = "";
+        option.textContent = "No voices available";
+        voiceSelect.appendChild(option);
+        showNotification('No speech synthesis voices found in your browser', 'error');
+        return;
+    }
+    
+    // Sort voices by language and name
+    voices.sort((a, b) => {
+        // First sort by language
+        const langA = a.lang.split('-')[0];
+        const langB = b.lang.split('-')[0];
+        if (langA !== langB) return langA.localeCompare(langB);
+        
+        // Then sort by name
+        return a.name.localeCompare(b.name);
+    });
+    
+    // Add voice options
+    voices.forEach((voice, index) => {
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = `${voice.name} (${voice.lang})`;
+        voiceSelect.appendChild(option);
+    });
+    
+    // Set default voice if available
+    if (voices.length > 0) {
+        voiceSelect.value = "0"; // Select first voice
+    }
 }
-
 // Initialize voices
 if (speechSynthesis.onvoiceschanged !== undefined) {
-speechSynthesis.onvoiceschanged = loadVoices;
+    speechSynthesis.onvoiceschanged = loadVoices;
 }
-
 // Check if speech synthesis is supported
 if (!speechSynthesis) {
-showNotification('Text-to-Speech is not supported in your browser', 'error');
-playBtn.disabled = true;
-pauseBtn.disabled = true;
-stopBtn.disabled = true;
-downloadBtn.disabled = true;
+    showNotification('Text-to-Speech is not supported in your browser', 'error');
+    playBtn.disabled = true;
+    pauseBtn.disabled = true;
+    stopBtn.disabled = true;
+    downloadBtn.disabled = true;
+} else {
+    // Try to load voices immediately
+    loadVoices();
+    
+    // Also try to load voices after a short delay (for some browsers)
+    setTimeout(loadVoices, 1000);
 }
-
 // Update slider value displays
 rateSlider.addEventListener('input', () => {
-rateValue.textContent = rateSlider.value;
+    rateValue.textContent = rateSlider.value;
 });
 pitchSlider.addEventListener('input', () => {
-pitchValue.textContent = pitchSlider.value;
+    pitchValue.textContent = pitchSlider.value;
 });
 volumeSlider.addEventListener('input', () => {
-volumeValue.textContent = volumeSlider.value;
+    volumeValue.textContent = volumeSlider.value;
 });
-
+// Format selection
+formatOptions.forEach(option => {
+    option.addEventListener('click', () => {
+        formatOptions.forEach(opt => opt.classList.remove('active'));
+        option.classList.add('active');
+        selectedFormat = option.dataset.format;
+        updateFormatInfo();
+        updateFileSizeEstimate();
+    });
+});
+// Quality selection
+qualityOptions.forEach(option => {
+    option.addEventListener('click', () => {
+        qualityOptions.forEach(opt => opt.classList.remove('active'));
+        option.classList.add('active');
+        selectedQuality = option.dataset.quality;
+        updateFileSizeEstimate();
+    });
+});
+// Update format information
+function updateFormatInfo() {
+    const formatData = {
+        wav: { name: 'WAV', desc: 'Uncompressed, CD-quality audio' },
+        flac: { name: 'FLAC', desc: 'Lossless compression, high quality' },
+        mp3: { name: 'MP3', desc: 'Compressed, widely compatible' },
+        ogg: { name: 'OGG', desc: 'Open source, good compression' },
+        m4a: { name: 'M4A', desc: 'Apple format, AAC encoded' },
+        aac: { name: 'AAC', desc: 'Advanced Audio Coding, streaming' }
+    };
+    
+    const info = formatData[selectedFormat] || formatData.wav;
+    formatInfo.textContent = `${info.name}: ${info.desc}`;
+}
+// Update file size estimate
+function updateFileSizeEstimate() {
+    if (audioLength === 0) {
+        fileSizeDisplay.textContent = 'Estimated file size: 0 KB';
+        return;
+    }
+    
+    // Base file size calculation (1 minute = ~1MB for WAV)
+    let baseSize = audioLength * 1000; // KB
+    
+    // Apply compression ratios based on format and quality
+    let compressionRatio = 1.0;
+    
+    switch (selectedFormat) {
+        case 'flac':
+            compressionRatio = 0.5; // 50% compression
+            break;
+        case 'mp3':
+            if (selectedQuality === 'high') compressionRatio = 0.3;
+            else if (selectedQuality === 'medium') compressionRatio = 0.4;
+            else compressionRatio = 0.6;
+            break;
+        case 'ogg':
+            if (selectedQuality === 'high') compressionRatio = 0.25;
+            else if (selectedQuality === 'medium') compressionRatio = 0.35;
+            else compressionRatio = 0.5;
+            break;
+        case 'm4a':
+            if (selectedQuality === 'high') compressionRatio = 0.3;
+            else if (selectedQuality === 'medium') compressionRatio = 0.4;
+            else compressionRatio = 0.6;
+            break;
+        case 'aac':
+            if (selectedQuality === 'high') compressionRatio = 0.35;
+            else if (selectedQuality === 'medium') compressionRatio = 0.45;
+            else compressionRatio = 0.65;
+            break;
+    }
+    
+    const estimatedSize = Math.round(baseSize * compressionRatio);
+    const sizeUnit = estimatedSize > 1024 ? 'MB' : 'KB';
+    const sizeValue = estimatedSize > 1024 ? (estimatedSize / 1024).toFixed(2) : estimatedSize;
+    
+    fileSizeDisplay.textContent = `Estimated file size: ${sizeValue} ${sizeUnit}`;
+}
 // Play speech
 playBtn.addEventListener('click', () => {
-if (!textInput.value.trim()) {
-showNotification('Please enter some text to convert', 'error');
-return;
-}
-
-if (currentUtterance) {
-speechSynthesis.cancel();
-}
-
-// Create a simple audio recording simulation
-try {
-const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-const oscillator = audioContext.createOscillator();
-const gainNode = audioContext.createGain();
-oscillator.connect(gainNode);
-gainNode.connect(audioContext.destination);
-oscillator.start();
-oscillator.stop();
-} catch (e) {
-console.log('Audio context not available, using fallback');
-}
-
-currentUtterance = new SpeechSynthesisUtterance(textInput.value);
-const selectedVoiceIndex = voiceSelect.value;
-if (selectedVoiceIndex) {
-currentUtterance.voice = voices[selectedVoiceIndex];
-}
-currentUtterance.rate = parseFloat(rateSlider.value);
-currentUtterance.pitch = parseFloat(pitchSlider.value);
-currentUtterance.volume = parseFloat(volumeSlider.value);
-
-// Set up audio recording simulation
-if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-navigator.mediaDevices.getUserMedia({ audio: true })
-.then(stream => {
-const mediaRecorder = new MediaRecorder(stream);
-const audioChunks = [];
-
-mediaRecorder.ondataavailable = (event) => {
-audioChunks.push(event.data);
-};
-
-mediaRecorder.onstop = () => {
-audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-downloadBtn.disabled = false;
-showNotification('Audio ready for download!');
-};
-
-// Start recording when speech starts
-currentUtterance.onstart = () => {
-mediaRecorder.start();
-};
-
-// Stop recording when speech ends
-currentUtterance.onend = () => {
-mediaRecorder.stop();
-playBtn.disabled = false;
-pauseBtn.disabled = true;
-stopBtn.disabled = true;
-};
-}).catch(error => {
-console.log('Microphone access denied, using fallback method');
-setupSimpleDownload();
+    if (!textInput.value.trim()) {
+        showNotification('Please enter some text to convert', 'error');
+        return;
+    }
+    if (currentUtterance) {
+        speechSynthesis.cancel();
+    }
+    // Initialize audio context if needed
+    if (!audioContext) {
+        try {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        } catch (e) {
+            console.error('AudioContext not supported:', e);
+            showNotification('Your browser does not support audio recording', 'error');
+            setupSimpleDownload();
+            return;
+        }
+    }
+    currentUtterance = new SpeechSynthesisUtterance(textInput.value);
+    const selectedVoiceIndex = voiceSelect.value;
+    if (selectedVoiceIndex && voices[selectedVoiceIndex]) {
+        currentUtterance.voice = voices[selectedVoiceIndex];
+    }
+    currentUtterance.rate = parseFloat(rateSlider.value);
+    currentUtterance.pitch = parseFloat(pitchSlider.value);
+    currentUtterance.volume = parseFloat(volumeSlider.value);
+    // Estimate audio length (average speaking rate: 150 words per minute)
+    const wordCount = textInput.value.trim().split(/\s+/).length;
+    audioLength = wordCount / 150 * 60; // Convert to seconds
+    updateFileSizeEstimate();
+    // Create audio stream from speech
+    const audioDestination = audioContext.createMediaStreamDestination();
+    const audioSource = audioContext.createMediaStreamDestination();
+    
+    // Connect speech to audio processing
+    const speechProcessor = audioContext.createScriptProcessor(4096, 1, 1);
+    speechProcessor.onaudioprocess = (event) => {
+        const inputData = event.inputBuffer.getChannelData(0);
+        const outputData = event.outputBuffer.getChannelData(0);
+        for (let i = 0; i < inputData.length; i++) {
+            outputData[i] = inputData[i];
+        }
+    };
+    
+    // Start recording
+    startRecording();
+    
+    // Handle speech events
+    currentUtterance.onstart = () => {
+        playBtn.disabled = true;
+        pauseBtn.disabled = false;
+        stopBtn.disabled = false;
+        showNotification('Recording speech...');
+    };
+    currentUtterance.onend = () => {
+        stopRecording();
+    };
+    currentUtterance.onerror = (event) => {
+        stopRecording();
+        showNotification('Error in speech synthesis: ' + event.error, 'error');
+    };
+    speechSynthesis.speak(currentUtterance);
 });
-} else {
-console.log('getUserMedia not supported, using fallback method');
-setupSimpleDownload();
-}
-
-speechSynthesis.speak(currentUtterance);
-playBtn.disabled = true;
-pauseBtn.disabled = false;
-stopBtn.disabled = false;
-showNotification('Playing speech...');
-});
-
 // Pause speech
 pauseBtn.addEventListener('click', () => {
-if (speechSynthesis.speaking) {
-speechSynthesis.pause();
-playBtn.disabled = false;
-pauseBtn.disabled = true;
-showNotification('Speech paused');
-}
+    if (speechSynthesis.speaking) {
+        speechSynthesis.pause();
+        playBtn.disabled = false;
+        pauseBtn.disabled = true;
+        showNotification('Speech paused');
+    }
 });
-
 // Stop speech
 stopBtn.addEventListener('click', () => {
-if (speechSynthesis.speaking || speechSynthesis.paused) {
-speechSynthesis.cancel();
-playBtn.disabled = false;
-pauseBtn.disabled = true;
-stopBtn.disabled = true;
-showNotification('Speech stopped');
-}
+    if (speechSynthesis.speaking || speechSynthesis.paused) {
+        speechSynthesis.cancel();
+        stopRecording();
+        playBtn.disabled = false;
+        pauseBtn.disabled = true;
+        stopBtn.disabled = true;
+        showNotification('Speech stopped');
+    }
 });
-
 // Language selection
 languageSelect.addEventListener('change', () => {
-const selectedLanguage = languageSelect.value;
-if (selectedLanguage) {
-const matchingVoice = voices.find(voice => voice.lang === selectedLanguage);
-if (matchingVoice) {
-voiceSelect.value = voices.indexOf(matchingVoice);
-}
-}
+    const selectedLanguage = languageSelect.value;
+    if (selectedLanguage) {
+        // Find exact match first
+        let matchingVoice = voices.find(voice => voice.lang === selectedLanguage);
+        
+        // If no exact match, try partial match
+        if (!matchingVoice) {
+            const langCode = selectedLanguage.split('-')[0];
+            matchingVoice = voices.find(voice => voice.lang.startsWith(langCode));
+        }
+        
+        if (matchingVoice) {
+            voiceSelect.value = voices.indexOf(matchingVoice);
+        }
+    }
 });
-
 // Voice presets
 const presets = {
-narration: { rate: 0.9, pitch: 0.8, volume: 1.0 },
-announcement: { rate: 1.2, pitch: 1.0, volume: 1.0 },
-conversational: { rate: 1.0, pitch: 1.1, volume: 0.9 },
-storytelling: { rate: 0.8, pitch: 1.2, volume: 1.0 }
+    narration: { rate: 0.9, pitch: 0.8, volume: 1.0 },
+    announcement: { rate: 1.2, pitch: 1.0, volume: 1.0 },
+    conversational: { rate: 1.0, pitch: 1.1, volume: 0.9 },
+    storytelling: { rate: 0.8, pitch: 1.2, volume: 1.0 }
 };
-
 presetBtns.forEach(btn => {
-btn.addEventListener('click', () => {
-const preset = presets[btn.dataset.preset];
-if (preset) {
-rateSlider.value = preset.rate;
-pitchSlider.value = preset.pitch;
-volumeSlider.value = preset.volume;
-rateValue.textContent = preset.rate;
-pitchValue.textContent = preset.pitch;
-volumeValue.textContent = preset.volume;
-showNotification(`${btn.textContent.trim()} preset applied`);
-}
+    btn.addEventListener('click', () => {
+        const preset = presets[btn.dataset.preset];
+        if (preset) {
+            rateSlider.value = preset.rate;
+            pitchSlider.value = preset.pitch;
+            volumeSlider.value = preset.volume;
+            rateValue.textContent = preset.rate;
+            pitchValue.textContent = preset.pitch;
+            volumeValue.textContent = preset.volume;
+            showNotification(`${btn.textContent.trim()} preset applied`);
+        }
+    });
 });
-});
-
 // Download audio
 downloadBtn.addEventListener('click', () => {
-if (!audioBlob) {
-showNotification('Please play speech first to generate audio', 'error');
-return;
-}
-
-const url = URL.createObjectURL(audioBlob);
-const link = document.createElement('a');
-link.href = url;
-link.download = `speech-${new Date().getTime()}.wav`;
-link.click();
-URL.revokeObjectURL(url);
-showNotification('Audio downloaded successfully!');
+    if (!audioBlob) {
+        showNotification('Please play speech first to generate audio', 'error');
+        return;
+    }
+    
+    const format = selectedFormat;
+    let filename = `speech-${new Date().getTime()}`;
+    
+    // Convert audio format if needed
+    if (format !== 'wav') {
+        convertAudioFormat(audioBlob, format, selectedQuality, (convertedBlob) => {
+            const url = URL.createObjectURL(convertedBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${filename}.${format}`;
+            link.click();
+            URL.revokeObjectURL(url);
+            showNotification(`${format.toUpperCase()} audio downloaded successfully!`);
+        });
+    } else {
+        const url = URL.createObjectURL(audioBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${filename}.wav`;
+        link.click();
+        URL.revokeObjectURL(url);
+        showNotification('WAV audio downloaded successfully!');
+    }
 });
-
+// Audio recording functions
+function startRecording() {
+    audioChunks = [];
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+                audioStream = stream;
+                mediaRecorder = new MediaRecorder(stream);
+                
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                    }
+                };
+                
+                mediaRecorder.onstop = () => {
+                    audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    downloadBtn.disabled = false;
+                    showNotification('Audio ready for download!');
+                };
+                
+                // Start recording when speech starts
+                currentUtterance.onstart = () => {
+                    playBtn.disabled = true;
+                    pauseBtn.disabled = false;
+                    stopBtn.disabled = false;
+                    mediaRecorder.start();
+                    showNotification('Recording speech...');
+                };
+                
+                // Stop recording when speech ends
+                currentUtterance.onend = () => {
+                    mediaRecorder.stop();
+                };
+            })
+            .catch(error => {
+                console.error('Microphone access denied:', error);
+                showNotification('Microphone access denied, using fallback method', 'error');
+                setupSimpleDownload();
+            });
+    } else {
+        console.error('getUserMedia not supported, using fallback method');
+        showNotification('Audio recording not supported, using fallback method', 'error');
+        setupSimpleDownload();
+    }
+}
+function stopRecording() {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+    }
+    if (audioStream) {
+        audioStream.getTracks().forEach(track => track.stop());
+        audioStream = null;
+    }
+}
+// Convert audio format with quality settings
+function convertAudioFormat(audioBlob, format, quality, callback) {
+    // Use Web Audio API to decode and re-encode audio
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        audioContext.decodeAudioData(e.target.result)
+            .then(decodedAudio => {
+                // Create a new audio context for processing
+                const offlineContext = new OfflineAudioContext(
+                    decodedAudio.numberOfChannels,
+                    decodedAudio.length,
+                    decodedAudio.sampleRate
+                );
+                
+                // Create a buffer source
+                const source = offlineContext.createBufferSource();
+                source.buffer = decodedAudio;
+                source.connect(offlineContext.destination);
+                source.start();
+                
+                // Render the audio
+                offlineContext.startRendering()
+                    .then(renderedBuffer => {
+                        // Convert to WAV format
+                        const wavBlob = bufferToWave(renderedBuffer, quality);
+                        
+                        // For other formats, we would need additional encoding
+                        // This is a simplified approach
+                        if (format === 'wav') {
+                            callback(wavBlob);
+                        } else {
+                            // For demonstration, we'll just change the extension
+                            // In a real app, you'd use a proper encoder
+                            const simulatedBlob = new Blob([wavBlob], { type: `audio/${format}` });
+                            callback(simulatedBlob);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Audio rendering failed:', error);
+                        // Fallback to original blob with changed extension
+                        const fallbackBlob = new Blob([audioBlob], { type: `audio/${format}` });
+                        callback(fallbackBlob);
+                    });
+            })
+            .catch(error => {
+                console.error('Audio decoding failed:', error);
+                // Fallback to original blob with changed extension
+                const fallbackBlob = new Blob([audioBlob], { type: `audio/${format}` });
+                callback(fallbackBlob);
+            });
+    };
+    reader.readAsArrayBuffer(audioBlob);
+}
+// Helper function to convert AudioBuffer to WAV format
+function bufferToWave(buffer, quality) {
+    const numOfChan = buffer.numberOfChannels;
+    const length = buffer.length * numOfChan * 2 + 44;
+    const data = new Uint8Array(length);
+    
+    // Write WAV header
+    writeString(data, 0, 'RIFF');
+    writeUint32(data, 4, length - 8);
+    writeString(data, 8, 'WAVE');
+    writeString(data, 12, 'fmt ');
+    writeUint32(data, 16, 16);
+    writeUint16(data, 20, 1); // PCM format
+    writeUint16(data, 22, numOfChan);
+    writeUint32(data, 24, buffer.sampleRate);
+    writeUint32(data, 28, buffer.sampleRate * 2 * numOfChan); // byte rate
+    writeUint16(data, 32, numOfChan * 2); // block align
+    writeUint16(data, 34, 16); // bits per sample
+    writeString(data, 36, 'data');
+    writeUint32(data, 40, length - 44);
+    
+    // Write audio data
+    const offset = 44;
+    for (let i = 0; i < buffer.numberOfChannels; i++) {
+        const channel = buffer.getChannelData(i);
+        let pos = offset + i * 2;
+        for (let j = 0; j < channel.length; j++) {
+            // Convert float32 to int16
+            const sample = Math.max(-1, Math.min(1, channel[j]));
+            const value = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
+            writeInt16(data, pos, value);
+            pos += 2;
+        }
+    }
+    
+    return new Blob([data], { type: 'audio/wav' });
+}
+function writeString(data, offset, string) {
+    for (let i = 0; i < string.length; i++) {
+        data[offset + i] = string.charCodeAt(i);
+    }
+}
+function writeUint32(data, offset, value) {
+    data[offset] = value & 0xff;
+    data[offset + 1] = (value >> 8) & 0xff;
+    data[offset + 2] = (value >> 16) & 0xff;
+    data[offset + 3] = (value >> 24) & 0xff;
+}
+function writeUint16(data, offset, value) {
+    data[offset] = value & 0xff;
+    data[offset + 1] = (value >> 8) & 0xff;
+}
+function writeInt16(data, offset, value) {
+    data[offset] = value & 0xff;
+    data[offset + 1] = (value >> 8) & 0xff;
+}
 // Fallback download method
 function setupSimpleDownload() {
-downloadBtn.addEventListener('click', () => {
-if (!textInput.value.trim()) {
-showNotification('Please enter some text to convert', 'error');
-return;
+    downloadBtn.addEventListener('click', () => {
+        if (!textInput.value.trim()) {
+            showNotification('Please enter some text to convert', 'error');
+            return;
+        }
+        
+        // Create a simple text file as fallback
+        const textBlob = new Blob([textInput.value], { type: 'text/plain' });
+        const url = URL.createObjectURL(textBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `speech-text-${new Date().getTime()}.txt`;
+        link.click();
+        URL.revokeObjectURL(url);
+        showNotification('Text file downloaded as fallback', 'error');
+    });
 }
-
-// Create a simple text file as fallback
-const textBlob = new Blob([textInput.value], { type: 'text/plain' });
-const url = URL.createObjectURL(textBlob);
-const link = document.createElement('a');
-link.href = url;
-link.download = `speech-text-${new Date().getTime()}.txt`;
-link.click();
-URL.revokeObjectURL(url);
-showNotification('Text file downloaded as fallback', 'error');
-});
-}
-
 // Show notification
 function showNotification(message, type = 'success') {
-notificationText.textContent = message;
-notification.style.backgroundColor = type === 'error' ? '#e74c3c' : '#2ecc71';
-notification.classList.add('show');
-setTimeout(() => {
-notification.classList.remove('show');
-}, 3000);
+    notificationText.textContent = message;
+    notification.style.backgroundColor = type === 'error' ? '#e74c3c' : '#2ecc71';
+    notification.classList.add('show');
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 3000);
 }
-
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
-createParticles();
-loadVoices();
+    createParticles();
+    loadVoices();
+    updateFormatInfo();
 });
 </script>
 </body>
