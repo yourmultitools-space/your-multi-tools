@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove Extra Spaces - Your Multi Tools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --dark-text: #f0f0f0;
+            --dark-accent: #4361ee;
+            --dark-secondary: #4cc9f0;
+            --dark-hover: #2a2a2a;
+            --dark-shadow: rgba(0, 0, 0, 0.5);
+            
+            --light-bg: #f8f9fa;
+            --light-card: #ffffff;
+            --light-text: #333333;
+            --light-accent: #4361ee;
+            --light-secondary: #3a86ff;
+            --light-hover: #f0f0f0;
+            --light-shadow: rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease, color 0.3s ease;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        body.light-mode {
+            background-color: var(--light-bg);
+            color: var(--light-text);
+        }
+        
+        /* Particles background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(67, 97, 238, 0.2);
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 20px;
+            position: relative;
+            z-index: 10;
+            flex-wrap: wrap;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--dark-secondary);
+        }
+        
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .logo-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+        
+        .logo-text .domain {
+            font-size: 0.9rem;
+            color: var(--dark-text);
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+        
+        .light-mode .logo-text .domain {
+            color: var(--light-text);
+        }
+        
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--dark-card);
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 15px var(--dark-shadow);
+        }
+        
+        .light-mode .theme-toggle {
+            background: var(--light-card);
+            box-shadow: 0 4px 15px var(--light-shadow);
+        }
+        
+        .toggle-icon {
+            font-size: 1.4rem;
+        }
+        
+        .toggle-text {
+            font-weight: 500;
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 40px 0;
+            min-height: calc(100vh - 200px);
+        }
+        
+        .tool-container {
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(76, 201, 240, 0.2);
+            margin-bottom: 40px;
+        }
+        
+        .light-mode .tool-container {
+            background: var(--light-card);
+            box-shadow: 0 10px 30px var(--light-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .tool-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .tool-header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .light-mode .tool-header h1 {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .tool-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        
+        .tool-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .form-group {
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid var(--dark-accent);
+            background: rgba(30, 30, 30, 0.7);
+            color: var(--dark-text);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            min-height: 150px;
+            resize: vertical;
+            box-shadow: 0 5px 25px rgba(67, 97, 238, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .light-mode .form-control {
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--light-text);
+            border: 2px solid var(--light-accent);
+            box-shadow: 0 5px 25px rgba(76, 201, 240, 0.3);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--dark-secondary);
+            box-shadow: 0 5px 30px rgba(76, 201, 240, 0.5);
+        }
+        
+        .light-mode .form-control:focus {
+            border-color: var(--light-secondary);
+            box-shadow: 0 5px 30px rgba(76, 201, 240, 0.5);
+        }
+        
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .option-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+        
+        .option-input {
+            accent-color: var(--dark-accent);
+        }
+        
+        .light-mode .option-input {
+            accent-color: var(--light-accent);
+        }
+        
+        .button {
+            background: linear-gradient(45deg, var(--dark-accent), var(--dark-secondary));
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-align: center;
+            box-shadow: 0 7px 15px rgba(67, 97, 238, 0.4);
+        }
+        
+        .button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(67, 97, 23px);
+            gap: 15px;
+        }
+        
+        .light-mode .button {
+            background: linear-gradient(45deg, var(--light-accent), var(--light-secondary));
+            box-shadow: 0 7px 15px rgba(76, 201, 240, 0.4);
+        }
+        
+        .light-mode .button:hover {
+            box-shadow: 0 10px 20px rgba(76, 201, 240, 0.4);
+        }
+        
+        .result-container {
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .result-container h3 {
+            margin-bottom: 15px;
+            color: var(--dark-accent);
+        }
+        
+        .result-container .form-group {
+            margin-top: 0;
+        }
+        
+        .copy-button {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            background: var(--dark-accent);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .light-mode .copy-button {
+            background: var(--light-accent);
+        }
+        
+        .copy-button:hover {
+            background: var(--dark-secondary);
+        }
+        
+        .copy-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--dark-card);
+            color: var(--dark-text);
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px var(--dark-shadow);
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .light-mode .copy-notification {
+            background: var(--light-card);
+            box-shadow: 0 5px 15px var(--light-shadow);
+        }
+        
+        .copy-notification.show {
+            transform: translateY(0);
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--dark-text);
+            opacity: 0.7;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .light-mode footer {
+            color: var(--light-text);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .footer-text {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-tools logo-icon"></i>
+                <div class="logo-text">
+                    <h1>Your Multi Tools</h1>
+                    <div class="domain">www.yourmultitools.space</div>
+                </div>
+            </div>
+            
+            <div class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon toggle-icon"></i>
+                <div class="toggle-text">Dark Mode</div>
+            </div>
+        </header>
+        
+        <main class="main-content">
+            <div class="tool-container">
+                <div class="tool-header">
+                    <h1>Remove Extra Spaces</h1>
+                    <p>Remove unnecessary spaces from your text to improve readability and meet formatting requirements. Clean up your text by eliminating leading/trailing spaces, duplicate spaces between words, and unnecessary line breaks.</p>
+                </div>
+                
+                <div class="tool-form">
+                    <div class="form-group">
+                        <label for="inputText">Input Text</label>
+                        <textarea id="inputText" class="form-control" placeholder="Paste your text here..."></textarea>
+                        <button class="copy-button" id="copyButton">Copy</button>
+                    </div>
+                    
+                    <div class="options">
+                        <div class="option-group">
+                            <label class="option-label">
+                                <input type="checkbox" id="removeExtraSpaces" checked>
+                                <span>Remove extra spaces between words</span>
+                            </label>
+                        </div>
+                        <div class="option-group">
+                            <label class="option-label">
+                                <input type="checkbox" id="removeLeadingTrailing" checked>
+                                <span>Remove leading/trailing spaces</span>
+                            </label>
+                        </div>
+                        <div class="option-group">
+                            <label class="option-label">
+                                <input type="checkbox" id="removeLineBreaks">
+                                <span>Remove unnecessary line breaks</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button id="processButton" class="button">Process Text <i class="fas fa-arrow-right"></i></button>
+                </div>
+                
+                <div class="result-container" id="resultContainer">
+                    <h3>Result</h3>
+                    <div class="form-group">
+                        <label for="outputText">Processed Text</label>
+                        <textarea id="outputText" class="form-control" readonly></textarea>
+                    </div>
+                    <button id="copyResultButton" class="button">Copy Result <i class="fas fa-copy"></i></button>
+                </div>
+            </div>
+        </main>
+        
+       <script>
+        // Create particles background
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size
+                const size = Math.random() * 20 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation duration
+                const duration = Math.random() * 20 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                
+                // Random animation delay
+                const delay = Math.random() * 5;
+                particle.style.animationDelay = `${delay}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const toggleIcon = themeToggle.querySelector('.toggle-icon');
+        const toggleText = themeToggle.querySelector('.toggle-text');
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            body.classList.add('light-mode');
+            toggleIcon.classList.replace('fa-moon', 'fa-sun');
+            toggleText.textContent = 'Light Mode';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                toggleIcon.classList.replace('fa-moon', 'fa-sun');
+                toggleText.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'light');
+            } else {
+                toggleIcon.classList.replace('fa-sun', 'fa-moon');
+                toggleText.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+        
+        // Text Processing Functionality
+        const inputText = document.getElementById('inputText');
+        const outputText = document.getElementById('outputText');
+        const processButton = document.getElementById('processButton');
+        const resultContainer = document.getElementById('resultContainer');
+        const copyButton = document.getElementById('copyButton');
+        const copyResultButton = document.getElementById('copyResultButton');
+        const copyNotification = document.getElementById('copyNotification');
+        
+        // Process text when button is clicked
+        processButton.addEventListener('click', () => {
+            let text = inputText.value;
+            
+            // Get selected options
+            const removeExtraSpaces = document.getElementById('removeExtraSpaces').checked;
+            const removeLeadingTrailing = document.getElementById('removeLeadingTrailing').checked;
+            const removeLineBreaks = document.getElementById('removeLineBreaks').checked;
+            
+            // Apply selected options
+            if (removeExtraSpaces) {
+                text = text.replace(/\s+/g, ' ');
+            }
+            
+            if (removeLeadingTrailing) {
+                text = text.trim();
+            }
+            
+            if (removeLineBreaks) {
+                text = text.replace(/\n{2,}/g, '\n');
+            }
+            
+            // Display result
+            outputText.value = text;
+            resultContainer.style.display = 'block';
+        });
+        
+        // Copy input text
+        copyButton.addEventListener('click', () => {
+            inputText.select();
+            document.execCommand('copy');
+            showCopyNotification();
+        });
+        
+        // Copy result text
+        copyResultButton.addEventListener('click', () => {
+            outputText.select();
+            document.execCommand('copy');
+            showCopyNotification();
+        });
+        
+        // Show copy notification
+        function showCopyNotification() {
+            copyNotification.classList.add('show');
+            setTimeout(() => {
+                copyNotification.classList.remove('show');
+            }, 2000);
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+        });
+    </script>
+</body>
+</html>
