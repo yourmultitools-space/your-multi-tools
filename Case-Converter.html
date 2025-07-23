@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Converter - Your Multi Tools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --dark-text: #f0f0f0;
+            --dark-accent: #4361ee;
+            --dark-secondary: #4cc9f0;
+            --dark-hover: #2a2a2a;
+            --dark-shadow: rgba(0, 0, 0, 0.5);
+            
+            --light-bg: #f8f9fa;
+            --light-card: #ffffff;
+            --light-text: #333333;
+            --light-accent: #4361ee;
+            --light-secondary: #3a86ff;
+            --light-hover: #f0f0f0;
+            --light-shadow: rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease, color 0.3s ease;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        body.light-mode {
+            background-color: var(--light-bg);
+            color: var(--light-text);
+        }
+        
+        /* Particles background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(67, 97, 238, 0.2);
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 20px;
+            position: relative;
+            z-index: 10;
+            flex-wrap: wrap;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--dark-secondary);
+        }
+        
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .logo-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+        
+        .logo-text .domain {
+            font-size: 0.9rem;
+            color: var(--dark-text);
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+        
+        .light-mode .logo-text .domain {
+            color: var(--light-text);
+        }
+        
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--dark-card);
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 15px var(--dark-shadow);
+        }
+        
+        .light-mode .theme-toggle {
+            background: var(--light-card);
+            box-shadow: 0 4px 15px var(--light-shadow);
+        }
+        
+        .toggle-icon {
+            font-size: 1.4rem;
+        }
+        
+        .toggle-text {
+            font-weight: 500;
+        }
+        
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 40px 20px 60px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .hero h2 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .light-mode .hero h2 {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            line-height: 1.7;
+            margin-bottom: 40px;
+            color: var(--dark-text);
+            opacity: 0.9;
+        }
+        
+        .light-mode .hero p {
+            color: var(--light-text);
+        }
+        
+        .search-box {
+            max-width: 700px;
+            margin: 0 auto 40px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 18px 25px 18px 60px;
+            border-radius: 50px;
+            border: 2px solid var(--dark-accent);
+            background: rgba(30, 30, 30, 0.7);
+            color: var(--dark-text);
+            font-size: 1.1rem;
+            box-shadow: 0 5px 25px rgba(67, 97, 238, 0.3);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .light-mode .search-box input {
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--light-text);
+            border: 2px solid var(--light-accent);
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--dark-secondary);
+            box-shadow: 0 5px 30px rgba(76, 201, 240, 0.5);
+        }
+        
+        .light-mode .search-box input:focus {
+            border-color: var(--light-secondary);
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--dark-accent);
+            font-size: 1.3rem;
+        }
+        
+        .light-mode .search-box i {
+            color: var(--light-accent);
+        }
+        
+        /* Main Content */
+        main {
+            padding: 40px 0;
+        }
+        
+        /* Case Converter Tool */
+        .case-converter-container {
+            background-color: var(--dark-card);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            transition: all 0.3s ease;
+        }
+        
+        .light-mode .case-converter-container {
+            background-color: var(--light-card);
+            box-shadow: 0 10px 30px var(--light-shadow);
+        }
+        
+        .case-converter-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(67, 97, 238, 0.4);
+        }
+        
+        .case-converter-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--dark-accent), var(--dark-secondary));
+        }
+        
+        .light-mode .case-converter-container::before {
+            background: linear-gradient(90deg, var(--light-accent), var(--light-secondary));
+        }
+        
+        .case-converter-title {
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--dark-text);
+            font-size: 2rem;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .light-mode .case-converter-title {
+            color: var(--light-text);
+        }
+        
+        .case-converter-description {
+            text-align: center;
+            color: var(--dark-text);
+            opacity: 0.8;
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+        
+        .light-mode .case-converter-description {
+            color: var(--light-text);
+        }
+        
+        .case-input-container {
+            margin-bottom: 30px;
+        }
+        
+        .case-input-label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--dark-text);
+            font-weight: 500;
+        }
+        
+        .case-input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid rgba(67, 97, 238, 0.3);
+            background: rgba(30, 30, 30, 0.7);
+            color: var(--dark-text);
+            font-size: 1rem;
+            min-height: 150px;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+        
+        .light-mode .case-input {
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--light-text);
+            border: 2px solid rgba(67, 97, 238, 0.2);
+        }
+        
+        .case-input:focus {
+            outline: none;
+            border-color: var(--dark-secondary);
+            box-shadow: 0 5px 15px rgba(76, 201, 240, 0.3);
+        }
+        
+        .light-mode .case-input:focus {
+            border-color: var(--light-secondary);
+        }
+        
+        .case-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .case-option {
+            padding: 10px 20px;
+            background: rgba(67, 97, 238, 0.15);
+            border: none;
+            border-radius: 50px;
+            color: var(--dark-text);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+        }
+        
+        .light-mode .case-option {
+            background: rgba(67, 97, 238, 0.08);
+            color: var(--light-text);
+        }
+        
+        .case-option:hover, .case-option.active {
+            background: rgba(67, 97, 238, 0.8);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
+        }
+        
+        .case-result-container {
+            margin-top: 30px;
+        }
+        
+        .case-result-label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--dark-text);
+            font-weight: 500;
+        }
+        
+        .case-result {
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid rgba(76, 201, 240, 0.3);
+            background: rgba(30, 30, 30, 0.7);
+            color: var(--dark-text);
+            font-size: 1rem;
+            min-height: 150px;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+        
+        .light-mode .case-result {
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--light-text);
+            border: 2px solid rgba(76, 201, 240, 0.2);
+        }
+        
+        .case-result:focus {
+            outline: none;
+            border-color: var(--dark-secondary);
+            box-shadow: 0 5px 15px rgba(76, 201, 240, 0.3);
+        }
+        
+        .case-result:empty {
+            color: var(--dark-text);
+            opacity: 0.6;
+            font-style: italic;
+        }
+        
+        .light-mode .case-result:empty {
+            color: var(--light-text);
+        }
+        
+        .copy-button {
+            display: block;
+            margin: 20px auto 10px;
+            padding: 12px 25px;
+            background: linear-gradient(45deg, var(--dark-accent), var(--dark-secondary));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .light-mode .copy-button {
+            background: linear-gradient(45deg, var(--light-accent), var(--light-secondary));
+        }
+        
+        .copy-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(67, 97, 238, 0.4);
+            gap: 15px;
+        }
+        
+        .copy-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--dark-card);
+            color: var(--dark-text);
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px var(--dark-shadow);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .light-mode .copy-notification {
+            background: var(--light-card);
+            box-shadow: 0 5px 15px var(--light-shadow);
+        }
+        
+        .copy-notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 60px 20px 40px;
+            color: var(--dark-text);
+            opacity: 0.7;
+            font-size: 1.1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 60px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .light-mode footer {
+            color: var(--light-text);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .footer-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+        
+        .light-mode .footer-logo {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+        
+        .footer-links a {
+            color: var(--dark-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            opacity: 0.8;
+        }
+        
+        .light-mode .footer-links a {
+            color: var(--light-text);
+        }
+        
+        .footer-links a:hover {
+            color: var(--dark-secondary);
+            opacity: 1;
+        }
+        
+        .light-mode .footer-links a:hover {
+            color: var(--light-secondary);
+        }
+        
+        .copyright {
+            margin-top: 20px;
+            font-size: 0.95rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .case-converter-container {
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .case-converter-title {
+                font-size: 1.8rem;
+            }
+            
+            .case-converter-description {
+                font-size: 1.1rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .logo-text h1 {
+                font-size: 1.6rem;
+            }
+            
+            .search-box {
+                max-width: 100%;
+            }
+            
+            .case-options {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .case-input, .case-result {
+                min-height: 120px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero h2 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .case-converter-title {
+                font-size: 1.5rem;
+            }
+            
+            .case-converter-description {
+                font-size: 1rem;
+            }
+            
+            .footer-logo {
+                font-size: 1.6rem;
+            }
+            
+            .footer-links {
+                gap: 15px;
+            }
+        }
+        
+        /* Link Added Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--dark-card);
+            color: var(--dark-text);
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px var(--dark-shadow);
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .light-mode .notification {
+            background: var(--light-card);
+            box-shadow: 0 5px 15px var(--light-shadow);
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span>All tool links have been added!</span>
+    </div>
+    
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-tools logo-icon"></i>
+                <div class="logo-text">
+                    <h1>Your Multi Tools</h1>
+                    <div class="domain">www.yourmultitools.space</div>
+                </div>
+            </div>
+            
+            <div class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon toggle-icon"></i>
+                <div class="toggle-text">Dark Mode</div>
+            </div>
+        </header>
+        
+        <section class="hero">
+            <h2>Case Converter</h2>
+            <p>Transform text between uppercase, lowercase, title case, sentence case and more with one click. Maintain consistent formatting across documents, code, and branding materials.</p>
+        </section>
+        
+        <main>
+            <div class="case-converter-container">
+                <h1 class="case-converter-title">Case Converter</h1>
+                <p class="case-converter-description">Convert text between different case formats with ease. Perfect for writers, programmers, and data analysts working with text normalization.</p>
+                
+                <div class="case-input-container">
+                    <label for="caseInput" class="case-input-label">Enter your text here:</label>
+                    <textarea id="caseInput" class="case-input" placeholder="Type or paste your text here..."></textarea>
+                </div>
+                
+                <div class="case-options">
+                    <button class="case-option" data-case="lowercase">Lowercase</button>
+                    <button class="case-option" data-case="uppercase">UPPERCASE</button>
+                    <button class="case-option" data-case="title">Title Case</button>
+                    <button class="case-option" data-case="sentence">Sentence case</button>
+                    <button class="case-option" data-case="camel">camelCase</button>
+                    <button class="case-option" data-case="pascal">PascalCase</button>
+                    <button class="case-option" data-case="snake">snake_case</button>
+                    <button class="case-option" data-case="kebab">kebab-case</button>
+                </div>
+                
+                <div class="case-result-container">
+                    <label for="caseResult" class="case-result-label">Result:</label>
+                    <textarea id="caseResult" class="case-result" readonly></textarea>
+                </div>
+                
+                <button id="copyButton" class="copy-button">Copy to Clipboard</button>
+            </div>
+        </main>
+        
+        <footer>
+            <div class="footer-logo">Your Multi Tools</div>
+            <div class="footer-links">
+                <a href="#"><i class="fas fa-home"></i> Home</a>
+                <a href="#"><i class="fas fa-info-circle"></i> About</a>
+                <a href="#"><i class="fas fa-envelope"></i> Contact</a>
+                <a href="#"><i class="fas fa-shield-alt"></i> Privacy Policy</a>
+                <a href="#"><i class="fas fa-file-contract"></i> Terms of Service</a>
+            </div>
+            <div class="copyright">
+                &copy; 2025 www.yourmultitools.space. All rights reserved.
+            </div>
+        </footer>
+    </div>
+    
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size
+                const size = Math.random() * 20 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation duration
+                const duration = Math.random() * 20 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                
+                // Random animation delay
+                const delay = Math.random() * 5;
+                particle.style.animationDelay = `${delay}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const toggleIcon = themeToggle.querySelector('.toggle-icon');
+        const toggleText = themeToggle.querySelector('.toggle-text');
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            body.classList.add('light-mode');
+            toggleIcon.classList.replace('fa-moon', 'fa-sun');
+            toggleText.textContent = 'Light Mode';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            if (body.classList.contains('light-mode')) {
+                toggleIcon.classList.replace('fa-moon', 'fa-sun');
+                toggleText.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'light');
+            } else {
+                toggleIcon.classList.replace('fa-sun', 'fa-moon');
+                toggleText.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+        
+        // Case Converter Functionality
+        const caseInput = document.getElementById('caseInput');
+        const caseResult = document.getElementById('caseResult');
+        const caseOptions = document.querySelectorAll('.case-option');
+        const copyButton = document.getElementById('copyButton');
+        const notification = document.getElementById('notification');
+        
+        // Set active state to the first option by default
+        caseOptions[0].classList.add('active');
+        
+        caseInput.addEventListener('input', () => {
+            if (caseResult.value === '') {
+                const selectedOption = document.querySelector('.case-option.active');
+                if (selectedOption) {
+                    convertCase(selectedOption.dataset.case, caseInput.value);
+                }
+            }
+        });
+        
+        caseOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                // Remove active class from all options
+                caseOptions.forEach(opt => opt.classList.remove('active'));
+                
+                // Add active class to clicked option
+                option.classList.add('active');
+                
+                // Convert text to selected case
+                convertCase(option.dataset.case, caseInput.value);
+            });
+        });
+        
+        function convertCase(caseType, text) {
+            if (!text) {
+                caseResult.value = '';
+                return;
+            }
+            
+            let result = '';
+            
+            switch (caseType) {
+                case 'lowercase':
+                    result = text.toLowerCase();
+                    break;
+                case 'uppercase':
+                    result = text.toUpperCase();
+                    break;
+                case 'title':
+                    // Title case (first letter of each word capitalized)
+                    result = text.split(' ').map(word => 
+                        word.length > 0 ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : word
+                    ).join(' ');
+                    break;
+                case 'sentence':
+                    // Sentence case (first letter of each sentence capitalized)
+                    result = text.split('. ').map(sentence => 
+                        sentence.length > 0 ? sentence.charAt(0).toUpperCase() + sentence.slice(1).toLowerCase() : sentence
+                    ).join('. ');
+                    // Handle other sentence endings
+                    result = result.split('! ').map(sentence => 
+                        sentence.length > 0 ? sentence.charAt(0).toUpperCase() + sentence.slice(1).toLowerCase() : sentence
+                    ).join('!');
+                    result = result.split('? ').map(sentence => 
+                        sentence.length > 0 ? sentence.charAt(0).toUpperCase() + sentence.slice(1).toLowerCase() : sentence
+                    ).join('?');
+                    break;
+                case 'camel':
+                    // camelCase (first letter of each word except first word capitalized, no spaces)
+                    result = text
+                        .toLowerCase()
+                        .split(' ')
+                        .map((word, index) => 
+                            index === 0 ? word : word.charAt(0).toUpperCase() + word.slice(1)
+                        )
+                        .join('');
+                    break;
+                case 'pascal':
+                    // PascalCase (first letter of each word capitalized, no spaces)
+                    result = text
+                        .toLowerCase()
+                        .split(' ')
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join('');
+                    break;
+                case 'snake':
+                    // snake_case (words separated by underscores)
+                    result = text
+                        .toLowerCase()
+                        .replace(/\s+/g, '_');
+                    break;
+                case 'kebab':
+                    // kebab-case (words separated by hyphens)
+                    result = text
+                        .toLowerCase()
+                        .replace(/\s+/g, '-');
+                    break;
+                default:
+                    result = text;
+            }
+            
+            caseResult.value = result;
+        }
+        
+        copyButton.addEventListener('click', () => {
+            caseResult.select();
+            document.execCommand('copy');
+            
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 2000);
+        });
+        
+        // Link Added Notification
+        const linkNotification = document.getElementById('notification');
+        
+        // Show notification that links are added
+        linkNotification.classList.add('show');
+        setTimeout(() => {
+            linkNotification.classList.remove('show');
+        }, 3000);
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            
+            // Add hover effect to case options
+            caseOptions.forEach(option => {
+                option.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-3px)';
+                });
+                
+                option.addEventListener('mouseleave', function() {
+                    if (!this.classList.contains('active')) {
+                        this.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
