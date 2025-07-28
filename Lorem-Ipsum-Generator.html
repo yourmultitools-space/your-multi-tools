@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lorem Ipsum Generator | Your Multi Tools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --dark-text: #f0f0f0;
+            --dark-accent: #4361ee;
+            --dark-secondary: #4cc9f0;
+            --dark-hover: #2a2a2a;
+            --dark-shadow: rgba(0, 0, 0, 0.5);
+            
+            --light-bg: #f8f9fa;
+            --light-card: #ffffff;
+            --light-text: #333333;
+            --light-accent: #4361ee;
+            --light-secondary: #3a86ff;
+            --light-hover: #f0f0f0;
+            --light-shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease, color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body.light-mode {
+            background-color: var(--light-bg);
+            color: var(--light-text);
+        }
+
+        /* Particles background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(67, 97, 238, 0.2);
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 20px;
+            position: relative;
+            z-index: 10;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--dark-secondary);
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .logo-text .domain {
+            font-size: 0.9rem;
+            color: var(--dark-text);
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .logo-text .domain {
+            color: var(--light-text);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--dark-card);
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 15px var(--dark-shadow);
+        }
+
+        .light-mode .theme-toggle {
+            background: var(--light-card);
+            box-shadow: 0 4px 15px var(--light-shadow);
+        }
+
+        .toggle-icon {
+            font-size: 1.4rem;
+        }
+
+        .toggle-text {
+            font-weight: 500;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 40px 20px 30px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero h2 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .light-mode .hero h2 {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            margin-bottom: 30px;
+            color: var(--dark-text);
+            opacity: 0.9;
+        }
+
+        .light-mode .hero p {
+            color: var(--light-text);
+        }
+
+        /* Tool Container */
+        .tool-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto 50px;
+        }
+
+        @media (min-width: 992px) {
+            .tool-container {
+                grid-template-columns: 300px 1fr;
+            }
+        }
+
+        .tool-options {
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            border: 1px solid rgba(76, 201, 240, 0.1);
+            height: fit-content;
+        }
+
+        .light-mode .tool-options {
+            background: var(--light-card);
+            box-shadow: 0 10px 30px var(--light-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .tool-options h3 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: var(--dark-secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .light-mode .tool-options h3 {
+            color: var(--light-secondary);
+        }
+
+        .tool-options h3 i {
+            font-size: 1.3rem;
+        }
+
+        .options-group {
+            margin-bottom: 30px;
+        }
+
+        .options-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 8px 0;
+        }
+
+        .option-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .option-item input[type="checkbox"],
+        .option-item input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 12px;
+            cursor: pointer;
+        }
+
+        .option-item label {
+            font-size: 1.1rem;
+            cursor: pointer;
+            user-select: none;
+            flex: 1;
+        }
+
+        .number-input-group {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            background: rgba(30, 30, 30, 0.5);
+            border-radius: 10px;
+            padding: 8px 15px;
+        }
+
+        .light-mode .number-input-group {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .number-input-group input {
+            width: 80px;
+            padding: 8px 12px;
+            background: rgba(30, 30, 30, 0.8);
+            border: 1px solid var(--dark-accent);
+            border-radius: 8px;
+            color: var(--dark-text);
+            font-size: 1rem;
+            margin-right: 15px;
+        }
+
+        .light-mode .number-input-group input {
+            background: rgba(255, 255, 255, 0.8);
+            color: var(--light-text);
+            border: 1px solid var(--light-accent);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            font-size: 0.95rem;
+        }
+
+        .radio-group input[type="radio"] {
+            margin-right: 5px;
+        }
+
+        .tool-results {
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            border: 1px solid rgba(76, 201, 240, 0.1);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .light-mode .tool-results {
+            background: var(--light-card);
+            box-shadow: 0 10px 30px var(--light-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .result-header h3 {
+            font-size: 1.4rem;
+            color: var(--dark-secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .light-mode .result-header h3 {
+            color: var(--light-secondary);
+        }
+
+        .result-header h3 i {
+            font-size: 1.3rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            background: rgba(67, 97, 238, 0.15);
+            border: none;
+            border-radius: 8px;
+            color: var(--dark-text);
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .light-mode .action-btn {
+            background: rgba(67, 97, 238, 0.08);
+            color: var(--light-text);
+        }
+
+        .action-btn:hover {
+            background: rgba(67, 97, 238, 0.8);
+            color: white;
+        }
+
+        .result-content {
+            flex: 1;
+            background: rgba(30, 30, 30, 0.5);
+            border-radius: 15px;
+            padding: 25px;
+            overflow: auto;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            border: 1px solid rgba(76, 201, 240, 0.1);
+        }
+
+        .light-mode .result-content {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .result-content p {
+            margin-bottom: 15px;
+        }
+
+        .result-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px 30px;
+            color: var(--dark-text);
+            opacity: 0.7;
+            font-size: 1.1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+        }
+
+        .light-mode footer {
+            color: var(--light-text);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .footer-logo {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--dark-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            opacity: 0.8;
+            font-size: 0.95rem;
+        }
+
+        .light-mode .footer-links a {
+            color: var(--light-text);
+        }
+
+        .footer-links a:hover {
+            color: var(--dark-secondary);
+            opacity: 1;
+        }
+
+        .light-mode .footer-links a:hover {
+            color: var(--light-secondary);
+        }
+
+        .copyright {
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+        
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--dark-card);
+            color: var(--dark-text);
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .light-mode .notification {
+            background: var(--light-card);
+            color: var(--light-text);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 2.3rem;
+            }
+            
+            .logo-text h1 {
+                font-size: 1.6rem;
+            }
+            
+            .tool-options, .tool-results {
+                padding: 25px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .tool-container {
+                gap: 20px;
+            }
+            
+            .action-buttons {
+                flex-wrap: wrap;
+            }
+            
+            .result-content {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .footer-links {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText">Text copied to clipboard!</span>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-tools logo-icon"></i>
+                <div class="logo-text">
+                    <h1>Your Multi Tools</h1>
+                    <div class="domain">www.yourmultitools.space</div>
+                </div>
+            </div>
+            
+            <div class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon toggle-icon"></i>
+                <div class="toggle-text">Dark Mode</div>
+            </div>
+        </header>
+        
+        <section class="hero">
+            <h2>Lorem Ipsum Generator</h2>
+            <p>Create placeholder text for your designs and mockups. Customize your dummy text with various sources and formatting options.</p>
+        </section>
+        
+        <div class="tool-container">
+            <div class="tool-options">
+                <h3><i class="fas fa-font"></i> Dummy Text</h3>
+                <div class="options-group">
+                    <div class="option-item">
+                        <input type="radio" id="lorem" name="textSource" value="lorem" checked>
+                        <label for="lorem">Lorem ipsum</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" id="cicero" name="textSource" value="cicero">
+                        <label for="cicero">Cicero</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" id="cicero-en" name="textSource" value="cicero-en">
+                        <label for="cicero-en">Cicero (en)</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" id="europan" name="textSource" value="europan">
+                        <label for="europan">Li Europan lingues</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" id="europan-en" name="textSource" value="europan-en">
+                        <label for="europan-en">Li Europan lingues (en)</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" id="faraway" name="textSource" value="faraway">
+                        <label for="faraway">Far far away</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" id="werther" name="textSource" value="werther">
+                        <label for="werther">Werther</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" id="kafka" name="textSource" value="kafka">
+                        <label for="kafka">Kafka</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" id="pangram" name="textSource" value="pangram">
+                        <label for="pangram">Pangram</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" id="alphanum" name="textSource" value="alphanum">
+                        <label for="alphanum">a-z A-Z 123</label>
+                    </div>
+                </div>
+                
+                <h3><i class="fas fa-hashtag"></i> Number</h3>
+                <div class="options-group">
+                    <div class="number-input-group">
+                        <input type="number" id="wordCount" value="200" min="1">
+                        <div class="radio-group">
+                            <label><input type="radio" name="unit" value="words" checked> Words</label>
+                            <label><input type="radio" name="unit" value="chars"> Characters</label>
+                        </div>
+                    </div>
+                    <div class="option-item" style="margin-top: 15px;">
+                        <input type="checkbox" id="paragraphs">
+                        <label for="paragraphs">Paragraphs</label>
+                    </div>
+                </div>
+                
+                <h3><i class="fas fa-eye"></i> Display</h3>
+                <div class="options-group">
+                    <div class="option-item">
+                        <input type="checkbox" id="paragraphTags">
+                        <label for="paragraphTags">Display &lt;p&gt; tags</label>
+                    </div>
+                </div>
+                
+                <button id="generateBtn" class="action-btn" style="width: 100%; margin-top: 20px; justify-content: center;">
+                    <i class="fas fa-bolt"></i> Generate Text
+                </button>
+            </div>
+            
+            <div class="tool-results">
+                <div class="result-header">
+                    <h3><i class="fas fa-file-alt"></i> Generated Text</h3>
+                    <div class="action-buttons">
+                        <button id="copyBtn" class="action-btn">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                </div>
+                <div class="result-content" id="output">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.</p>
+                    <p>Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.</p>
+                    <p>Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.</p>
+                </div>
+            </div>
+        </div>
+           
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size
+                const size = Math.random() * 15 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation duration
+                const duration = Math.random() * 20 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                
+                // Random animation delay
+                const delay = Math.random() * 5;
+                particle.style.animationDelay = `${delay}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const toggleIcon = themeToggle.querySelector('.toggle-icon');
+        const toggleText = themeToggle.querySelector('.toggle-text');
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            body.classList.add('light-mode');
+            toggleIcon.classList.replace('fa-moon', 'fa-sun');
+            toggleText.textContent = 'Light Mode';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                toggleIcon.classList.replace('fa-moon', 'fa-sun');
+                toggleText.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'light');
+            } else {
+                toggleIcon.classList.replace('fa-sun', 'fa-moon');
+                toggleText.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+        
+        // Lorem Ipsum Generator
+        const generateBtn = document.getElementById('generateBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const output = document.getElementById('output');
+        const notification = document.getElementById('notification');
+        const notificationText = document.getElementById('notificationText');
+        
+        // Text sources
+        const textSources = {
+            lorem: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.",
+            cicero: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.",
+            "cicero-en": "But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness.",
+            europan: "Li Europan lingues es membres del sam familie. Lor separat existentie es un myth. Por scientie, musica, sport etc, litot Europa usa li sam vocabular. Li lingues differe solmen in li grammatica, li pronunciation e li plu commun vocabules.",
+            "europan-en": "The European languages are members of the same family. Their separate existence is a myth. For science, music, sport, etc, Europe uses the same vocabulary. The languages only differ in their grammar, their pronunciation and their most common words.",
+            faraway: "Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.",
+            werther: "A wonderful serenity has taken possession of my entire soul, like these sweet mornings of spring which I enjoy with my whole heart. I am alone, and feel the charm of existence in this spot.",
+            kafka: "One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly.",
+            pangram: "The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How vexingly quick daft zebras jump! Sphinx of black quartz, judge my vow. Waltz, nymph, for quick jigs vex Bud.",
+            alphanum: "a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 1 2 3 4 5 6 7 8 9 0"
+        };
+        
+        // Generate Lorem Ipsum text
+        function generateLoremIpsum() {
+            // Get selected text source
+            const selectedSource = document.querySelector('input[name="textSource"]:checked').value;
+            const baseText = textSources[selectedSource];
+            
+            // Get unit and count
+            const isParagraphs = document.getElementById('paragraphs').checked;
+            const unit = isParagraphs ? 'paragraphs' : document.querySelector('input[name="unit"]:checked').value;
+            let count = parseInt(document.getElementById('wordCount').value) || 200;
+            
+            // Generate text based on unit
+            let generatedText = '';
+            
+            if (unit === 'words') {
+                generatedText = generateByWords(baseText, count);
+            } else if (unit === 'chars') {
+                generatedText = generateByCharacters(baseText, count);
+            } else if (unit === 'paragraphs') {
+                generatedText = generateByParagraphs(baseText, count);
+            }
+            
+            // Apply paragraph tags if needed
+            const useParagraphTags = document.getElementById('paragraphTags').checked;
+            
+            if (useParagraphTags) {
+                if (unit === 'paragraphs') {
+                    // Wrap each paragraph in <p> tags
+                    const paragraphs = generatedText.split('\n\n');
+                    generatedText = paragraphs.map(p => `<p>${p}</p>`).join('');
+                } else {
+                    // Wrap entire text in a single <p> tag
+                    generatedText = `<p>${generatedText}</p>`;
+                }
+            } else {
+                if (unit === 'paragraphs') {
+                    // Convert to plain text with line breaks
+                    generatedText = generatedText.replace(/\n\n/g, '<br><br>');
+                }
+            }
+            
+            // Update output
+            output.innerHTML = generatedText;
+        }
+        
+        // Generate text by word count
+        function generateByWords(baseText, wordCount) {
+            const words = baseText.split(/\s+/);
+            let result = [];
+            
+            // If we need more words than in the base text, repeat the base text
+            while (result.length < wordCount) {
+                result = result.concat(words);
+            }
+            
+            // Trim to exact word count
+            result = result.slice(0, wordCount);
+            
+            return result.join(' ');
+        }
+        
+        // Generate text by character count
+        function generateByCharacters(baseText, charCount) {
+            let result = '';
+            
+            // If we need more characters than in the base text, repeat the base text
+            while (result.length < charCount) {
+                result += baseText + ' ';
+            }
+            
+            // Trim to exact character count
+            return result.substring(0, charCount);
+        }
+        
+        // Generate text by paragraph count
+        function generateByParagraphs(baseText, paragraphCount) {
+            let result = [];
+            
+            // Generate the requested number of paragraphs
+            for (let i = 0; i < paragraphCount; i++) {
+                // Generate 3-7 sentences per paragraph
+                const sentenceCount = Math.floor(Math.random() * 5) + 3;
+                let paragraph = '';
+                
+                for (let j = 0; j < sentenceCount; j++) {
+                    // Take a random sentence from the base text
+                    const sentences = baseText.split(/[.!?]/).filter(s => s.trim().length > 0);
+                    const randomSentence = sentences[Math.floor(Math.random() * sentences.length)].trim();
+                    
+                    paragraph += (j === 0 ? '' : ' ') + randomSentence + '.';
+                }
+                
+                result.push(paragraph);
+            }
+            
+            return result.join('\n\n');
+        }
+        
+        // Copy text to clipboard
+        function copyToClipboard() {
+            // Create a temporary textarea to copy from
+            const textarea = document.createElement('textarea');
+            textarea.value = output.innerText || output.textContent;
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    notificationText.textContent = "Text copied to clipboard!";
+                } else {
+                    notificationText.textContent = "Failed to copy text!";
+                }
+            } catch (err) {
+                notificationText.textContent = "Failed to copy text!";
+            }
+            
+            document.body.removeChild(textarea);
+            
+            // Show notification
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Event listeners
+        generateBtn.addEventListener('click', generateLoremIpsum);
+        copyBtn.addEventListener('click', copyToClipboard);
+        
+        // Toggle paragraph options when checkbox is changed
+        document.getElementById('paragraphs').addEventListener('change', function() {
+            const wordCountInput = document.getElementById('wordCount');
+            const wordRadios = document.querySelectorAll('input[name="unit"]');
+            
+            if (this.checked) {
+                wordCountInput.value = 3;
+                wordRadios.forEach(radio => {
+                    radio.disabled = true;
+                });
+            } else {
+                wordCountInput.value = 200;
+                wordRadios.forEach(radio => {
+                    radio.disabled = false;
+                });
+            }
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            generateLoremIpsum();
+        });
+    </script>
+</body>
+</html>
