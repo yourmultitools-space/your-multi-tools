@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morse Code Converter - Your Multi Tools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --dark-text: #f0f0f0;
+            --dark-accent: #4361ee;
+            --dark-secondary: #4cc9f0;
+            --dark-hover: #2a2a2a;
+            --dark-shadow: rgba(0, 0, 0, 0.5);
+            
+            --light-bg: #f8f9fa;
+            --light-card: #ffffff;
+            --light-text: #333333;
+            --light-accent: #4361ee;
+            --light-secondary: #3a86ff;
+            --light-hover: #f0f0f0;
+            --light-shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease, color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body.light-mode {
+            background-color: var(--light-bg);
+            color: var(--light-text);
+        }
+
+        /* Particles background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(67, 97, 238, 0.2);
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+            width: 100%;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 20px;
+            position: relative;
+            z-index: 10;
+            flex-wrap: wrap;
+            background: rgba(0, 0, 0, 0.4);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--dark-secondary);
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .logo-text .domain {
+            font-size: 0.9rem;
+            color: var(--dark-text);
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .logo-text .domain {
+            color: var(--light-text);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--dark-card);
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 15px var(--dark-shadow);
+        }
+
+        .light-mode .theme-toggle {
+            background: var(--light-card);
+            box-shadow: 0 4px 15px var(--light-shadow);
+        }
+
+        .toggle-icon {
+            font-size: 1.4rem;
+        }
+
+        .toggle-text {
+            font-weight: 500;
+        }
+
+        /* Tool Title */
+        .tool-header {
+            text-align: center;
+            padding: 40px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .tool-header h2 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .light-mode .tool-header h2 {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tool-header p {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            color: var(--dark-text);
+            opacity: 0.9;
+        }
+
+        .light-mode .tool-header p {
+            color: var(--light-text);
+        }
+
+        /* Converter Container */
+        .converter-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .converter-section {
+            flex: 1;
+            min-width: 300px;
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(76, 201, 240, 0.1);
+        }
+
+        .light-mode .converter-section {
+            background: var(--light-card);
+            box-shadow: 0 10px 30px var(--light-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .converter-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--dark-accent), var(--dark-secondary));
+        }
+
+        .light-mode .converter-section::before {
+            background: linear-gradient(90deg, var(--light-accent), var(--light-secondary));
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .section-icon {
+            font-size: 2rem;
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .section-icon {
+            color: var(--light-secondary);
+        }
+
+        .section-title h3 {
+            font-size: 1.5rem;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--dark-text);
+            font-size: 1.1rem;
+            resize: vertical;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .light-mode textarea {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--light-text);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--dark-secondary);
+            box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.3);
+        }
+
+        .light-mode textarea:focus {
+            border-color: var(--light-secondary);
+            box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.3);
+        }
+
+        /* Buttons */
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            flex: 1;
+            min-width: 150px;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #4d9de0;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        button:hover {
+            background: #3a7dbd;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .play-btn {
+            background: #4CAF50;
+        }
+        
+        .play-btn:hover {
+            background: #3d8b40;
+        }
+        
+        .copy-btn {
+            background: #FF9800;
+        }
+        
+        .copy-btn:hover {
+            background: #e68a00;
+        }
+        
+        .clear-btn {
+            background: #f44336;
+        }
+        
+        .clear-btn:hover {
+            background: #d32f2f;
+        }
+
+        /* Morse Reference */
+        .morse-reference {
+            background: rgba(30, 30, 30, 0.7);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 40px auto;
+            max-width: 1000px;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            border: 1px solid rgba(76, 201, 240, 0.2);
+        }
+
+        .light-mode .morse-reference {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .reference-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .reference-header h3 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .light-mode .reference-header h3 {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .reference-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 15px;
+        }
+
+        .reference-item {
+            background: rgba(67, 97, 238, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .light-mode .reference-item {
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        .reference-item:hover {
+            transform: translateY(-5px);
+            background: rgba(67, 97, 238, 0.2);
+        }
+
+        .light-mode .reference-item:hover {
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        .reference-char {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .reference-char {
+            color: var(--light-secondary);
+        }
+
+        .reference-code {
+            font-family: monospace;
+            font-size: 1.1rem;
+            color: var(--dark-text);
+            opacity: 0.9;
+        }
+
+        .light-mode .reference-code {
+            color: var(--light-text);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--dark-text);
+            opacity: 0.7;
+            font-size: 1.1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+        }
+
+        .light-mode footer {
+            color: var(--light-text);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .footer-logo {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--dark-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .light-mode .footer-links a {
+            color: var(--light-text);
+        }
+
+        .footer-links a:hover {
+            color: var(--dark-secondary);
+            opacity: 1;
+        }
+
+        .light-mode .footer-links a:hover {
+            color: var(--light-secondary);
+        }
+
+        .copyright {
+            margin-top: 20px;
+            font-size: 0.95rem;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--dark-card);
+            color: var(--dark-text);
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .light-mode .notification {
+            background: var(--light-card);
+            color: var(--light-text);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .tool-header h2 {
+                font-size: 2.2rem;
+            }
+            
+            .converter-section {
+                min-width: 100%;
+            }
+            
+            .reference-grid {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            }
+        }
+
+        @media (max-width: 576px) {
+            .tool-header h2 {
+                font-size: 1.8rem;
+            }
+            
+            .tool-header p {
+                font-size: 1rem;
+            }
+            
+            .section-title h3 {
+                font-size: 1.3rem;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Particle background container -->
+    <div class="particles" id="particles"></div>
+    
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span>Copied to clipboard!</span>
+    </div>
+
+    <header>
+        <div class="logo">
+            <i class="fas fa-tools logo-icon"></i>
+            <div class="logo-text">
+                <h1>Your Multi Tools</h1>
+                <div class="domain">www.yourmultitools.space</div>
+            </div>
+        </div>
+        
+        <div class="theme-toggle" id="themeToggle">
+            <i class="fas fa-moon toggle-icon"></i>
+            <div class="toggle-text">Dark Mode</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="tool-header">
+            <h2>Morse Code Converter</h2>
+            <p>Translate text to Morse code and vice versa instantly. Listen to the audio representation of Morse code or copy it to your clipboard.</p>
+        </div>
+
+        <div class="converter-container">
+            <div class="converter-section">
+                <div class="section-title">
+                    <i class="fas fa-keyboard section-icon"></i>
+                    <h3>Text Input</h3>
+                </div>
+                <textarea id="textInput" placeholder="Enter your text here..."></textarea>
+                <div class="btn-group">
+                    <button id="toMorseBtn" class="convert-btn">
+                        <i class="fas fa-exchange-alt"></i>
+                        Convert to Morse
+                    </button>
+                    <button id="clearTextBtn" class="clear-btn">
+                        <i class="fas fa-eraser"></i>
+                        Clear
+                    </button>
+                </div>
+            </div>
+
+            <div class="converter-section">
+                <div class="section-title">
+                    <i class="fas fa-wifi section-icon"></i>
+                    <h3>Morse Code</h3>
+                </div>
+                <textarea id="morseOutput" placeholder="Morse code will appear here..." readonly></textarea>
+                <div class="btn-group">
+                    <button id="toTextBtn" class="convert-btn">
+                        <i class="fas fa-exchange-alt"></i>
+                        Convert to Text
+                    </button>
+                    <button id="playBtn" class="play-btn">
+                        <i class="fas fa-play"></i>
+                        Play Morse
+                    </button>
+                    <button id="copyBtn" class="copy-btn">
+                        <i class="fas fa-copy"></i>
+                        Copy
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="morse-reference">
+            <div class="reference-header">
+                <h3>Morse Code Reference</h3>
+                <p>International Morse code alphabet reference</p>
+            </div>
+            <div class="reference-grid" id="referenceGrid">
+                <!-- Morse code reference will be generated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size
+                const size = Math.random() * 20 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation duration
+                const duration = Math.random() * 20 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                
+                // Random animation delay
+                const delay = Math.random() * 5;
+                particle.style.animationDelay = `${delay}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Morse code dictionary
+        const morseCode = {
+            'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 
+            'F': '..-.', 'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 
+            'K': '-.-', 'L': '.-..', 'M': '--', 'N': '-.', 'O': '---', 
+            'P': '.--.', 'Q': '--.-', 'R': '.-.', 'S': '...', 'T': '-', 
+            'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-', 'Y': '-.--', 
+            'Z': '--..', 
+            '1': '.----', '2': '..---', '3': '...--', '4': '....-', 
+            '5': '.....', '6': '-....', '7': '--...', '8': '---..', 
+            '9': '----.', '0': '-----', 
+            '.': '.-.-.-', ',': '--..--', '?': '..--..', "'": '.----.', 
+            '!': '-.-.--', '/': '-..-.', '(': '-.--.', ')': '-.--.-', 
+            '&': '.-...', ':': '---...', ';': '-.-.-.', '=': '-...-', 
+            '+': '.-.-.', '-': '-....-', '_': '..--.-', '"': '.-..-.', 
+            '$': '...-..-', '@': '.--.-.', ' ': '/'
+        };
+
+        // DOM Elements
+        const textInput = document.getElementById('textInput');
+        const morseOutput = document.getElementById('morseOutput');
+        const toMorseBtn = document.getElementById('toMorseBtn');
+        const toTextBtn = document.getElementById('toTextBtn');
+        const playBtn = document.getElementById('playBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const clearTextBtn = document.getElementById('clearTextBtn');
+        const notification = document.getElementById('notification');
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const toggleIcon = themeToggle.querySelector('.toggle-icon');
+        const toggleText = themeToggle.querySelector('.toggle-text');
+        const referenceGrid = document.getElementById('referenceGrid');
+
+        // Create reference table
+        function createReferenceTable() {
+            for (const [char, code] of Object.entries(morseCode)) {
+                const referenceItem = document.createElement('div');
+                referenceItem.className = 'reference-item';
+                
+                const referenceChar = document.createElement('div');
+                referenceChar.className = 'reference-char';
+                referenceChar.textContent = char === ' ' ? 'SPACE' : char;
+                
+                const referenceCode = document.createElement('div');
+                referenceCode.className = 'reference-code';
+                referenceCode.textContent = code;
+                
+                referenceItem.appendChild(referenceChar);
+                referenceItem.appendChild(referenceCode);
+                referenceGrid.appendChild(referenceItem);
+            }
+        }
+
+        // Convert text to Morse code
+        function textToMorse(text) {
+            return text.toUpperCase().split('').map(char => {
+                return morseCode[char] || char;
+            }).join(' ');
+        }
+
+        // Convert Morse code to text
+        function morseToText(morse) {
+            const morseWords = morse.split(' / ');
+            return morseWords.map(word => {
+                return word.split(' ').map(code => {
+                    return Object.keys(morseCode).find(key => morseCode[key] === code) || code;
+                }).join('');
+            }).join(' ');
+        }
+
+        // Play Morse code as audio
+        function playMorseCode() {
+            if (!morseOutput.value) return;
+            
+            const morseString = morseOutput.value;
+            const context = new (window.AudioContext || window.webkitAudioContext)();
+            let time = context.currentTime;
+            
+            // Create oscillator
+            const oscillator = context.createOscillator();
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(600, time);
+            
+            // Create gain node for volume control
+            const gainNode = context.createGain();
+            gainNode.gain.setValueAtTime(0, time);
+            
+            // Connect nodes
+            oscillator.connect(gainNode);
+            gainNode.connect(context.destination);
+            oscillator.start();
+            
+            // Play each symbol in the Morse code
+            for (const symbol of morseString) {
+                if (symbol === '.') {
+                    // Dot: 1 unit duration
+                    gainNode.gain.setValueAtTime(1, time);
+                    time += 0.1;
+                    gainNode.gain.setValueAtTime(0, time);
+                    time += 0.1; // Space between symbols
+                } else if (symbol === '-') {
+                    // Dash: 3 units duration
+                    gainNode.gain.setValueAtTime(1, time);
+                    time += 0.3;
+                    gainNode.gain.setValueAtTime(0, time);
+                    time += 0.1; // Space between symbols
+                } else if (symbol === ' ') {
+                    // Space between letters: 3 units (total 1 + 3 = 4 units)
+                    time += 0.2;
+                } else if (symbol === '/') {
+                    // Space between words: 7 units (total 1 + 7 = 8 units)
+                    time += 0.6;
+                }
+            }
+            
+            // Stop oscillator when done
+            oscillator.stop(time + 0.1);
+        }
+
+        // Copy Morse code to clipboard
+        function copyToClipboard() {
+            if (!morseOutput.value) return;
+            
+            morseOutput.select();
+            document.execCommand('copy');
+            
+            // Show notification
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 2000);
+        }
+
+        // Clear text input
+        function clearText() {
+            textInput.value = '';
+            textInput.focus();
+        }
+
+        // Initialize the application
+        function init() {
+            createParticles();
+            createReferenceTable();
+            
+            // Event listeners
+            toMorseBtn.addEventListener('click', () => {
+                const text = textInput.value;
+                if (text) {
+                    morseOutput.value = textToMorse(text);
+                }
+            });
+            
+            toTextBtn.addEventListener('click', () => {
+                const morse = morseOutput.value;
+                if (morse) {
+                    textInput.value = morseToText(morse);
+                }
+            });
+            
+            playBtn.addEventListener('click', playMorseCode);
+            copyBtn.addEventListener('click', copyToClipboard);
+            clearTextBtn.addEventListener('click', clearText);
+            
+            // Theme toggle
+            themeToggle.addEventListener('click', () => {
+                body.classList.toggle('light-mode');
+                
+                if (body.classList.contains('light-mode')) {
+                    toggleIcon.classList.replace('fa-moon', 'fa-sun');
+                    toggleText.textContent = 'Light Mode';
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    toggleIcon.classList.replace('fa-sun', 'fa-moon');
+                    toggleText.textContent = 'Dark Mode';
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
+            
+            // Check for saved theme preference
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                body.classList.add('light-mode');
+                toggleIcon.classList.replace('fa-moon', 'fa-sun');
+                toggleText.textContent = 'Light Mode';
+            }
+        }
+
+        // Start the application
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
