@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Summarizer - Your Multi Tools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --dark-text: #f0f0f0;
+            --dark-accent: #4361ee;
+            --dark-secondary: #4cc9f0;
+            --dark-hover: #2a2a2a;
+            --dark-shadow: rgba(0, 0, 0, 0.5);
+            
+            --light-bg: #f8f9fa;
+            --light-card: #ffffff;
+            --light-text: #333333;
+            --light-accent: #4361ee;
+            --light-secondary: #3a86ff;
+            --light-hover: #f0f0f0;
+            --light-shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease, color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body.light-mode {
+            background-color: var(--light-bg);
+            color: var(--light-text);
+        }
+
+        /* Particles background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(67, 97, 238, 0.2);
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 20px;
+            position: relative;
+            z-index: 10;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--dark-secondary);
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .logo-text .domain {
+            font-size: 0.9rem;
+            color: var(--dark-text);
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .logo-text .domain {
+            color: var(--light-text);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--dark-card);
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 15px var(--dark-shadow);
+        }
+
+        .light-mode .theme-toggle {
+            background: var(--light-card);
+            box-shadow: 0 4px 15px var(--light-shadow);
+        }
+
+        .toggle-icon {
+            font-size: 1.4rem;
+        }
+
+        .toggle-text {
+            font-weight: 500;
+        }
+
+        /* Tool Header */
+        .tool-header {
+            text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 30px;
+        }
+
+        .tool-header h2 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .light-mode .tool-header h2 {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tool-header p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        /* Tool Container */
+        .tool-container {
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            margin-bottom: 40px;
+            border: 1px solid rgba(76, 201, 240, 0.1);
+        }
+
+        .light-mode .tool-container {
+            background: var(--light-card);
+            box-shadow: 0 10px 30px var(--light-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .tool-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--dark-accent), var(--dark-secondary));
+            border-radius: 20px 20px 0 0;
+        }
+
+        .light-mode .tool-container::before {
+            background: linear-gradient(90deg, var(--light-accent), var(--light-secondary));
+        }
+
+        .input-section, .output-section {
+            margin-bottom: 30px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 250px;
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(30, 30, 30, 0.7);
+            color: var(--dark-text);
+            font-size: 1.1rem;
+            border: 2px solid transparent;
+            resize: vertical;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .light-mode textarea {
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--light-text);
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--dark-secondary);
+            box-shadow: 0 5px 20px rgba(76, 201, 240, 0.3);
+        }
+
+        .light-mode textarea:focus {
+            border-color: var(--light-secondary);
+        }
+
+        .output-section textarea {
+            background: rgba(30, 30, 30, 0.9);
+        }
+
+        .light-mode .output-section textarea {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 25px 0;
+            align-items: center;
+        }
+
+        .option-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .option-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        select, input[type="range"] {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 10px;
+            background: rgba(30, 30, 30, 0.7);
+            color: var(--dark-text);
+            border: 1px solid rgba(76, 201, 240, 0.3);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .light-mode select, .light-mode input[type="range"] {
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--light-text);
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--dark-secondary);
+        }
+
+        .light-mode select:focus {
+            border-color: var(--light-secondary);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: 180px;
+            padding: 15px 25px;
+            border-radius: 50px;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--dark-accent), var(--dark-secondary));
+            color: white;
+            box-shadow: 0 5px 20px rgba(67, 97, 238, 0.4);
+        }
+
+        .light-mode .btn-primary {
+            background: linear-gradient(45deg, var(--light-accent), var(--light-secondary));
+        }
+
+        .btn-secondary {
+            background: rgba(30, 30, 30, 0.7);
+            color: var(--dark-text);
+            border: 1px solid var(--dark-secondary);
+        }
+
+        .light-mode .btn-secondary {
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--light-text);
+            border: 1px solid var(--light-secondary);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.5);
+        }
+
+        /* Stats Section */
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: rgba(30, 30, 30, 0.5);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            min-width: 150px;
+            border: 1px solid rgba(76, 201, 240, 0.2);
+        }
+
+        .light-mode .stat-card {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .stat-value {
+            color: var(--light-secondary);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 60px 20px 40px;
+            color: var(--dark-text);
+            opacity: 0.7;
+            font-size: 1.1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+        }
+
+        .light-mode footer {
+            color: var(--light-text);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .footer-logo {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--dark-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .light-mode .footer-links a {
+            color: var(--light-text);
+        }
+
+        .footer-links a:hover {
+            color: var(--dark-secondary);
+            opacity: 1;
+        }
+
+        .light-mode .footer-links a:hover {
+            color: var(--light-secondary);
+        }
+
+        .copyright {
+            margin-top: 20px;
+            font-size: 0.95rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .tool-header h2 {
+                font-size: 2.3rem;
+            }
+            
+            .logo-text h1 {
+                font-size: 1.6rem;
+            }
+            
+            .tool-container {
+                padding: 20px;
+            }
+            
+            .options {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tool-header h2 {
+                font-size: 2rem;
+            }
+            
+            .tool-header p {
+                font-size: 1rem;
+            }
+            
+            .stat-card {
+                min-width: 120px;
+                padding: 15px;
+            }
+            
+            .stat-value {
+                font-size: 1.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-tools logo-icon"></i>
+                <div class="logo-text">
+                    <h1>Your Multi Tools</h1>
+                    <div class="domain">www.yourmultitools.space</div>
+                </div>
+            </div>
+            
+            <div class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon toggle-icon"></i>
+                <div class="toggle-text">Dark Mode</div>
+            </div>
+        </header>
+        
+        <section class="tool-header">
+            <h2>Text Summarizer</h2>
+            <p>Generate concise summaries from long articles or documents. Our AI-powered tool extracts key points while preserving meaning and context.</p>
+        </section>
+        
+        <div class="tool-container">
+            <div class="input-section">
+                <h3><i class="fas fa-font"></i> Input Text</h3>
+                <textarea id="inputText" placeholder="Paste your text here...">Text summarization is the process of distilling the most important information from a source text to produce a shortened version. Automatic text summarization methods are greatly needed to address the ever-growing amount of text data available online. There are two primary approaches to text summarization: extractive and abstractive. Extractive summarization selects important sentences or phrases from the original text and concatenates them to form a summary. Abstractive summarization, on the other hand, generates new sentences that capture the essence of the original content. Modern techniques often employ deep learning models such as transformers to achieve state-of-the-art results in text summarization. These models can understand context, identify key points, and generate human-like summaries.</textarea>
+            </div>
+            
+            <div class="options">
+                <div class="option-group">
+                    <label for="summaryLength"><i class="fas fa-ruler"></i> Summary Length</label>
+                    <select id="summaryLength">
+                        <option value="short">Short (Concise)</option>
+                        <option value="medium" selected>Medium (Balanced)</option>
+                        <option value="long">Long (Detailed)</option>
+                    </select>
+                </div>
+                
+                <div class="option-group">
+                    <label for="focusOption"><i class="fas fa-bullseye"></i> Focus Area</label>
+                    <select id="focusOption">
+                        <option value="general" selected>General Summary</option>
+                        <option value="keypoints">Key Points Only</option>
+                        <option value="technical">Technical Details</option>
+                    </select>
+                </div>
+                
+                <div class="option-group">
+                    <label for="qualityLevel"><i class="fas fa-star"></i> Quality Level</label>
+                    <input type="range" id="qualityLevel" min="1" max="3" value="2">
+                    <div class="range-labels">
+                        <span>Basic</span>
+                        <span>Balanced</span>
+                        <span>Advanced</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="buttons">
+                <button class="btn btn-primary" id="summarizeBtn">
+                    <i class="fas fa-compress-alt"></i> Summarize Text
+                </button>
+                <button class="btn btn-secondary" id="clearBtn">
+                    <i class="fas fa-eraser"></i> Clear All
+                </button>
+                <button class="btn btn-secondary" id="exampleBtn">
+                    <i class="fas fa-lightbulb"></i> Load Example
+                </button>
+            </div>
+            
+            <div class="output-section">
+                <h3><i class="fas fa-file-contract"></i> Summary</h3>
+                <textarea id="outputText" placeholder="Your summary will appear here..." readonly></textarea>
+            </div>
+            
+            <div class="buttons">
+                <button class="btn btn-secondary" id="copyBtn">
+                    <i class="fas fa-copy"></i> Copy Summary
+                </button>
+                <button class="btn btn-secondary" id="downloadBtn">
+                    <i class="fas fa-download"></i> Download as TXT
+                </button>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="originalCount">0</div>
+                    <div class="stat-label">Original Words</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="summaryCount">0</div>
+                    <div class="stat-label">Summary Words</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="reduction">0%</div>
+                    <div class="stat-label">Reduction</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="readingTime">0s</div>
+                    <div class="stat-label">Reading Time Saved</div>
+                </div>
+            </div>
+        </div>      
+     
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size
+                const size = Math.random() * 20 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation duration
+                const duration = Math.random() * 20 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                
+                // Random animation delay
+                const delay = Math.random() * 5;
+                particle.style.animationDelay = `${delay}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const toggleIcon = themeToggle.querySelector('.toggle-icon');
+        const toggleText = themeToggle.querySelector('.toggle-text');
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            body.classList.add('light-mode');
+            toggleIcon.classList.replace('fa-moon', 'fa-sun');
+            toggleText.textContent = 'Light Mode';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                toggleIcon.classList.replace('fa-moon', 'fa-sun');
+                toggleText.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'light');
+            } else {
+                toggleIcon.classList.replace('fa-sun', 'fa-moon');
+                toggleText.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+        
+        // Text Summarization Logic
+        const inputText = document.getElementById('inputText');
+        const outputText = document.getElementById('outputText');
+        const summarizeBtn = document.getElementById('summarizeBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const exampleBtn = document.getElementById('exampleBtn');
+        const summaryLength = document.getElementById('summaryLength');
+        const focusOption = document.getElementById('focusOption');
+        
+        // Stats elements
+        const originalCount = document.getElementById('originalCount');
+        const summaryCount = document.getElementById('summaryCount');
+        const reduction = document.getElementById('reduction');
+        const readingTime = document.getElementById('readingTime');
+        
+        // Summarization function
+        function summarize() {
+            const text = inputText.value.trim();
+            if (!text) {
+                outputText.value = "Please enter some text to summarize.";
+                return;
+            }
+            
+            // Get options
+            const length = summaryLength.value;
+            const focus = focusOption.value;
+            
+            // Simple summarization algorithm (for demo purposes)
+            const sentences = text.split('. ').filter(s => s.length > 0);
+            let summary = '';
+            
+            // Determine how many sentences to include based on length
+            let sentenceCount;
+            switch (length) {
+                case 'short':
+                    sentenceCount = Math.max(1, Math.floor(sentences.length * 0.2));
+                    break;
+                case 'medium':
+                    sentenceCount = Math.max(1, Math.floor(sentences.length * 0.4));
+                    break;
+                case 'long':
+                    sentenceCount = Math.max(1, Math.floor(sentences.length * 0.6));
+                    break;
+                default:
+                    sentenceCount = Math.max(1, Math.floor(sentences.length * 0.4));
+            }
+            
+            // Select key sentences (in a real app, this would be more sophisticated)
+            for (let i = 0; i < sentenceCount; i++) {
+                // Select every nth sentence to get a spread
+                const index = Math.floor(i * (sentences.length / sentenceCount));
+                summary += sentences[index] + '. ';
+            }
+            
+            // Apply focus options
+            if (focus === 'keypoints') {
+                // Add bullet points
+                summary = summary.replace(/\. /g, '.\n• ');
+                summary = '• ' + summary;
+            } else if (focus === 'technical') {
+                // Add technical emphasis
+                summary = "Technical Summary:\n" + summary;
+            }
+            
+            outputText.value = summary;
+            
+            // Update stats
+            updateStats();
+        }
+        
+        // Update word count stats
+        function updateStats() {
+            const input = inputText.value;
+            const output = outputText.value;
+            
+            const inputWordCount = input.split(/\s+/).filter(word => word.length > 0).length;
+            const outputWordCount = output.split(/\s+/).filter(word => word.length > 0).length;
+            
+            originalCount.textContent = inputWordCount;
+            summaryCount.textContent = outputWordCount;
+            
+            if (inputWordCount > 0) {
+                const reductionPercent = Math.round(((inputWordCount - outputWordCount) / inputWordCount) * 100);
+                reduction.textContent = reductionPercent + '%';
+                
+                // Calculate reading time saved (assuming 200 words per minute)
+                const inputReadingTime = Math.ceil(inputWordCount / 200 * 60);
+                const outputReadingTime = Math.ceil(outputWordCount / 200 * 60);
+                const timeSaved = inputReadingTime - outputReadingTime;
+                
+                readingTime.textContent = timeSaved + 's';
+            } else {
+                reduction.textContent = '0%';
+                readingTime.textContent = '0s';
+            }
+        }
+        
+        // Event listeners
+        summarizeBtn.addEventListener('click', summarize);
+        
+        clearBtn.addEventListener('click', () => {
+            inputText.value = '';
+            outputText.value = '';
+            updateStats();
+        });
+        
+        copyBtn.addEventListener('click', () => {
+            outputText.select();
+            document.execCommand('copy');
+            
+            // Show feedback
+            const originalText = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            setTimeout(() => {
+                copyBtn.innerHTML = originalText;
+            }, 2000);
+        });
+        
+        downloadBtn.addEventListener('click', () => {
+            const text = outputText.value;
+            if (!text) return;
+            
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'text-summary.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+        
+        exampleBtn.addEventListener('click', () => {
+            inputText.value = "Natural language processing (NLP) is a subfield of linguistics, computer science, and artificial intelligence concerned with the interactions between computers and human language, in particular how to program computers to process and analyze large amounts of natural language data. Challenges in natural language processing frequently involve speech recognition, natural language understanding, and natural language generation. Modern NLP algorithms are based on machine learning, especially statistical machine learning. The paradigm has shifted from linguistic methods to machine learning methods since the late 1990s. Recent research trends are dominated by deep learning approaches which use neural networks to learn complex patterns in large datasets. These techniques have achieved state-of-the-art results in many NLP tasks such as machine translation, text summarization, and sentiment analysis.";
+            summarize();
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            updateStats();
+            
+            // Add input event to update stats as user types
+            inputText.addEventListener('input', updateStats);
+            
+            // Summarize the example text on page load
+            setTimeout(summarize, 500);
+        });
+    </script>
+</body>
+</html>
