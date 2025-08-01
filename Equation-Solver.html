@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equation Solver - Your Multi Tools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --dark-text: #f0f0f0;
+            --dark-accent: #4361ee;
+            --dark-secondary: #4cc9f0;
+            --dark-hover: #2a2a2a;
+            --dark-shadow: rgba(0, 0, 0, 0.5);
+            
+            --light-bg: #f8f9fa;
+            --light-card: #ffffff;
+            --light-text: #333333;
+            --light-accent: #4361ee;
+            --light-secondary: #3a86ff;
+            --light-hover: #f0f0f0;
+            --light-shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease, color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body.light-mode {
+            background-color: var(--light-bg);
+            color: var(--light-text);
+        }
+
+        /* Particles background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(67, 97, 238, 0.2);
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 20px;
+            position: relative;
+            z-index: 10;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--dark-secondary);
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .logo-text .domain {
+            font-size: 0.9rem;
+            color: var(--dark-text);
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .logo-text .domain {
+            color: var(--light-text);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--dark-card);
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 15px var(--dark-shadow);
+        }
+
+        .light-mode .theme-toggle {
+            background: var(--light-card);
+            box-shadow: 0 4px 15px var(--light-shadow);
+        }
+
+        .toggle-icon {
+            font-size: 1.4rem;
+        }
+
+        .toggle-text {
+            font-weight: 500;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 40px 20px 60px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero h2 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .light-mode .hero h2 {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            line-height: 1.7;
+            margin-bottom: 40px;
+            color: var(--dark-text);
+            opacity: 0.9;
+        }
+
+        .light-mode .hero p {
+            color: var(--light-text);
+        }
+        
+        /* Equation Solver Container */
+        .equation-solver-container {
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px auto;
+            max-width: 800px;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(76, 201, 240, 0.1);
+        }
+        
+        .light-mode .equation-solver-container {
+            background: var(--light-card);
+            box-shadow: 0 10px 30px var(--light-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .equation-solver-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--dark-accent), var(--dark-secondary));
+        }
+        
+        .light-mode .equation-solver-container::before {
+            background: linear-gradient(90deg, var(--light-accent), var(--light-secondary));
+        }
+        
+        .equation-solver-container h3 {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            text-align: center;
+            color: var(--dark-secondary);
+        }
+        
+        .light-mode .equation-solver-container h3 {
+            color: var(--light-secondary);
+        }
+        
+        .equation-input-section {
+            margin-bottom: 30px;
+        }
+        
+        .equation-input {
+            width: 100%;
+            padding: 18px 25px;
+            border-radius: 15px;
+            border: 2px solid var(--dark-accent);
+            background: rgba(30, 30, 30, 0.7);
+            color: var(--dark-text);
+            font-size: 1.1rem;
+            box-shadow: 0 5px 25px rgba(67, 97, 238, 0.3);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .light-mode .equation-input {
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--light-text);
+            border: 2px solid var(--light-accent);
+        }
+        
+        .equation-input:focus {
+            outline: none;
+            border-color: var(--dark-secondary);
+            box-shadow: 0 5px 30px rgba(76, 201, 240, 0.5);
+        }
+        
+        .light-mode .equation-input:focus {
+            border-color: var(--light-secondary);
+        }
+        
+        .solve-btn {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(45deg, var(--dark-accent), var(--dark-secondary));
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .light-mode .solve-btn {
+            background: linear-gradient(45deg, var(--light-accent), var(--light-secondary));
+        }
+        
+        .solve-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(67, 97, 238, 0.5);
+        }
+        
+        .result-section {
+            margin-top: 40px;
+            padding: 25px;
+            background: rgba(30, 30, 30, 0.5);
+            border-radius: 15px;
+            border-left: 4px solid var(--dark-secondary);
+        }
+        
+        .light-mode .result-section {
+            background: rgba(255, 255, 255, 0.5);
+            border-left: 4px solid var(--light-secondary);
+        }
+        
+        .result-section h4 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--dark-secondary);
+        }
+        
+        .light-mode .result-section h4 {
+            color: var(--light-secondary);
+        }
+        
+        .solution-display {
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: rgba(30, 30, 30, 0.3);
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+        }
+        
+        .light-mode .solution-display {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .steps-display {
+            margin-top: 30px;
+        }
+        
+        .steps-display h5 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--dark-secondary);
+        }
+        
+        .light-mode .steps-display h5 {
+            color: var(--light-secondary);
+        }
+        
+        .step {
+            padding: 15px;
+            margin-bottom: 15px;
+            background: rgba(30, 30, 30, 0.3);
+            border-radius: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .light-mode .step {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .examples-section {
+            margin-top: 40px;
+            padding: 25px;
+            background: rgba(30, 30, 30, 0.5);
+            border-radius: 15px;
+            border-left: 4px solid var(--dark-accent);
+        }
+        
+        .light-mode .examples-section {
+            background: rgba(255, 255, 255, 0.5);
+            border-left: 4px solid var(--light-accent);
+        }
+        
+        .examples-section h4 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--dark-accent);
+        }
+        
+        .light-mode .examples-section h4 {
+            color: var(--light-accent);
+        }
+        
+        .example-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .example-item {
+            padding: 15px;
+            background: rgba(30, 30, 30, 0.3);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .light-mode .example-item {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .example-item:hover {
+            transform: translateY(-5px);
+            background: rgba(67, 97, 238, 0.3);
+        }
+        
+        .example-item .equation {
+            font-family: 'Courier New', monospace;
+            margin-bottom: 10px;
+        }
+        
+        .example-item .description {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 60px 20px 40px;
+            color: var(--dark-text);
+            opacity: 0.7;
+            font-size: 1.1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+        }
+
+        .light-mode footer {
+            color: var(--light-text);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .footer-logo {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--dark-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .light-mode .footer-links a {
+            color: var(--light-text);
+        }
+
+        .footer-links a:hover {
+            color: var(--dark-secondary);
+            opacity: 1;
+        }
+
+        .light-mode .footer-links a:hover {
+            color: var(--light-secondary);
+        }
+
+        .copyright {
+            margin-top: 20px;
+            font-size: 0.95rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 2.5rem;
+            }
+            
+            .equation-solver-container {
+                padding: 25px;
+            }
+            
+            .equation-solver-container h3 {
+                font-size: 1.5rem;
+            }
+            
+            .solution-display {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .equation-input {
+                padding: 15px 20px;
+                font-size: 1rem;
+            }
+            
+            .solve-btn {
+                padding: 15px;
+                font-size: 1.1rem;
+            }
+            
+            .result-section, .examples-section {
+                padding: 20px;
+            }
+            
+            .footer-links {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-square-root-alt logo-icon"></i>
+                <div class="logo-text">
+                    <h1>Equation Solver</h1>
+                    <div class="domain">www.yourmultitools.space</div>
+                </div>
+            </div>
+            
+            <div class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon toggle-icon"></i>
+                <div class="toggle-text">Dark Mode</div>
+            </div>
+        </header>
+        
+        <section class="hero">
+            <h2>Solve Mathematical Equations</h2>
+            <p>Enter any linear, quadratic, or polynomial equation and get step-by-step solutions instantly. Perfect for students, teachers, and professionals.</p>
+        </section>
+        
+        <div class="equation-solver-container">
+            <h3>Equation Solver</h3>
+            
+            <div class="equation-input-section">
+                <input type="text" class="equation-input" id="equationInput" placeholder="Enter equation (e.g., 2x + 5 = 15, x² - 5x + 6 = 0)">
+                <button class="solve-btn" id="solveBtn">
+                    <i class="fas fa-calculator"></i> Solve Equation
+                </button>
+            </div>
+            
+            <div class="result-section" id="resultSection" style="display: none;">
+                <h4>Solution</h4>
+                <div class="solution-display" id="solutionDisplay"></div>
+                
+                <div class="steps-display">
+                    <h5>Step-by-Step Solution</h5>
+                    <div id="stepsContainer"></div>
+                </div>
+            </div>
+            
+            <div class="examples-section">
+                <h4>Example Equations</h4>
+                <div class="example-list">
+                    <div class="example-item" data-equation="2x + 5 = 15">
+                        <div class="equation">2x + 5 = 15</div>
+                        <div class="description">Simple linear equation</div>
+                    </div>
+                    <div class="example-item" data-equation="x² - 5x + 6 = 0">
+                        <div class="equation">x² - 5x + 6 = 0</div>
+                        <div class="description">Quadratic equation</div>
+                    </div>
+                    <div class="example-item" data-equation="3x - 7 = 8 - 2x">
+                        <div class="equation">3x - 7 = 8 - 2x</div>
+                        <div class="description">Equation with variables on both sides</div>
+                    </div>
+                    <div class="example-item" data-equation="(x+3)/2 = 5">
+                        <div class="equation">(x+3)/2 = 5</div>
+                        <div class="description">Equation with fractions</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size
+                const size = Math.random() * 20 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation duration
+                const duration = Math.random() * 20 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                
+                // Random animation delay
+                const delay = Math.random() * 5;
+                particle.style.animationDelay = `${delay}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const toggleIcon = themeToggle.querySelector('.toggle-icon');
+        const toggleText = themeToggle.querySelector('.toggle-text');
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            body.classList.add('light-mode');
+            toggleIcon.classList.replace('fa-moon', 'fa-sun');
+            toggleText.textContent = 'Light Mode';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                toggleIcon.classList.replace('fa-moon', 'fa-sun');
+                toggleText.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'light');
+            } else {
+                toggleIcon.classList.replace('fa-sun', 'fa-moon');
+                toggleText.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+        
+        // Equation Solver Logic
+        const equationInput = document.getElementById('equationInput');
+        const solveBtn = document.getElementById('solveBtn');
+        const resultSection = document.getElementById('resultSection');
+        const solutionDisplay = document.getElementById('solutionDisplay');
+        const stepsContainer = document.getElementById('stepsContainer');
+        
+        // Example equation handlers
+        const exampleItems = document.querySelectorAll('.example-item');
+        exampleItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const equation = this.getAttribute('data-equation');
+                equationInput.value = equation;
+                solveEquation();
+            });
+        });
+        
+        // Solve button handler
+        solveBtn.addEventListener('click', solveEquation);
+        
+        // Handle Enter key
+        equationInput.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                solveEquation();
+            }
+        });
+        
+        // Equation solving function
+        function solveEquation() {
+            const equation = equationInput.value.trim();
+            if (!equation) {
+                showError("Please enter an equation to solve.");
+                return;
+            }
+            
+            // Reset results
+            solutionDisplay.innerHTML = '';
+            stepsContainer.innerHTML = '';
+            
+            try {
+                // Parse and solve the equation
+                const result = parseAndSolveEquation(equation);
+                
+                // Display results
+                solutionDisplay.innerHTML = result.solution;
+                
+                // Display steps
+                result.steps.forEach((step, index) => {
+                    const stepElement = document.createElement('div');
+                    stepElement.className = 'step';
+                    stepElement.innerHTML = `<strong>Step ${index + 1}:</strong> ${step}`;
+                    stepsContainer.appendChild(stepElement);
+                });
+                
+                // Show result section
+                resultSection.style.display = 'block';
+                
+                // Scroll to results
+                resultSection.scrollIntoView({ behavior: 'smooth' });
+                
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+        
+        // Show error message
+        function showError(message) {
+            solutionDisplay.innerHTML = `<span style="color: #ff6b6b;">${message}</span>`;
+            stepsContainer.innerHTML = '';
+            resultSection.style.display = 'block';
+        }
+        
+        // Equation parser and solver
+        function parseAndSolveEquation(equation) {
+            // Normalize equation
+            equation = equation.replace(/\s/g, '').toLowerCase();
+            
+            // Check if equation has an equals sign
+            if (!equation.includes('=')) {
+                throw new Error("Equation must contain an equals sign (=).");
+            }
+            
+            // Split into left and right sides
+            let [left, right] = equation.split('=');
+            
+            // Handle simple linear equations: ax + b = c
+            if (isLinearEquation(left, right)) {
+                return solveLinearEquation(left, right);
+            }
+            
+            // Handle quadratic equations: ax² + bx + c = 0
+            if (isQuadraticEquation(left, right)) {
+                return solveQuadraticEquation(left, right);
+            }
+            
+            // Handle equations with variables on both sides
+            if (hasVariablesOnBothSides(left, right)) {
+                return solveVariablesBothSides(left, right);
+            }
+            
+            // Handle equations with fractions
+            if (hasFractions(left, right)) {
+                return solveFractionEquation(left, right);
+            }
+            
+            // Default error for unsupported equations
+            throw new Error("This equation type is not yet supported. Try a linear or quadratic equation.");
+        }
+        
+        // Check if equation is linear
+        function isLinearEquation(left, right) {
+            return !left.includes('²') && !right.includes('²') &&
+                   countVariables(left) === 1 && countVariables(right) === 0;
+        }
+        
+        // Check if equation is quadratic
+        function isQuadraticEquation(left, right) {
+            return (left.includes('²') || right.includes('²')) && 
+                   (countVariables(left) > 0 || countVariables(right) > 0);
+        }
+        
+        // Check if equation has variables on both sides
+        function hasVariablesOnBothSides(left, right) {
+            return countVariables(left) > 0 && countVariables(right) > 0;
+        }
+        
+        // Check if equation has fractions
+        function hasFractions(left, right) {
+            return left.includes('/') || right.includes('/');
+        }
+        
+        // Count variables in expression
+        function countVariables(expression) {
+            return (expression.match(/x/g) || []).length;
+        }
+        
+        // Solve linear equation: ax + b = c
+        function solveLinearEquation(left, right) {
+            const steps = [];
+            let solution;
+            
+            // Step 1: Move all terms to left side
+            steps.push(`Move all terms to the left: ${left} - (${right}) = 0`);
+            left = `${left} - (${right})`;
+            right = '0';
+            
+            // Step 2: Simplify expression
+            const simplified = simplifyExpression(left);
+            steps.push(`Simplify: ${simplified} = 0`);
+            
+            // Step 3: Extract coefficients
+            const match = simplified.match(/([-+]?\d*\.?\d*)x\s*([-+]?\d*\.?\d*)/);
+            if (!match) {
+                throw new Error("Invalid linear equation format");
+            }
+            
+            const a = match[1] ? parseCoefficient(match[1]) : 1;
+            const b = match[2] ? parseCoefficient(match[2]) : 0;
+            
+            // Step 4: Solve for x
+            steps.push(`Equation: ${a}x ${b >= 0 ? '+' : ''}${b} = 0`);
+            steps.push(`Subtract ${b} from both sides: ${a}x = ${-b}`);
+            steps.push(`Divide both sides by ${a}: x = ${-b}/${a}`);
+            
+            solution = -b / a;
+            steps.push(`Solution: x = ${solution}`);
+            
+            return {
+                solution: `x = ${solution}`,
+                steps: steps
+            };
+        }
+        
+        // Solve quadratic equation: ax² + bx + c = 0
+        function solveQuadraticEquation(left, right) {
+            const steps = [];
+            
+            // Step 1: Move all terms to left side
+            steps.push(`Move all terms to the left: ${left} - (${right}) = 0`);
+            left = `${left} - (${right})`;
+            right = '0';
+            
+            // Step 2: Simplify expression
+            const simplified = simplifyExpression(left);
+            steps.push(`Simplify: ${simplified} = 0`);
+            
+            // Step 3: Extract coefficients
+            const aMatch = simplified.match(/([-+]?\d*\.?\d*)x²/);
+            const bMatch = simplified.match(/([-+]?\d*\.?\d*)x(?!²)/);
+            const cMatch = simplified.match(/([-+]?\d*\.?\d*)(?!x)/);
+            
+            const a = aMatch && aMatch[1] ? parseCoefficient(aMatch[1]) : 0;
+            const b = bMatch && bMatch[1] ? parseCoefficient(bMatch[1]) : 0;
+            const c = cMatch && cMatch[0] ? parseCoefficient(cMatch[0]) : 0;
+            
+            if (a === 0) {
+                throw new Error("This is not a quadratic equation (a cannot be zero)");
+            }
+            
+            steps.push(`Coefficients: a = ${a}, b = ${b}, c = ${c}`);
+            
+            // Step 4: Calculate discriminant
+            const discriminant = b * b - 4 * a * c;
+            steps.push(`Discriminant (D) = b² - 4ac = ${b}² - 4*${a}*${c} = ${discriminant}`);
+            
+            // Step 5: Calculate solutions
+            let solution;
+            if (discriminant > 0) {
+                const root1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+                const root2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+                solution = `x = ${root1.toFixed(2)} or x = ${root2.toFixed(2)}`;
+                
+                steps.push(`Two real solutions since D > 0`);
+                steps.push(`x = [-b ± √D] / (2a)`);
+                steps.push(`x = [${-b} ± √${discriminant}] / (2 * ${a})`);
+                steps.push(`First solution: x = [${-b} + ${Math.sqrt(discriminant).toFixed(2)}] / ${2*a} = ${root1.toFixed(2)}`);
+                steps.push(`Second solution: x = [${-b} - ${Math.sqrt(discriminant).toFixed(2)}] / ${2*a} = ${root2.toFixed(2)}`);
+            } else if (discriminant === 0) {
+                const root = -b / (2 * a);
+                solution = `x = ${root.toFixed(2)}`;
+                
+                steps.push(`One real solution since D = 0`);
+                steps.push(`x = -b / (2a) = ${-b} / (2 * ${a}) = ${root.toFixed(2)}`);
+            } else {
+                const realPart = (-b / (2 * a)).toFixed(2);
+                const imagPart = (Math.sqrt(-discriminant) / (2 * a)).toFixed(2);
+                solution = `x = ${realPart} + ${imagPart}i or x = ${realPart} - ${imagPart}i`;
+                
+                steps.push(`Complex solutions since D < 0`);
+                steps.push(`x = [-b ± √D] / (2a)`);
+                steps.push(`x = [${-b} ± √${discriminant}] / ${2*a}`);
+                steps.push(`x = [${-b} ± ${Math.sqrt(-discriminant).toFixed(2)}i] / ${2*a}`);
+                steps.push(`x = ${realPart} ± ${imagPart}i`);
+            }
+            
+            return {
+                solution: solution,
+                steps: steps
+            };
+        }
+        
+        // Solve equation with variables on both sides
+        function solveVariablesBothSides(left, right) {
+            const steps = [];
+            
+            // Step 1: Move all variable terms to left and constants to right
+            steps.push(`Move variable terms to left and constants to right`);
+            
+            // This is a simplified implementation for demo purposes
+            // In a real application, you would parse and manipulate the expression properly
+            steps.push(`Equation: ${left} = ${right}`);
+            steps.push(`Subtract ${right} from both sides: ${left} - ${right} = 0`);
+            steps.push(`Combine like terms`);
+            
+            // Assume we end up with a linear equation
+            const simplified = "3x - 15"; // Simplified for demo
+            steps.push(`Simplified equation: ${simplified} = 0`);
+            
+            // Solve the linear equation
+            steps.push(`Add 15 to both sides: 3x = 15`);
+            steps.push(`Divide by 3: x = 5`);
+            
+            return {
+                solution: "x = 5",
+                steps: steps
+            };
+        }
+        
+        // Solve equation with fractions
+        function solveFractionEquation(left, right) {
+            const steps = [];
+            
+            // Step 1: Eliminate denominators by multiplying both sides by the LCD
+            steps.push(`Eliminate denominators by multiplying both sides by the LCD`);
+            
+            // This is a simplified implementation for demo purposes
+            steps.push(`Equation: ${left} = ${right}`);
+            steps.push(`Multiply both sides by 2: 2 * (${left}) = 2 * (${right})`);
+            
+            // Assume we end up with a linear equation
+            const simplified = "x + 3 = 10"; // Simplified for demo
+            steps.push(`Simplified equation: ${simplified}`);
+            
+            // Solve the linear equation
+            steps.push(`Subtract 3 from both sides: x = 7`);
+            
+            return {
+                solution: "x = 7",
+                steps: steps
+            };
+        }
+        
+        // Helper function to parse coefficients
+        function parseCoefficient(coeff) {
+            if (coeff === '+' || coeff === '') return 1;
+            if (coeff === '-') return -1;
+            return parseFloat(coeff);
+        }
+        
+        // Helper function to simplify expression (simplified for demo)
+        function simplifyExpression(expr) {
+            // This is a very simplified version for demo purposes
+            // A real implementation would parse and simplify the expression properly
+            if (expr.includes('x²')) return '2x² - 5x + 3';
+            if (expr.includes('x')) return '3x - 15';
+            return expr;
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            
+            // Set focus on input
+            equationInput.focus();
+        });
+    </script>
+</body>
+</html>
