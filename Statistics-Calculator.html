@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics Calculator with Tooltips</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --dark-text: #f0f0f0;
+            --dark-accent: #4361ee;
+            --dark-secondary: #4cc9f0;
+            --dark-hover: #2a2a2a;
+            --dark-shadow: rgba(0, 0, 0, 0.5);
+            
+            --light-bg: #f8f9fa;
+            --light-card: #ffffff;
+            --light-text: #333333;
+            --light-accent: #4361ee;
+            --light-secondary: #3a86ff;
+            --light-hover: #f0f0f0;
+            --light-shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease, color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body.light-mode {
+            background-color: var(--light-bg);
+            color: var(--light-text);
+        }
+
+        /* Particles background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(67, 97, 238, 0.2);
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 20px;
+            position: relative;
+            z-index: 10;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--dark-secondary);
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .logo-text .domain {
+            font-size: 0.9rem;
+            color: var(--dark-text);
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .logo-text .domain {
+            color: var(--light-text);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--dark-card);
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 15px var(--dark-shadow);
+        }
+
+        .light-mode .theme-toggle {
+            background: var(--light-card);
+            box-shadow: 0 4px 15px var(--light-shadow);
+        }
+
+        .toggle-icon {
+            font-size: 1.4rem;
+        }
+
+        .toggle-text {
+            font-weight: 500;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 40px 20px;
+            max-width: 900px;
+            margin: 0 auto 40px;
+        }
+
+        .hero h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .light-mode .hero h2 {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            margin-bottom: 30px;
+            color: var(--dark-text);
+            opacity: 0.9;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .light-mode .hero p {
+            color: var(--light-text);
+        }
+
+        /* Calculator Section */
+        .calculator-section {
+            background: rgba(30, 30, 30, 0.7);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 0 auto 60px;
+            max-width: 900px;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(76, 201, 240, 0.2);
+        }
+
+        .light-mode .calculator-section {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group {
+            margin-bottom: 30px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .input-group label {
+            color: var(--light-secondary);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 2px solid var(--dark-accent);
+            background: rgba(30, 30, 30, 0.5);
+            color: var(--dark-text);
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .light-mode .input-group input {
+            background: rgba(255, 255, 255, 0.5);
+            color: var(--light-text);
+            border: 2px solid var(--light-accent);
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--dark-secondary);
+            box-shadow: 0 0 0 4px rgba(76, 201, 240, 0.3);
+        }
+
+        .light-mode .input-group input:focus {
+            border-color: var(--light-secondary);
+            box-shadow: 0 0 0 4px rgba(58, 134, 255, 0.3);
+        }
+
+        .calculate-btn {
+            background: linear-gradient(45deg, var(--dark-accent), var(--dark-secondary));
+            color: white;
+            border: none;
+            padding: 16px 30px;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            box-shadow: 0 6px 15px rgba(67, 97, 238, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .light-mode .calculate-btn {
+            background: linear-gradient(45deg, var(--light-accent), var(--light-secondary));
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.6);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Results Section */
+        .results-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .stat-card {
+            background: var(--dark-card);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 8px 20px var(--dark-shadow);
+            position: relative;
+            overflow: hidden;
+            border-top: 5px solid var(--dark-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .light-mode .stat-card {
+            background: var(--light-card);
+            box-shadow: 0 8px 20px var(--light-shadow);
+            border-top: 5px solid var(--light-secondary);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(67, 97, 238, 0.3);
+        }
+
+        .stat-card.mean {
+            border-top-color: #4361ee;
+        }
+
+        .stat-card.median {
+            border-top-color: #27ae60;
+        }
+
+        .stat-card.mode {
+            border-top-color: #e74c3c;
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .stat-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-text);
+        }
+
+        .light-mode .stat-title {
+            color: var(--light-text);
+        }
+
+        .info-icon {
+            background-color: rgba(76, 201, 240, 0.15);
+            color: var(--dark-secondary);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .light-mode .info-icon {
+            background-color: rgba(58, 134, 255, 0.15);
+            color: var(--light-secondary);
+        }
+
+        .info-icon:hover {
+            background-color: var(--dark-secondary);
+            color: white;
+            transform: rotate(15deg);
+        }
+
+        .light-mode .info-icon:hover {
+            background-color: var(--light-secondary);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin: 20px 0;
+            color: var(--dark-secondary);
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .light-mode .stat-value {
+            color: var(--light-secondary);
+        }
+
+        .stat-desc {
+            text-align: center;
+            font-size: 1.1rem;
+            opacity: 0.85;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: absolute;
+            top: 70px;
+            right: 20px;
+            background: var(--dark-card);
+            color: var(--dark-text);
+            padding: 20px;
+            border-radius: 12px;
+            width: 320px;
+            z-index: 100;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: none;
+            transform: translateY(10px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .tooltip.show {
+            display: block;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .light-mode .tooltip {
+            background: var(--light-card);
+            color: var(--light-text);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .tooltip h3 {
+            margin-bottom: 12px;
+            color: var(--dark-secondary);
+            font-size: 1.3rem;
+        }
+
+        .light-mode .tooltip h3 {
+            color: var(--light-secondary);
+        }
+
+        .tooltip p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .tooltip .example {
+            background-color: rgba(76, 201, 240, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-family: monospace;
+            font-size: 0.95rem;
+        }
+
+        .light-mode .tooltip .example {
+            background-color: rgba(58, 134, 255, 0.1);
+        }
+
+        /* Calculation Steps */
+        .steps-section {
+            background: rgba(30, 30, 30, 0.7);
+            border-radius: 20px;
+            padding: 35px;
+            margin: 40px auto;
+            max-width: 900px;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(76, 201, 240, 0.2);
+        }
+
+        .light-mode .steps-section {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .steps-section h3 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: var(--dark-secondary);
+            text-align: center;
+        }
+
+        .light-mode .steps-section h3 {
+            color: var(--light-secondary);
+        }
+
+        .step {
+            background: rgba(30, 30, 30, 0.5);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--dark-secondary);
+        }
+
+        .light-mode .step {
+            background: rgba(255, 255, 255, 0.5);
+            border-left: 4px solid var(--light-secondary);
+        }
+
+        .step h4 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .step h4 {
+            color: var(--light-secondary);
+        }
+
+        .step p {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .step .formula {
+            font-family: monospace;
+            background: rgba(76, 201, 240, 0.1);
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: inline-block;
+            margin: 10px 0;
+        }
+
+        .light-mode .step .formula {
+            background: rgba(58, 134, 255, 0.1);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 60px 20px 40px;
+            color: var(--dark-text);
+            opacity: 0.7;
+            font-size: 1.1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+        }
+
+        .light-mode footer {
+            color: var(--light-text);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .footer-logo {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--dark-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .light-mode .footer-links a {
+            color: var(--light-text);
+        }
+
+        .footer-links a:hover {
+            color: var(--dark-secondary);
+            opacity: 1;
+        }
+
+        .light-mode .footer-links a:hover {
+            color: var(--light-secondary);
+        }
+
+        .copyright {
+            margin-top: 20px;
+            font-size: 0.95rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero h2 {
+                font-size: 2.5rem;
+            }
+            
+            .calculator-section, .steps-section {
+                padding: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 2.2rem;
+            }
+            
+            .logo-text h1 {
+                font-size: 1.6rem;
+            }
+            
+            .results-section {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .stat-card {
+                padding: 20px;
+            }
+            
+            .tooltip {
+                width: 280px;
+                right: 10px;
+            }
+            
+            .steps-section {
+                padding: 25px 20px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .calculator-section, .steps-section {
+                padding: 25px 20px;
+            }
+            
+            .stat-value {
+                font-size: 2.2rem;
+            }
+            
+            .footer-links {
+                gap: 15px;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-calculator logo-icon"></i>
+                <div class="logo-text">
+                    <h1>Your Multi Tools</h1>
+                    <div class="domain">www.yourmultitools.space</div>
+                </div>
+            </div>
+            
+            <div class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon toggle-icon"></i>
+                <div class="toggle-text">Dark Mode</div>
+            </div>
+        </header>
+        
+        <section class="hero">
+            <h2>Statistics Calculator with Educational Tooltips</h2>
+            <p>Calculate mean, median, and mode with detailed explanations. Hover over the information icons to learn about each statistical concept and how it's calculated.</p>
+        </section>
+        
+        <section class="calculator-section">
+            <div class="input-group">
+                <label for="numbers"><i class="fas fa-list-ol"></i> Enter numbers (comma separated):</label>
+                <input type="text" id="numbers" placeholder="e.g., 12, 7, 15, 8, 9, 14, 11" value="12, 7, 15, 8, 9, 14, 11">
+            </div>
+            
+            <button class="calculate-btn" id="calculateBtn">
+                <i class="fas fa-calculator"></i> Calculate Statistics
+            </button>
+            
+            <div class="results-section">
+                <div class="stat-card mean">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Mean</h3>
+                        <div class="info-icon" data-tooltip="mean-tooltip">
+                            <i class="fas fa-info"></i>
+                        </div>
+                        <div class="tooltip" id="mean-tooltip">
+                            <h3>What is Mean?</h3>
+                            <p>The mean is the average of all numbers. It's calculated by adding up all values and dividing by the total count.</p>
+                            <div class="example">
+                                <p>Formula: Mean = (Sum of all values) / (Number of values)</p>
+                                <p>Example: [5, 2, 8, 3, 5, 7]</p>
+                                <p>(5 + 2 + 8 + 3 + 5 + 7) / 6 = 30 / 6 = 5</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-value" id="meanValue">-</div>
+                    <p class="stat-desc">The average value of the dataset</p>
+                </div>
+                
+                <div class="stat-card median">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Median</h3>
+                        <div class="info-icon" data-tooltip="median-tooltip">
+                            <i class="fas fa-info"></i>
+                        </div>
+                        <div class="tooltip" id="median-tooltip">
+                            <h3>What is Median?</h3>
+                            <p>The median is the middle value in an ordered list. For an odd number of values, it's the central number. For an even count, it's the average of the two central numbers.</p>
+                            <div class="example">
+                                <p>Example: [2, 3, 5, 5, 7, 8] (sorted)</p>
+                                <p>Even count: (5 + 5) / 2 = 5</p>
+                                <p>Example: [1, 3, 5, 7, 9]</p>
+                                <p>Odd count: Median = 5</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-value" id="medianValue">-</div>
+                    <p class="stat-desc">The middle value of the sorted dataset</p>
+                </div>
+                
+                <div class="stat-card mode">
+                    <div class="stat-header">
+                        <h3 class="stat-title">Mode</h3>
+                        <div class="info-icon" data-tooltip="mode-tooltip">
+                            <i class="fas fa-info"></i>
+                        </div>
+                        <div class="tooltip" id="mode-tooltip">
+                            <h3>What is Mode?</h3>
+                            <p>The mode is the most frequent number(s). When all numbers appear equally, there is no mode. When multiple numbers share the highest frequency, there are multiple modes.</p>
+                            <div class="example">
+                                <p>Example: [5, 2, 8, 3, 5, 7]</p>
+                                <p>5 appears twice (most frequent)</p>
+                                <p>Example: [1, 2, 2, 3, 3, 4]</p>
+                                <p>Modes: 2 and 3 (both appear twice)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-value" id="modeValue">-</div>
+                    <p class="stat-desc">The most frequently occurring value(s)</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="steps-section">
+            <h3>Calculation Steps</h3>
+            <div class="step">
+                <h4>Original Numbers</h4>
+                <p id="originalNumbers">Enter numbers and click calculate to see steps</p>
+            </div>
+            
+            <div class="step">
+                <h4>Sorted Numbers</h4>
+                <p id="sortedNumbers">Numbers will appear sorted here</p>
+            </div>
+            
+            <div class="step">
+                <h4>Mean Calculation</h4>
+                <p id="meanCalculation">Sum and count will be calculated here</p>
+                <div class="formula" id="meanFormula">Mean = (Sum) / (Count)</div>
+            </div>
+            
+            <div class="step">
+                <h4>Median Calculation</h4>
+                <p id="medianCalculation">Process of finding the middle value</p>
+            </div>
+            
+            <div class="step">
+                <h4>Mode Calculation</h4>
+                <p id="modeCalculation">Frequency analysis of values</p>
+            </div>
+        </section>
+       
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 40;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size
+                const size = Math.random() * 20 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation duration
+                const duration = Math.random() * 20 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                
+                // Random animation delay
+                const delay = Math.random() * 5;
+                particle.style.animationDelay = `${delay}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const toggleIcon = themeToggle.querySelector('.toggle-icon');
+        const toggleText = themeToggle.querySelector('.toggle-text');
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            body.classList.add('light-mode');
+            toggleIcon.classList.replace('fa-moon', 'fa-sun');
+            toggleText.textContent = 'Light Mode';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                toggleIcon.classList.replace('fa-moon', 'fa-sun');
+                toggleText.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'light');
+            } else {
+                toggleIcon.classList.replace('fa-sun', 'fa-moon');
+                toggleText.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+        
+        // Tooltip functionality
+        const infoIcons = document.querySelectorAll('.info-icon');
+        
+        infoIcons.forEach(icon => {
+            icon.addEventListener('mouseenter', function() {
+                const tooltipId = this.getAttribute('data-tooltip');
+                const tooltip = document.getElementById(tooltipId);
+                tooltip.classList.add('show');
+            });
+            
+            icon.addEventListener('mouseleave', function() {
+                const tooltipId = this.getAttribute('data-tooltip');
+                const tooltip = document.getElementById(tooltipId);
+                tooltip.classList.remove('show');
+            });
+        });
+        
+        // Calculate statistics
+        const calculateBtn = document.getElementById('calculateBtn');
+        const numberInput = document.getElementById('numbers');
+        const meanValue = document.getElementById('meanValue');
+        const medianValue = document.getElementById('medianValue');
+        const modeValue = document.getElementById('modeValue');
+        
+        // Step elements
+        const originalNumbers = document.getElementById('originalNumbers');
+        const sortedNumbers = document.getElementById('sortedNumbers');
+        const meanCalculation = document.getElementById('meanCalculation');
+        const meanFormula = document.getElementById('meanFormula');
+        const medianCalculation = document.getElementById('medianCalculation');
+        const modeCalculation = document.getElementById('modeCalculation');
+        
+        // Initial calculation
+        calculateStatistics();
+        
+        calculateBtn.addEventListener('click', calculateStatistics);
+        
+        function calculateStatistics() {
+            // Get input value and split into array
+            const input = numberInput.value;
+            const numbers = input.split(',')
+                .map(num => parseFloat(num.trim()))
+                .filter(num => !isNaN(num));
+            
+            // Display original numbers
+            originalNumbers.textContent = numbers.length > 0 ? 
+                `[${numbers.join(', ')}]` : 
+                'Please enter valid numbers';
+            
+            if (numbers.length === 0) {
+                resetResults();
+                return;
+            }
+            
+            // Calculate statistics
+            const mean = calculateMean(numbers);
+            const median = calculateMedian(numbers);
+            const mode = calculateMode(numbers);
+            
+            // Update UI with results
+            meanValue.textContent = mean.toFixed(2);
+            medianValue.textContent = median.toFixed(2);
+            
+            if (mode === null) {
+                modeValue.textContent = 'None';
+            } else if (Array.isArray(mode)) {
+                modeValue.textContent = mode.join(', ');
+            } else {
+                modeValue.textContent = mode;
+            }
+            
+            // Show calculation steps
+            showCalculationSteps(numbers, mean, median, mode);
+        }
+        
+        function calculateMean(numbers) {
+            const sum = numbers.reduce((acc, num) => acc + num, 0);
+            return sum / numbers.length;
+        }
+        
+        function calculateMedian(numbers) {
+            const sorted = [...numbers].sort((a, b) => a - b);
+            const mid = Math.floor(sorted.length / 2);
+            
+            if (sorted.length % 2 === 0) {
+                return (sorted[mid - 1] + sorted[mid]) / 2;
+            } else {
+                return sorted[mid];
+            }
+        }
+        
+        function calculateMode(numbers) {
+            const frequency = {};
+            let maxFreq = 0;
+            let modes = [];
+            
+            // Count frequency of each number
+            numbers.forEach(num => {
+                frequency[num] = (frequency[num] || 0) + 1;
+                if (frequency[num] > maxFreq) {
+                    maxFreq = frequency[num];
+                }
+            });
+            
+            // If all numbers appear only once, there is no mode
+            if (maxFreq === 1) {
+                return null;
+            }
+            
+            // Find all numbers with the max frequency
+            for (const num in frequency) {
+                if (frequency[num] === maxFreq) {
+                    modes.push(parseFloat(num));
+                }
+            }
+            
+            // If only one mode, return it as a single value
+            return modes.length === 1 ? modes[0] : modes;
+        }
+        
+        function maxFrequency(numbers) {
+            const frequency = {};
+            let maxFreq = 0;
+            
+            numbers.forEach(num => {
+                frequency[num] = (frequency[num] || 0) + 1;
+                if (frequency[num] > maxFreq) {
+                    maxFreq = frequency[num];
+                }
+            });
+            
+            return maxFreq;
+        }
+        
+        function showCalculationSteps(numbers, mean, median, mode) {
+            const sorted = [...numbers].sort((a, b) => a - b);
+            const sum = numbers.reduce((acc, num) => acc + num, 0);
+            
+            // Update step elements
+            sortedNumbers.textContent = `[${sorted.join(', ')}]`;
+            
+            // Mean calculation
+            meanCalculation.textContent = `Sum = ${numbers.join(' + ')} = ${sum}`;
+            meanFormula.textContent = `Mean = ${sum} / ${numbers.length} = ${mean.toFixed(2)}`;
+            
+            // Median calculation
+            if (sorted.length % 2 === 0) {
+                const mid1 = sorted[sorted.length/2 - 1];
+                const mid2 = sorted[sorted.length/2];
+                medianCalculation.textContent = `Even number of items (${sorted.length}). Median = (${mid1} + ${mid2}) / 2 = ${median.toFixed(2)}`;
+            } else {
+                const mid = sorted[Math.floor(sorted.length/2)];
+                medianCalculation.textContent = `Odd number of items (${sorted.length}). Median = middle value = ${mid}`;
+            }
+            
+            // Mode calculation
+            if (mode === null) {
+                modeCalculation.textContent = 'All numbers appear only once → No mode';
+            } else if (Array.isArray(mode)) {
+                modeCalculation.textContent = `Multiple numbers appear ${maxFrequency(numbers)} times: ${mode.join(', ')}`;
+            } else {
+                modeCalculation.textContent = `${mode} appears most frequently (${maxFrequency(numbers)} times)`;
+            }
+        }
+        
+        function resetResults() {
+            meanValue.textContent = '-';
+            medianValue.textContent = '-';
+            modeValue.textContent = '-';
+            
+            originalNumbers.textContent = 'Enter numbers and click calculate to see steps';
+            sortedNumbers.textContent = 'Numbers will appear sorted here';
+            meanCalculation.textContent = 'Sum and count will be calculated here';
+            meanFormula.textContent = 'Mean = (Sum) / (Count)';
+            medianCalculation.textContent = 'Process of finding the middle value';
+            modeCalculation.textContent = 'Frequency analysis of values';
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+        });
+    </script>
+</body>
+</html>
