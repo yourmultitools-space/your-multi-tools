@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JPG to PNG Converter - Your Multi Tools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --dark-text: #f0f0f0;
+            --dark-accent: #4361ee;
+            --dark-secondary: #4cc9f0;
+            --dark-hover: #2a2a2a;
+            --dark-shadow: rgba(0, 0, 0, 0.5);
+            
+            --light-bg: #f8f9fa;
+            --light-card: #ffffff;
+            --light-text: #333333;
+            --light-accent: #4361ee;
+            --light-secondary: #3a86ff;
+            --light-hover: #f0f0f0;
+            --light-shadow: rgba(0, 0, 0, 0.1);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease, color 0.3s ease;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        body.light-mode {
+            background-color: var(--light-bg);
+            color: var(--light-text);
+        }
+        /* Particles background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(67, 97, 238, 0.2);
+            animation: float 15s infinite linear;
+        }
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 20px;
+            position: relative;
+            z-index: 10;
+            flex-wrap: wrap;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--dark-secondary);
+        }
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+        .logo-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+        .logo-text .domain {
+            font-size: 0.9rem;
+            color: var(--dark-text);
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+        .light-mode .logo-text .domain {
+            color: var(--light-text);
+        }
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--dark-card);
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 15px var(--dark-shadow);
+        }
+        .light-mode .theme-toggle {
+            background: var(--light-card);
+            box-shadow: 0 4px 15px var(--light-shadow);
+        }
+        .toggle-icon {
+            font-size: 1.4rem;
+        }
+        .toggle-text {
+            font-weight: 500;
+        }
+        /* Tool Content */
+        .tool-content {
+            max-width: 900px;
+            margin: 40px auto;
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            border: 1px solid rgba(76, 201, 240, 0.1);
+        }
+        .light-mode .tool-content {
+            background: var(--light-card);
+            box-shadow: 0 10px 30px var(--light-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .tool-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .tool-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', sans-serif;
+        }
+        .light-mode .tool-header h2 {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .tool-header p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--dark-text);
+            opacity: 0.9;
+        }
+        .light-mode .tool-header p {
+            color: var(--light-text);
+        }
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed var(--dark-accent);
+            border-radius: 15px;
+            padding: 50px 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            background: rgba(67, 97, 238, 0.05);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .light-mode .upload-area {
+            background: rgba(67, 97, 238, 0.03);
+        }
+        .upload-area:hover {
+            border-color: var(--dark-secondary);
+            background: rgba(67, 97, 238, 0.1);
+        }
+        .upload-area.dragover {
+            border-color: var(--dark-secondary);
+            background: rgba(76, 201, 240, 0.2);
+        }
+        .upload-icon {
+            font-size: 4rem;
+            color: var(--dark-secondary);
+            margin-bottom: 20px;
+        }
+        .light-mode .upload-icon {
+            color: var(--light-secondary);
+        }
+        .upload-text {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        .upload-subtext {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+        .upload-button {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(45deg, var(--dark-accent), var(--dark-secondary));
+            color: white;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .light-mode .upload-button {
+            background: linear-gradient(45deg, var(--light-accent), var(--light-secondary));
+        }
+        .upload-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(67, 97, 238, 0.4);
+        }
+        #fileInput {
+            display: none;
+        }
+        /* Preview Area */
+        .preview-container {
+            display: none;
+            margin-bottom: 30px;
+        }
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .preview-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .preview-clear {
+            background: none;
+            border: none;
+            color: var(--dark-secondary);
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        .light-mode .preview-clear {
+            color: var(--light-secondary);
+        }
+        .preview-clear:hover {
+            color: var(--dark-accent);
+        }
+        .light-mode .preview-clear:hover {
+            color: var(--light-accent);
+        }
+        .preview-images {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .preview-box {
+            flex: 1;
+            min-width: 250px;
+            max-width: 400px;
+        }
+        .preview-label {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: 500;
+        }
+        .preview-image {
+            width: 100%;
+            height: 250px;
+            border-radius: 10px;
+            object-fit: contain;
+            background: var(--dark-hover);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .light-mode .preview-image {
+            background: var(--light-hover);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        /* Options Area */
+        .options-container {
+            display: none;
+            background: rgba(67, 97, 238, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        .light-mode .options-container {
+            background: rgba(67, 97, 238, 0.03);
+        }
+        .options-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .option-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option-label {
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .option-input {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(67, 97, 238, 0.3);
+            background: var(--dark-card);
+            color: var(--dark-text);
+            font-size: 1rem;
+        }
+        .light-mode .option-input {
+            background: var(--light-card);
+            color: var(--light-text);
+            border: 1px solid rgba(67, 97, 238, 0.2);
+        }
+        .option-input:focus {
+            outline: none;
+            border-color: var(--dark-secondary);
+        }
+        .light-mode .option-input:focus {
+            border-color: var(--light-secondary);
+        }
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 5px;
+        }
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--dark-accent);
+        }
+        .light-mode .checkbox {
+            accent-color: var(--light-accent);
+        }
+        /* Convert Button */
+        .convert-container {
+            display: none;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .convert-button {
+            padding: 15px 40px;
+            background: linear-gradient(45deg, var(--dark-accent), var(--dark-secondary));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .light-mode .convert-button {
+            background: linear-gradient(45deg, var(--light-accent), var(--light-secondary));
+        }
+        .convert-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(67, 97, 238, 0.4);
+        }
+        .convert-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        /* Download Area */
+        .download-container {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            background: rgba(76, 201, 240, 0.1);
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        .light-mode .download-container {
+            background: rgba(76, 201, 240, 0.05);
+        }
+        .download-icon {
+            font-size: 3rem;
+            color: var(--dark-secondary);
+            margin-bottom: 15px;
+        }
+        .light-mode .download-icon {
+            color: var(--light-secondary);
+        }
+        .download-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .download-text {
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        .download-button {
+            padding: 12px 30px;
+            background: linear-gradient(45deg, var(--dark-accent), var(--dark-secondary));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .light-mode .download-button {
+            background: linear-gradient(45deg, var(--light-accent), var(--light-secondary));
+        }
+        .download-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(67, 97, 238, 0.4);
+        }
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 60px 20px 40px;
+            color: var(--dark-text);
+            opacity: 0.7;
+            font-size: 1.1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+        }
+        .light-mode footer {
+            color: var(--light-text);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .footer-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+        .light-mode .footer-logo {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        .footer-links a {
+            color: var(--dark-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            opacity: 0.8;
+        }
+        .light-mode .footer-links a {
+            color: var(--light-text);
+        }
+        .footer-links a:hover {
+            color: var(--dark-secondary);
+            opacity: 1;
+        }
+        .light-mode .footer-links a:hover {
+            color: var(--light-secondary);
+        }
+        .copyright {
+            margin-top: 20px;
+            font-size: 0.95rem;
+        }
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .tool-header h2 {
+                font-size: 2rem;
+            }
+            
+            .preview-images {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .preview-box {
+                max-width: 100%;
+            }
+        }
+        @media (max-width: 768px) {
+            .logo-text h1 {
+                font-size: 1.6rem;
+            }
+            
+            .tool-content {
+                padding: 30px 20px;
+            }
+            
+            .tool-header h2 {
+                font-size: 1.8rem;
+            }
+            
+            .upload-area {
+                padding: 30px 15px;
+            }
+            
+            .upload-icon {
+                font-size: 3rem;
+            }
+            
+            .upload-text {
+                font-size: 1.1rem;
+            }
+        }
+        @media (max-width: 576px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-tools logo-icon"></i>
+                <div class="logo-text">
+                    <h1>Your Multi Tools</h1>
+                    <div class="domain">www.yourmultitools.space</div>
+                </div>
+            </div>
+            
+            <div class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon toggle-icon"></i>
+                <div class="toggle-text">Dark Mode</div>
+            </div>
+        </header>
+        
+        <div class="tool-content">
+            <div class="tool-header">
+                <h2>JPG to PNG Converter</h2>
+                <p>Convert your JPG images to PNG format with transparency support. Maintain quality while adding the ability to have transparent backgrounds.</p>
+            </div>
+            
+            <div class="upload-area" id="uploadArea">
+                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                <div class="upload-text">Drag & Drop your JPG image here</div>
+                <div class="upload-subtext">or</div>
+                <button class="upload-button" id="browseButton">Browse Files</button>
+                <input type="file" id="fileInput" accept=".jpg, .jpeg">
+            </div>
+            
+            <div class="preview-container" id="previewContainer">
+                <div class="preview-header">
+                    <div class="preview-title">Image Preview</div>
+                    <button class="preview-clear" id="clearButton">
+                        <i class="fas fa-times"></i> Clear
+                    </button>
+                </div>
+                <div class="preview-images">
+                    <div class="preview-box">
+                        <div class="preview-label">Original JPG</div>
+                        <img id="originalImage" class="preview-image" alt="Original JPG">
+                    </div>
+                    <div class="preview-box">
+                        <div class="preview-label">Converted PNG</div>
+                        <canvas id="convertedCanvas" class="preview-image"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="options-container" id="optionsContainer">
+                <div class="options-title">Conversion Options</div>
+                <div class="options-grid">
+                    <div class="option-group">
+                        <div class="option-label">
+                            <i class="fas fa-palette"></i> Background Color
+                        </div>
+                        <input type="color" id="bgColor" class="option-input" value="#ffffff">
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="transparentBg" class="checkbox" checked>
+                            <label for="transparentBg">Transparent Background</label>
+                        </div>
+                    </div>
+                    <div class="option-group">
+                        <div class="option-label">
+                            <i class="fas fa-expand-arrows-alt"></i> Image Quality
+                        </div>
+                        <select id="quality" class="option-input">
+                            <option value="1">Maximum</option>
+                            <option value="0.9" selected>High</option>
+                            <option value="0.7">Medium</option>
+                            <option value="0.5">Low</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="convert-container" id="convertContainer">
+                <button class="convert-button" id="convertButton">
+                    <i class="fas fa-exchange-alt"></i> Convert to PNG
+                </button>
+            </div>
+            
+            <div class="download-container" id="downloadContainer">
+                <i class="fas fa-check-circle download-icon"></i>
+                <div class="download-title">Conversion Complete!</div>
+                <div class="download-text">Your JPG image has been successfully converted to PNG format.</div>
+                <button class="download-button" id="downloadButton">
+                    <i class="fas fa-download"></i> Download PNG
+                </button>
+            </div>
+        </div>
+             
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size
+                const size = Math.random() * 20 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation duration
+                const duration = Math.random() * 20 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                
+                // Random animation delay
+                const delay = Math.random() * 5;
+                particle.style.animationDelay = `${delay}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const toggleIcon = themeToggle.querySelector('.toggle-icon');
+        const toggleText = themeToggle.querySelector('.toggle-text');
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            body.classList.add('light-mode');
+            toggleIcon.classList.replace('fa-moon', 'fa-sun');
+            toggleText.textContent = 'Light Mode';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                toggleIcon.classList.replace('fa-moon', 'fa-sun');
+                toggleText.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'light');
+            } else {
+                toggleIcon.classList.replace('fa-sun', 'fa-moon');
+                toggleText.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+        
+        // JPG to PNG Converter Functionality
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const browseButton = document.getElementById('browseButton');
+        const previewContainer = document.getElementById('previewContainer');
+        const originalImage = document.getElementById('originalImage');
+        const convertedCanvas = document.getElementById('convertedCanvas');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const convertContainer = document.getElementById('convertContainer');
+        const convertButton = document.getElementById('convertButton');
+        const downloadContainer = document.getElementById('downloadContainer');
+        const downloadButton = document.getElementById('downloadButton');
+        const clearButton = document.getElementById('clearButton');
+        const transparentBg = document.getElementById('transparentBg');
+        const bgColor = document.getElementById('bgColor');
+        const quality = document.getElementById('quality');
+        
+        let originalFile = null;
+        let convertedBlob = null;
+        
+        // Browse button click
+        browseButton.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        // File input change
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) {
+                handleFile(e.target.files[0]);
+            }
+        });
+        
+        // Drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            
+            if (e.dataTransfer.files.length) {
+                handleFile(e.dataTransfer.files[0]);
+            }
+        });
+        
+        // Handle file
+        function handleFile(file) {
+            // Check if file is JPG
+            if (!file.type.match('image/jpeg')) {
+                alert('Please select a JPG image file.');
+                return;
+            }
+            
+            originalFile = file;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                originalImage.src = e.target.result;
+                showPreview();
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        // Show preview
+        function showPreview() {
+            uploadArea.style.display = 'none';
+            previewContainer.style.display = 'block';
+            optionsContainer.style.display = 'block';
+            convertContainer.style.display = 'block';
+            downloadContainer.style.display = 'none';
+            
+            // Set canvas dimensions
+            originalImage.onload = () => {
+                convertedCanvas.width = originalImage.naturalWidth;
+                convertedCanvas.height = originalImage.naturalHeight;
+                
+                // Draw initial conversion
+                convertImage();
+            };
+        }
+        
+        // Clear button
+        clearButton.addEventListener('click', () => {
+            resetConverter();
+        });
+        
+        // Reset converter
+        function resetConverter() {
+            uploadArea.style.display = 'block';
+            previewContainer.style.display = 'none';
+            optionsContainer.style.display = 'none';
+            convertContainer.style.display = 'none';
+            downloadContainer.style.display = 'none';
+            fileInput.value = '';
+            originalFile = null;
+            convertedBlob = null;
+        }
+        
+        // Transparent background toggle
+        transparentBg.addEventListener('change', () => {
+            if (previewContainer.style.display === 'block') {
+                convertImage();
+            }
+        });
+        
+        // Background color change
+        bgColor.addEventListener('input', () => {
+            if (previewContainer.style.display === 'block' && !transparentBg.checked) {
+                convertImage();
+            }
+        });
+        
+        // Quality change
+        quality.addEventListener('change', () => {
+            if (previewContainer.style.display === 'block') {
+                convertImage();
+            }
+        });
+        
+        // Convert button
+        convertButton.addEventListener('click', () => {
+            convertButton.disabled = true;
+            convertButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Converting...';
+            
+            setTimeout(() => {
+                convertImage();
+                showDownload();
+                convertButton.disabled = false;
+                convertButton.innerHTML = '<i class="fas fa-exchange-alt"></i> Convert to PNG';
+            }, 500);
+        });
+        
+        // Convert image
+        function convertImage() {
+            const ctx = convertedCanvas.getContext('2d');
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, convertedCanvas.width, convertedCanvas.height);
+            
+            // Fill background
+            if (transparentBg.checked) {
+                // Transparent background
+                ctx.clearRect(0, 0, convertedCanvas.width, convertedCanvas.height);
+            } else {
+                // Colored background
+                ctx.fillStyle = bgColor.value;
+                ctx.fillRect(0, 0, convertedCanvas.width, convertedCanvas.height);
+            }
+            
+            // Draw image
+            ctx.drawImage(originalImage, 0, 0, convertedCanvas.width, convertedCanvas.height);
+            
+            // Create blob for download
+            convertedCanvas.toBlob((blob) => {
+                convertedBlob = blob;
+            }, 'image/png', parseFloat(quality.value));
+        }
+        
+        // Show download
+        function showDownload() {
+            downloadContainer.style.display = 'block';
+        }
+        
+        // Download button
+        downloadButton.addEventListener('click', () => {
+            if (!convertedBlob) return;
+            
+            // Create download link
+            const url = URL.createObjectURL(convertedBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            
+            // Generate filename
+            const originalName = originalFile.name.split('.')[0];
+            a.download = `${originalName}_converted.png`;
+            
+            // Trigger download
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            // Clean up
+            setTimeout(() => {
+                URL.revokeObjectURL(url);
+            }, 100);
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+        });
+    </script>
+</body>
+</html>
