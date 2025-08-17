@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Split PDF - Divide PDF into Multiple Files</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --dark-text: #f0f0f0;
+            --dark-accent: #4361ee;
+            --dark-secondary: #4cc9f0;
+            --dark-hover: #2a2a2a;
+            --dark-shadow: rgba(0, 0, 0, 0.5);
+            
+            --light-bg: #f8f9fa;
+            --light-card: #ffffff;
+            --light-text: #333333;
+            --light-accent: #4361ee;
+            --light-secondary: #3a86ff;
+            --light-hover: #f0f0f0;
+            --light-shadow: rgba(0, 0, 0, 0.1);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease, color 0.3s ease;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        body.light-mode {
+            background-color: var(--light-bg);
+            color: var(--light-text);
+        }
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(67, 97, 238, 0.2);
+            animation: float 15s infinite linear;
+        }
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 20px;
+            position: relative;
+            z-index: 10;
+            flex-wrap: wrap;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--dark-secondary);
+        }
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+        .logo-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+        .logo-text .domain {
+            font-size: 0.9rem;
+            color: var(--dark-text);
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+        .light-mode .logo-text .domain {
+            color: var(--light-text);
+        }
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--dark-card);
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 15px var(--dark-shadow);
+        }
+        .light-mode .theme-toggle {
+            background: var(--light-card);
+            box-shadow: 0 4px 15px var(--light-shadow);
+        }
+        .toggle-icon {
+            font-size: 1.4rem;
+        }
+        .toggle-text {
+            font-weight: 500;
+        }
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', sans-serif;
+        }
+        .light-mode .hero h1 {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero p {
+            font-size: 1.3rem;
+            line-height: 1.7;
+            margin-bottom: 40px;
+            color: var(--dark-text);
+            opacity: 0.9;
+        }
+        .light-mode .hero p {
+            color: var(--light-text);
+        }
+        .split-pdf-container {
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px auto;
+            max-width: 800px;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            border: 1px solid rgba(76, 201, 240, 0.1);
+        }
+        .light-mode .split-pdf-container {
+            background: var(--light-card);
+            box-shadow: 0 10px 30px var(--light-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .split-pdf-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .split-pdf-title {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', sans-serif;
+        }
+        .light-mode .split-pdf-title {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .split-pdf-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--dark-text);
+            opacity: 0.9;
+        }
+        .light-mode .split-pdf-description {
+            color: var(--light-text);
+        }
+        .upload-area {
+            border: 2px dashed var(--dark-accent);
+            border-radius: 15px;
+            padding: 60px 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(30, 30, 30, 0.3);
+        }
+        .light-mode .upload-area {
+            border-color: var(--light-accent);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .upload-area:hover {
+            border-color: var(--dark-secondary);
+            background: rgba(30, 30, 30, 0.4);
+        }
+        .light-mode .upload-area:hover {
+            border-color: var(--light-secondary);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        .upload-icon {
+            font-size: 4rem;
+            color: var(--dark-accent);
+            margin-bottom: 20px;
+        }
+        .light-mode .upload-icon {
+            color: var(--light-accent);
+        }
+        .upload-text {
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+        .file-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(67, 97, 238, 0.1);
+            border-radius: 10px;
+            display: none;
+        }
+        .light-mode .file-info {
+            background: rgba(67, 97, 238, 0.05);
+        }
+        .file-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .file-name {
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+        .file-size {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        .options-panel {
+            margin-bottom: 30px;
+        }
+        .option-group {
+            margin-bottom: 25px;
+        }
+        .option-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        .range-slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: var(--dark-hover);
+            outline: none;
+            appearance: none;
+        }
+        .light-mode .range-slider {
+            background: var(--light-hover);
+        }
+        .range-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--dark-accent);
+            cursor: pointer;
+        }
+        .light-mode .range-slider::-webkit-slider-thumb {
+            background: var(--light-accent);
+        }
+        .range-value {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .checkbox-option input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--dark-accent);
+        }
+        .light-mode .checkbox-option input[type="checkbox"] {
+            accent-color: var(--light-accent);
+        }
+        .process-button {
+            width: 100%;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, var(--dark-accent), var(--dark-secondary));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .light-mode .process-button {
+            background: linear-gradient(45deg, var(--light-accent), var(--light-secondary));
+        }
+        .process-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(67, 97, 238, 0.4);
+        }
+        .processing-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .processing-content {
+            background: var(--dark-card);
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+        }
+        .light-mode .processing-content {
+            background: var(--light-card);
+            box-shadow: 0 10px 30px var(--light-shadow);
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--dark-hover);
+            border-top: 5px solid var(--dark-accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        .light-mode .spinner {
+            border: 5px solid var(--light-hover);
+            border-top: 5px solid var(--light-accent);
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .processing-text {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+        .result-files {
+            display: none;
+            margin-top: 30px;
+        }
+        .result-files.active {
+            display: block;
+        }
+        .file-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .file-item {
+            background: var(--dark-card);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+        .light-mode .file-item {
+            background: var(--light-card);
+        }
+        .file-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.2);
+        }
+        .file-preview {
+            width: 80px;
+            height: 80px;
+            background: var(--dark-hover);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--dark-accent);
+        }
+        .light-mode .file-preview {
+            background: var(--light-hover);
+            color: var(--light-accent);
+        }
+        .file-name-result {
+            font-weight: 500;
+            text-align: center;
+            word-break: break-all;
+        }
+        .download-buttons {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+        .download-btn {
+            flex: 1;
+            padding: 10px;
+            background: var(--dark-accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        .light-mode .download-btn {
+            background: var(--light-accent);
+        }
+        .download-btn:hover {
+            background: var(--dark-secondary);
+        }
+        .light-mode .download-btn:hover {
+            background: var(--light-secondary);
+        }
+        .download-all-btn {
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .light-mode .download-all-btn {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+        }
+        .download-all-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+        .error-message {
+            background: rgba(220, 53, 69, 0.2);
+            border: 1px solid rgba(220, 53, 69, 0.5);
+            color: #f8d7da;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+        .light-mode .error-message {
+            background: rgba(220, 53, 69, 0.1);
+            border-color: rgba(220, 53, 69, 0.3);
+            color: #f5c6cb;
+        }
+        .preview-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .preview-content {
+            width: 90%;
+            height: 90%;
+            background: var(--dark-card);
+            border-radius: 15px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .light-mode .preview-content {
+            background: var(--light-card);
+        }
+        .preview-header {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .light-mode .preview-header {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .preview-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        .close-preview {
+            background: transparent;
+            border: none;
+            color: var(--dark-text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .light-mode .close-preview {
+            color: var(--light-text);
+        }
+        .close-preview:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .light-mode .close-preview:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        .preview-body {
+            flex: 1;
+            padding: 20px;
+            overflow: auto;
+        }
+        .preview-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--dark-text);
+            opacity: 0.7;
+            font-size: 1.1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 60px;
+        }
+        .light-mode footer {
+            color: var(--light-text);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .footer-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+        .light-mode .footer-logo {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        .footer-links a {
+            color: var(--dark-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            opacity: 0.8;
+        }
+        .light-mode .footer-links a {
+            color: var(--light-text);
+        }
+        .footer-links a:hover {
+            color: var(--dark-secondary);
+            opacity: 1;
+        }
+        .light-mode .footer-links a:hover {
+            color: var(--light-secondary);
+        }
+        .copyright {
+            margin-top: 20px;
+            font-size: 0.95rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .split-pdf-title {
+                font-size: 2rem;
+            }
+            .hero p {
+                font-size: 1.1rem;
+            }
+            .split-pdf-container {
+                padding: 30px 20px;
+            }
+            .file-list {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .split-pdf-title {
+                font-size: 1.8rem;
+            }
+            .file-list {
+                grid-template-columns: 1fr;
+            }
+            .download-buttons {
+                flex-direction: column;
+            }
+            .download-btn {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-tools logo-icon"></i>
+                <div class="logo-text">
+                    <h1>Split PDF</h1>
+                    <div class="domain">www.yourmultitools.space</div>
+                </div>
+            </div>
+            
+            <div class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon toggle-icon"></i>
+                <div class="toggle-text">Dark Mode</div>
+            </div>
+        </header>
+        
+        <section class="hero">
+            <h1>Split PDF</h1>
+            <p>Divide a PDF into multiple files by pages or sections. Upload your PDF file and specify how you want to split it.</p>
+        </section>
+        
+        <div class="split-pdf-container">
+            <div class="split-pdf-header">
+                <h2 class="split-pdf-title">Split PDF Tool</h2>
+                <p class="split-pdf-description">Upload your PDF file and choose splitting options to divide it into multiple smaller PDF files. You can split by page range, number of pages per file, or extract specific pages.</p>
+            </div>
+            
+            <div class="upload-area" id="uploadArea">
+                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                <div class="upload-text">Click to upload PDF file or drag and drop here</div>
+                <div class="file-info" id="fileInfo">
+                    <div class="file-details">
+                        <span class="file-name" id="fileName">No file selected</span>
+                        <span class="file-size" id="fileSize"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="options-panel">
+                <div class="option-group">
+                    <label class="option-label">Number of Pages per File:</label>
+                    <input type="range" class="range-slider" id="pagesPerFile" min="1" max="50" value="10">
+                    <div class="range-value">
+                        <span>1</span>
+                        <span id="pagesValue">10</span>
+                        <span>50</span>
+                    </div>
+                </div>
+                
+                <div class="option-group">
+                    <label class="option-label">Start Page:</label>
+                    <input type="number" class="range-slider" id="startPage" min="1" value="1">
+                </div>
+                
+                <div class="option-group">
+                    <label class="option-label">End Page:</label>
+                    <input type="number" class="range-slider" id="endPage" min="1" value="">
+                </div>
+            </div>
+            
+            <button class="process-button" id="processButton">
+                <i class="fas fa-split-alt"></i>
+                Split PDF
+            </button>
+            
+            <div class="error-message" id="errorMessage"></div>
+            
+            <div class="result-files" id="resultFiles">
+                <h3 style="margin-bottom: 20px;">Split Results</h3>
+                <div class="file-list" id="fileList"></div>
+                <button class="download-all-btn" id="downloadAllBtn" style="display: none;">
+                    <i class="fas fa-file-archive"></i>
+                    Download All as ZIP
+                </button>
+            </div>
+        </div>
+        
+       <div class="processing-overlay" id="processingOverlay">
+        <div class="processing-content">
+            <div class="spinner"></div>
+            <div class="processing-text">Processing your PDF...</div>
+        </div>
+    </div>
+
+    <div class="preview-modal" id="previewModal">
+        <div class="preview-content">
+            <div class="preview-header">
+                <div class="preview-title" id="previewTitle">PDF Preview</div>
+                <button class="close-preview" id="closePreview">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="preview-body">
+                <iframe class="preview-iframe" id="previewIframe"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size
+                const size = Math.random() * 20 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation duration
+                const duration = Math.random() * 20 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                
+                // Random animation delay
+                const delay = Math.random() * 5;
+                particle.style.animationDelay = `${delay}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const toggleIcon = themeToggle.querySelector('.toggle-icon');
+        const toggleText = themeToggle.querySelector('.toggle-text');
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            body.classList.add('light-mode');
+            toggleIcon.classList.replace('fa-moon', 'fa-sun');
+            toggleText.textContent = 'Light Mode';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                toggleIcon.classList.replace('fa-moon', 'fa-sun');
+                toggleText.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'light');
+            } else {
+                toggleIcon.classList.replace('fa-sun', 'fa-moon');
+                toggleText.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+        
+        // File Upload Functionality
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const pagesPerFile = document.getElementById('pagesPerFile');
+        const pagesValue = document.getElementById('pagesValue');
+        const startPage = document.getElementById('startPage');
+        const endPage = document.getElementById('endPage');
+        const processButton = document.getElementById('processButton');
+        const errorMessage = document.getElementById('errorMessage');
+        const resultFiles = document.getElementById('resultFiles');
+        const fileList = document.getElementById('fileList');
+        const downloadAllBtn = document.getElementById('downloadAllBtn');
+        const processingOverlay = document.getElementById('processingOverlay');
+        const previewModal = document.getElementById('previewModal');
+        const previewIframe = document.getElementById('previewIframe');
+        const previewTitle = document.getElementById('previewTitle');
+        const closePreview = document.getElementById('closePreview');
+        
+        let selectedFile = null;
+        let splitResults = [];
+        
+        // Update pages value display
+        pagesPerFile.addEventListener('input', function() {
+            pagesValue.textContent = this.value;
+        });
+        
+        // Handle fileupload
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.borderColor = 'var(--dark-secondary)';
+            lightModeCheck();
+        });
+        
+        uploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.style.borderColor = 'var(--dark-accent)';
+            lightModeCheck();
+        });
+        
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.style.borderColor = 'var(--dark-accent)';
+            lightModeCheck();
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type === 'application/pdf') {
+                handleFile(files[0]);
+            } else {
+                showError('Please select a valid PDF file.');
+            }
+        });
+        
+        uploadArea.addEventListener('click', function() {
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = '.pdf';
+            fileInput.click();
+            
+            fileInput.onchange = function() {
+                if (this.files.length > 0 && this.files[0].type === 'application/pdf') {
+                    handleFile(this.files[0]);
+                } else {
+                    showError('Please select a valid PDF file.');
+                }
+            };
+        });
+        
+        function handleFile(file) {
+            selectedFile = file;
+            fileName.textContent = file.name;
+            fileSize.textContent = formatFileSize(file.size);
+            fileInfo.style.display = 'block';
+            
+            // Reset results
+            resultFiles.classList.remove('active');
+            fileList.innerHTML = '';
+            downloadAllBtn.style.display = 'none';
+            splitResults = [];
+        }
+        
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 5000);
+        }
+        
+        function lightModeCheck() {
+            if (body.classList.contains('light-mode')) {
+                uploadArea.style.borderColor = 'var(--light-accent)';
+            } else {
+                uploadArea.style.borderColor = 'var(--dark-accent)';
+            }
+        }
+        
+        // Process button click
+        processButton.addEventListener('click', async function() {
+            if (!selectedFile) {
+                showError('Please upload a PDF file first.');
+                return;
+            }
+            
+            const pagesPerFileValue = parseInt(pagesPerFile.value);
+            const startPageValue = parseInt(startPage.value) || 1;
+            const endPageValue = parseInt(endPage.value);
+            
+            if (endPageValue && endPageValue < startPageValue) {
+                showError('End page must be greater than start page.');
+                return;
+            }
+            
+            // Show processing overlay
+            processingOverlay.style.display = 'flex';
+            
+            try {
+                // Read the file
+                const arrayBuffer = await readFileAsArrayBuffer(selectedFile);
+                
+                // Load the PDF document
+                const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+                const totalPages = pdfDoc.getPageCount();
+                
+                // Validate page range
+                if (startPageValue > totalPages) {
+                    showError(`Start page exceeds document length (${totalPages} pages).`);
+                    processingOverlay.style.display = 'none';
+                    return;
+                }
+                
+                const actualEndPage = endPageValue && endPageValue <= totalPages ? endPageValue : totalPages;
+                
+                // Split the PDF
+                splitResults = await splitPDF(pdfDoc, startPageValue, actualEndPage, pagesPerFileValue);
+                
+                // Hide processing overlay
+                processingOverlay.style.display = 'none';
+                
+                // Show results
+                showResults();
+                
+            } catch (error) {
+                console.error(error);
+                showError('An error occurred while processing the PDF.');
+                processingOverlay.style.display = 'none';
+            }
+        });
+        
+        function readFileAsArrayBuffer(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsArrayBuffer(file);
+            });
+        }
+        
+        async function splitPDF(pdfDoc, startPage, endPage, pagesPerFile) {
+            const results = [];
+            const totalPages = endPage - startPage + 1;
+            const numFiles = Math.ceil(totalPages / pagesPerFile);
+            
+            for (let i = 0; i < numFiles; i++) {
+                const newPdf = await PDFLib.PDFDocument.create();
+                
+                // Calculate the page range for this file
+                const start = startPage - 1 + i * pagesPerFile;
+                let end = start + pagesPerFile;
+                
+                // Ensure we don't go beyond the end page
+                if (end > endPage) {
+                    end = endPage;
+                }
+                
+                // Copy pages from original PDF to new PDF
+                const pages = await newPdf.copyPages(pdfDoc, Array.from({length: end - start}, (_, idx) => start + idx));
+                pages.forEach(page => newPdf.addPage(page));
+                
+                // Save the new PDF
+                const pdfBytes = await newPdf.save();
+                const fileName = `split_${i + 1}.pdf`;
+                
+                results.push({
+                    name: fileName,
+                    data: pdfBytes,
+                    startPage: start + 1,
+                    endPage: end
+                });
+            }
+            
+            return results;
+        }
+        
+        function showResults() {
+            resultFiles.classList.add('active');
+            fileList.innerHTML = '';
+            
+            splitResults.forEach((result, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                
+                fileItem.innerHTML = `
+                    <div class="file-preview">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <div class="file-name-result">${result.name}</div>
+                    <div class="file-name-result" style="font-size: 0.9rem; opacity: 0.8;">Pages ${result.startPage}-${result.endPage}</div>
+                    <div class="download-buttons">
+                        <button class="download-btn" data-index="${index}">
+                            <i class="fas fa-download"></i>
+                            Download
+                        </button>
+                        <button class="download-btn preview-btn" data-index="${index}">
+                            <i class="fas fa-eye"></i>
+                            Preview
+                        </button>
+                    </div>
+                `;
+                
+                fileList.appendChild(fileItem);
+            });
+            
+            if (splitResults.length > 0) {
+                downloadAllBtn.style.display = 'flex';
+            }
+            
+            // Add event listeners for download buttons
+            document.querySelectorAll('.download-btn:not(.preview-btn)').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = e.target.closest('.download-btn').dataset.index;
+                    downloadPDF(splitResults[index].data, splitResults[index].name);
+                });
+            });
+            
+            // Add event listeners for preview buttons
+            document.querySelectorAll('.preview-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = e.target.closest('.download-btn').dataset.index;
+                    previewPDF(splitResults[index].data, splitResults[index].name);
+                });
+            });
+        }
+        
+        function downloadPDF(pdfBytes, fileName) {
+            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            
+            // Clean up
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 100);
+        }
+        
+        function previewPDF(pdfBytes, fileName) {
+            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            
+            previewTitle.textContent = `Preview: ${fileName}`;
+            previewIframe.src = url;
+            previewModal.style.display = 'flex';
+        }
+        
+        // Close preview
+        closePreview.addEventListener('click', () => {
+            previewModal.style.display = 'none';
+            previewIframe.src = '';
+        });
+        
+        // Download all as ZIP
+        downloadAllBtn.addEventListener('click', async () => {
+            if (splitResults.length === 0) return;
+            
+            processingOverlay.style.display = 'flex';
+            
+            try {
+                const zip = new JSZip();
+                
+                // Add each PDF to the zip
+                splitResults.forEach(result => {
+                    zip.file(result.name, result.data);
+                });
+                
+                // Generate the zip file
+                const content = await zip.generateAsync({ type: 'blob' });
+                
+                // Download the zip
+                saveAs(content, 'split_pdfs.zip');
+                
+                processingOverlay.style.display = 'none';
+            } catch (error) {
+                console.error('Error creating ZIP file:', error);
+                showError('Failed to create ZIP file.');
+                processingOverlay.style.display = 'none';
+            }
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+        });
+    </script>
+</body>
+</html>
