@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel to PDF Converter - Your Multi Tools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --dark-text: #f0f0f0;
+            --dark-accent: #4361ee;
+            --dark-secondary: #4cc9f0;
+            --dark-hover: #2a2a2a;
+            --dark-shadow: rgba(0, 0, 0, 0.5);
+            --light-bg: #f8f9fa;
+            --light-card: #ffffff;
+            --light-text: #333333;
+            --light-accent: #4361ee;
+            --light-secondary: #3a86ff;
+            --light-hover: #f0f0f0;
+            --light-shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease, color 0.3s ease;
+        }
+
+        /* Animated Background */
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #0f0c29, #302b63, #24243e, #1e3c72, #2a5298);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            z-index: -2;
+            filter: blur(50px);
+            opacity: 0.4;
+        }
+
+        /* Light Mode Background */
+        body.light-mode::before {
+            background: linear-gradient(45deg, #e0eafc, #cfdef3, #d4c9f0, #f5f7fa);
+            animation: gradientShift 20s ease infinite reverse;
+            opacity: 0.3;
+            filter: blur(40px);
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Overlay for better text readability */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(18, 18, 18, 0.85); /* Dark overlay */
+            z-index: -1;
+        }
+
+        body.light-mode::after {
+            background: rgba(248, 249, 250, 0.9); /* Light overlay */
+        }
+
+        body.light-mode {
+            background-color: var(--light-bg);
+            color: var(--light-text);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            font-size: 1.8rem;
+            color: var(--dark-secondary);
+        }
+
+        .logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .light-mode .logo-text {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--dark-card);
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 15px var(--dark-shadow);
+        }
+
+        .light-mode .theme-toggle {
+            background: var(--light-card);
+            box-shadow: 0 4px 15px var(--light-shadow);
+        }
+
+        .toggle-icon {
+            font-size: 1.2rem;
+        }
+
+        .toggle-text {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .tool-container {
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            margin-bottom: 40px;
+            border: 1px solid rgba(76, 201, 240, 0.1);
+        }
+
+        .light-mode .tool-container {
+            background: var(--light-card);
+            box-shadow: 0 10px 30px var(--light-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .tool-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .light-mode .tool-header h1 {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tool-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--dark-accent);
+            border-radius: 15px;
+            padding: 40px 20px;
+            text-align: center;
+            background: rgba(30, 30, 30, 0.5);
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .light-mode .upload-area {
+            background: rgba(255, 255, 255, 0.5);
+            border-color: var(--light-accent);
+        }
+
+        .upload-area:hover {
+            border-color: var(--dark-secondary);
+            background: rgba(30, 30, 30, 0.7);
+        }
+
+        .light-mode .upload-area:hover {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: var(--light-secondary);
+        }
+
+        .upload-area i {
+            font-size: 3rem;
+            color: var(--dark-secondary);
+            margin-bottom: 15px;
+        }
+
+        .light-mode .upload-area i {
+            color: var(--light-secondary);
+        }
+
+        .upload-area p {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .convert-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 30px;
+            background: linear-gradient(45deg, var(--dark-accent), var(--dark-secondary));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .light-mode .convert-btn {
+            background: linear-gradient(45deg, var(--light-accent), var(--light-secondary));
+        }
+
+        .convert-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(67, 97, 238, 0.4);
+        }
+
+        .status {
+            margin-top: 20px;
+            font-size: 1rem;
+            opacity: 0.9;
+            text-align: center;
+        }
+
+        .error {
+            color: #ef476f;
+        }
+
+        .success {
+            color: #06d6a0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--dark-text);
+            opacity: 0.7;
+            font-size: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 40px;
+        }
+
+        .light-mode footer {
+            color: var(--light-text);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .tool-header h1 {
+                font-size: 2rem;
+            }
+            .upload-area {
+                padding: 30px 15px;
+            }
+            .upload-area i {
+                font-size: 2.2rem;
+            }
+            .upload-area p {
+                font-size: 1.1rem;
+            }
+            .convert-btn {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-tools logo-icon"></i>
+                <div class="logo-text">Your Multi Tools</div>
+            </div>
+            <div class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon toggle-icon"></i>
+                <div class="toggle-text">Dark Mode</div>
+            </div>
+        </header>
+
+        <div class="tool-container">
+            <div class="tool-header">
+                <h1>Excel to PDF Converter</h1>
+                <p>Convert your Excel (.xlsx, .xls, .csv) files to PDF format instantly. No installation required.</p>
+            </div>
+
+            <div class="upload-area" id="uploadArea">
+                <i class="fas fa-file-excel"></i>
+                <p>Click or drag & drop your Excel file here</p>
+                <small>Supports .xlsx, .xls, and .csv</small>
+                <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" class="file-input">
+            </div>
+
+            <button id="convertBtn" class="convert-btn" disabled>
+                Convert to PDF
+            </button>
+
+            <div id="status" class="status"></div>
+        </div>
+
+    <!-- ✅ Correct Order: jspdf.umd + autotable -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const toggleIcon = themeToggle.querySelector('.toggle-icon');
+        const toggleText = themeToggle.querySelector('.toggle-text');
+
+        if (localStorage.getItem('theme') === 'light') {
+            body.classList.add('light-mode');
+            toggleIcon.classList.replace('fa-moon', 'fa-sun');
+            toggleText.textContent = 'Light Mode';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            if (body.classList.contains('light-mode')) {
+                toggleIcon.classList.replace('fa-moon', 'fa-sun');
+                toggleText.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'light');
+            } else {
+                toggleIcon.classList.replace('fa-sun', 'fa-moon');
+                toggleText.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // File Upload & Convert
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const convertBtn = document.getElementById('convertBtn');
+        const status = document.getElementById('status');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = 'var(--dark-secondary)';
+        });
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.borderColor = 'var(--dark-accent)';
+        });
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = 'var(--dark-accent)';
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                handleFile();
+            }
+        });
+
+        fileInput.addEventListener('change', handleFile);
+
+        function handleFile() {
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            const validTypes = ['.xlsx', '.xls', '.csv'];
+            const ext = '.' + file.name.split('.').pop().toLowerCase();
+
+            if (!validTypes.includes(ext)) {
+                status.innerHTML = '<span class="error">❌ Only .xlsx, .xls, .csv allowed.</span>';
+                convertBtn.disabled = true;
+                return;
+            }
+
+            if (file.size > 10 * 1024 * 1024) { // 10MB
+                status.innerHTML = '<span class="error">❌ File too large (max 10MB).</span>';
+                convertBtn.disabled = true;
+                return;
+            }
+
+            status.innerHTML = `<span>📄 Selected: ${file.name}</span>`;
+            convertBtn.disabled = false;
+        }
+
+        convertBtn.addEventListener('click', async () => {
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            status.innerHTML = '<span>🔄 Processing...</span>';
+            convertBtn.disabled = true;
+            convertBtn.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> Converting...';
+
+            try {
+                const data = await file.arrayBuffer();
+                let workbook;
+                const ext = file.name.split('.').pop().toLowerCase();
+
+                if (ext === 'csv') {
+                    const decoder = new TextDecoder('utf-8');
+                    const csvText = decoder.decode(data);
+                    const lines = csvText.split('\n').filter(line => line.trim());
+                    const rows = lines.map(line => line.split(',').map(cell => cell.trim()));
+                    generatePDF(rows, file.name.replace('.csv', '.pdf'));
+                } else {
+                    workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+
+                    if (jsonData.length === 0) {
+                        status.innerHTML = '<span class="error">❌ No data found in the sheet.</span>';
+                        convertBtn.innerHTML = 'Convert to PDF';
+                        convertBtn.disabled = false;
+                        return;
+                    }
+
+                    generatePDF(jsonData, file.name.replace(/\.[^/.]+$/, '') + '.pdf');
+                }
+            } catch (error) {
+                console.error("Conversion Error:", error);
+                status.innerHTML = '<span class="error">❌ Conversion failed. Try again.</span>';
+            } finally {
+                convertBtn.innerHTML = 'Convert to PDF';
+                convertBtn.disabled = false;
+            }
+        });
+
+        function generatePDF(data, filename) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('l', 'pt', 'a4');
+            doc.autoTable({
+                head: [data[0]],
+                body: data.slice(1),
+                theme: 'grid',
+                styles: { fontSize: 10, cellPadding: 5 },
+                headStyles: { fillColor: [67, 97, 238], textColor: [255, 255, 255] },
+                margin: { top: 30, left: 20, right: 20 },
+                pageBreak: 'auto'
+            });
+            doc.save(filename);
+            status.innerHTML = `<span class="success">✅ Successfully saved as ${filename}</span>`;
+        }
+    </script>
+</body>
+</html>
