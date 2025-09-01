@@ -1,76 +1,35 @@
 {
-  "tool": {
+  "app": {
     "name": "PDF to Excel Converter",
-    "version": "2.1.0",
-    "description": "An online tool for converting PDF tables and forms into editable Excel spreadsheets while preserving formatting, formulas, and data structure.",
-    "features": [
-      "Batch conversion support",
-      "OCR for scanned documents",
-      "Table detection algorithms",
-      "Format retention (fonts, colors, alignment)",
-      "Formula extraction",
-      "Data validation rules",
-      "Merge cell recognition",
-      "Cloud processing",
-      "Auto-layout detection"
-    ],
-    "inputFormats": [".pdf", ".pdf/a"],
-    "outputFormats": [".xlsx", ".xls", ".csv"],
-    "limitations": {
-      "maxFileSize": "50MB",
-      "maxPages": 500,
-      "dailyConversions": 100,
-      "supportedLanguages": ["English", "Spanish", "French", "German", "20+ languages"]
-    },
-    "processingOptions": {
-      "ocrEnabled": true,
-      "autoTableDetection": true,
-      "outputLayout": {
-        "preserveFormatting": true,
-        "extractImages": false,
-        "headerDetection": true
-      }
-    },
-    "compatibility": {
-      "webBrowsers": ["Chrome 70+", "Firefox 65+", "Safari 12+", "Edge 79+"],
-      "apiAccess": true,
-      "mobileSupport": true
-    },
-    "pricingTiers": [
-      {
-        "plan": "Free",
-        "conversions": "10/month",
-        "features": ["Basic conversion", "5MB file limit"]
-      },
-      {
-        "plan": "Pro",
-        "conversions": "Unlimited",
-        "features": ["Priority processing", "OCR included", "Batch processing"]
-      }
-    ],
-    "security": {
-      "encryption": "TLS 1.3",
-      "dataRetention": "24 hours",
-      "compliance": ["GDPR", "SOC 2"]
-    },
-    "integrations": ["Google Drive", "Dropbox", "OneDrive", "REST API"],
-    "support": {
-      "email": "support@pdfexcelconverter.com",
-      "knowledgeBase": true,
-      "liveChat": true
+    "version": "1.0.0",
+    "domain": "www.yourmultitools.space"
+  },
+  "features": {
+    "maxFileSize": 50,
+    "supportedFormats": ["xlsx", "csv", "ods"],
+    "tableDetection": ["auto", "manual"],
+    "options": {
+      "preserveFormatting": true,
+      "extractImages": false,
+      "skipEmptyCells": true
     }
   },
-  "conversionProcess": {
-    "step1": "Upload PDF file(s)",
-    "step2": "Configure conversion settings",
-    "step3": "Process conversion (cloud-based)",
-    "step4": "Preview results",
-    "step5": "Download Excel file"
+  "ui": {
+    "themes": ["dark", "light"],
+    "defaultTheme": "dark",
+    "animations": {
+      "particles": true,
+      "floating": true
+    }
   },
-  "sampleUseCases": [
-    "Financial reports digitization",
-    "Invoice processing",
-    "Data extraction from research papers",
-    "Form processing automation"
-  ]
+  "conversion": {
+    "quality": "high",
+    "retryAttempts": 3,
+    "timeout": 300000
+  },
+  "privacy": {
+    "localProcessing": true,
+    "dataRetention": "none",
+    "cookies": ["theme_preference"]
+  }
 }
