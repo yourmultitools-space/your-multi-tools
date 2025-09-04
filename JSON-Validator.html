@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Validator - Validate and Format JSON Data</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --dark-text: #f0f0f0;
+            --dark-accent: #4361ee;
+            --dark-secondary: #4cc9f0;
+            --dark-hover: #2a2a2a;
+            --dark-shadow: rgba(0, 0, 0, 0.5);
+            --light-bg: #f8f9fa;
+            --light-card: #ffffff;
+            --light-text: #333333;
+            --light-accent: #4361ee;
+            --light-secondary: #3a86ff;
+            --light-hover: #f0f0f0;
+            --light-shadow: rgba(0, 0, 0, 0.1);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease, color 0.3s ease;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        body.light-mode {
+            background-color: var(--light-bg);
+            color: var(--light-text);
+        }
+        /* Particles background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(67, 97, 238, 0.2);
+            animation: float 15s infinite linear;
+        }
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 20px;
+            position: relative;
+            z-index: 10;
+            flex-wrap: wrap;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--dark-secondary);
+        }
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+        .logo-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+        .logo-text .domain {
+            font-size: 0.9rem;
+            color: var(--dark-text);
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+        .light-mode .logo-text .domain {
+            color: var(--light-text);
+        }
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--dark-card);
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 15px var(--dark-shadow);
+        }
+        .light-mode .theme-toggle {
+            background: var(--light-card);
+            box-shadow: 0 4px 15px var(--light-shadow);
+        }
+        .toggle-icon {
+            font-size: 1.4rem;
+        }
+        .toggle-text {
+            font-weight: 500;
+        }
+        /* Main Content */
+        main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .tool-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .tool-header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', sans-serif;
+        }
+        .light-mode .tool-header h1 {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .tool-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .json-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        @media (min-width: 768px) {
+            .json-container {
+                flex-direction: row;
+            }
+        }
+        .json-panel {
+            flex: 1;
+            background: var(--dark-card);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            border: 1px solid rgba(76, 201, 240, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        .light-mode .json-panel {
+            background: var(--light-card);
+            box-shadow: 0 10px 30px var(--light-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .light-mode .panel-header {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .panel-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+        .light-mode .panel-title {
+            color: var(--light-text);
+        }
+        .json-input, .json-output {
+            flex: 1;
+            width: 100%;
+            min-height: 300px;
+            background: rgba(0, 0, 0, 0.2);
+            border: none;
+            border-radius: 10px;
+            padding: 15px;
+            color: var(--dark-text);
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            resize: none;
+            outline: none;
+        }
+        .light-mode .json-input, .light-mode .json-output {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light-text);
+        }
+        .json-output {
+            background: rgba(0, 0, 0, 0.1);
+            pointer-events: none;
+        }
+        .light-mode .json-output {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, var(--dark-accent), var(--dark-secondary));
+            color: white;
+        }
+        .light-mode .btn-primary {
+            background: linear-gradient(45deg, var(--light-accent), var(--light-secondary));
+        }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--dark-text);
+        }
+        .light-mode .btn-secondary {
+            background: rgba(0, 0, 0, 0.1);
+            color: var(--light-text);
+        }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(67, 97, 238, 0.4);
+        }
+        .btn:active {
+            transform: translateY(-1px);
+        }
+        .status {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 500;
+        }
+        .status.valid {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+        .status.invalid {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .status-icon {
+            font-size: 1.5rem;
+        }
+        .features {
+            max-width: 1000px;
+            margin: 0 auto;
+            margin-top: 40px;
+        }
+        .features-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .features-header h2 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', sans-serif;
+        }
+        .light-mode .features-header h2 {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        .feature-card {
+            background: var(--dark-card);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            border: 1px solid rgba(76, 201, 240, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .light-mode .feature-card {
+            background: var(--light-card);
+            box-shadow: 0 10px 30px var(--light-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--dark-secondary);
+            margin-bottom: 20px;
+        }
+        .light-mode .feature-icon {
+            color: var(--light-secondary);
+        }
+        .feature-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: var(--dark-text);
+        }
+        .light-mode .feature-card h3 {
+            color: var(--light-text);
+        }
+        .feature-card p {
+            color: var(--dark-text);
+            opacity: 0.8;
+            line-height: 1.7;
+        }
+        .light-mode .feature-card p {
+            color: var(--light-text);
+            opacity: 0.9;
+        }
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 60px 20px 40px;
+            color: var(--dark-text);
+            opacity: 0.7;
+            font-size: 1.1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+        }
+        .light-mode footer {
+            color: var(--light-text);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .footer-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+        .light-mode .footer-logo {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        .footer-links a {
+            color: var(--dark-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            opacity: 0.8;
+        }
+        .light-mode .footer-links a {
+            color: var(--light-text);
+        }
+        .footer-links a:hover {
+            color: var(--dark-secondary);
+            opacity: 1;
+        }
+        .light-mode .footer-links a:hover {
+            color: var(--light-secondary);
+        }
+        .copyright {
+            margin-top: 20px;
+            font-size: 0.95rem;
+        }
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .tool-header h1 {
+                font-size: 2.5rem;
+            }
+        }
+        @media (max-width: 992px) {
+            .tool-header h1 {
+                font-size: 2.2rem;
+            }
+            .json-panel {
+                padding: 15px;
+            }
+        }
+        @media (max-width: 768px) {
+            .tool-header h1 {
+                font-size: 2rem;
+            }
+            .tool-header p {
+                font-size: 1.1rem;
+            }
+            .json-container {
+                flex-direction: column;
+            }
+            .controls {
+                justify-content: center;
+            }
+        }
+        @media (max-width: 576px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            .tool-header h1 {
+                font-size: 1.8rem;
+            }
+            .json-input, .json-output {
+                min-height: 250px;
+                font-size: 0.9rem;
+            }
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-code logo-icon"></i>
+                <div class="logo-text">
+                    <h1>JSON Validator</h1>
+                    <div class="domain">www.yourmultitools.space</div>
+                </div>
+            </div>
+            <div class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon toggle-icon"></i>
+                <div class="toggle-text">Dark Mode</div>
+            </div>
+        </header>
+        
+        <main>
+            <div class="tool-header">
+                <h1>JSON Validator & Formatter</h1>
+                <p>Validate, format, and beautify your JSON data with syntax highlighting. Perfect for developers, API testing, and debugging.</p>
+            </div>
+            
+            <div class="status" id="status" style="display: none;">
+                <i class="fas fa-check-circle status-icon"></i>
+                <span id="statusText">Your JSON is valid!</span>
+            </div>
+            
+            <div class="json-container">
+                <div class="json-panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">Input JSON</h3>
+                        <div class="actions">
+                            <button class="btn btn-secondary" id="clearBtn">
+                                <i class="fas fa-trash"></i> Clear
+                            </button>
+                        </div>
+                    </div>
+                    <textarea class="json-input" id="jsonInput" placeholder="Paste your JSON data here..."></textarea>
+                </div>
+                
+                <div class="json-panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">Formatted JSON</h3>
+                        <div class="actions">
+                            <button class="btn btn-secondary" id="copyBtn">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                    </div>
+                    <textarea class="json-output" id="jsonOutput" placeholder="Formatted JSON will appear here..."></textarea>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button class="btn btn-primary" id="validateBtn">
+                    <i class="fas fa-check-circle"></i> Validate JSON
+                </button>
+                <button class="btn btn-primary" id="formatBtn">
+                    <i class="fas fa-align-left"></i> Format JSON
+                </button>
+                <button class="btn btn-primary" id="minifyBtn">
+                    <i class="fas fa-compress-alt"></i> Minify JSON
+                </button>
+                <button class="btn btn-secondary" id="sampleBtn">
+                    <i class="fas fa-file-alt"></i> Load Sample
+                </button>
+            </div>
+            
+            <div class="features">
+                <div class="features-header">
+                    <h2>Features</h2>
+                    <p>Everything you need for JSON validation and formatting</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-check-circle feature-icon"></i>
+                        <h3>Validation</h3>
+                        <p>Instantly check if your JSON is valid with detailed error reporting including line numbers and error descriptions.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-align-left feature-icon"></i>
+                        <h3>Formatting</h3>
+                        <p>Beautify your JSON with proper indentation and spacing for better readability and debugging.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-compress-alt feature-icon"></i>
+                        <h3>Minification</h3>
+                        <p>Remove all unnecessary whitespace to create compact JSON for efficient storage and transmission.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-highlighter feature-icon"></i>
+                        <h3>Syntax Highlighting</h3>
+                        <p>Color-coded JSON elements make it easy to identify objects, arrays, strings, numbers, and booleans.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-clipboard feature-icon"></i>
+                        <h3>Copy to Clipboard</h3>
+                        <p>One-click copy functionality to easily transfer your formatted JSON to other applications.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-desktop feature-icon"></i>
+                        <h3>Fully Responsive</h3>
+                        <p>Works perfectly on desktop, tablet, and mobile devices with a user-friendly interface.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+            
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                // Random size
+                const size = Math.random() * 20 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                // Random animation duration
+                const duration = Math.random() * 20 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                // Random animation delay
+                const delay = Math.random() * 5;
+                particle.style.animationDelay = `${delay}s`;
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const toggleIcon = themeToggle.querySelector('.toggle-icon');
+        const toggleText = themeToggle.querySelector('.toggle-text');
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            body.classList.add('light-mode');
+            toggleIcon.classList.replace('fa-moon', 'fa-sun');
+            toggleText.textContent = 'Light Mode';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            if (body.classList.contains('light-mode')) {
+                toggleIcon.classList.replace('fa-moon', 'fa-sun');
+                toggleText.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'light');
+            } else {
+                toggleIcon.classList.replace('fa-sun', 'fa-moon');
+                toggleText.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+        
+        // DOM Elements
+        const jsonInput = document.getElementById('jsonInput');
+        const jsonOutput = document.getElementById('jsonOutput');
+        const validateBtn = document.getElementById('validateBtn');
+        const formatBtn = document.getElementById('formatBtn');
+        const minifyBtn = document.getElementById('minifyBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const sampleBtn = document.getElementById('sampleBtn');
+        const status = document.getElementById('status');
+        const statusText = document.getElementById('statusText');
+        
+        // Sample JSON data
+        const sampleJSON = {
+            "name": "John Doe",
+            "age": 35,
+            "email": "john.doe@example.com",
+            "isActive": true,
+            "roles": ["user", "admin"],
+            "address": {
+                "street": "123 Main St",
+                "city": "New York",
+                "zipcode": "10001"
+            },
+            "preferences": {
+                "theme": "dark",
+                "notifications": {
+                    "email": true,
+                    "sms": false
+                }
+            }
+        };
+        
+        // Format JSON with proper indentation
+        function formatJSON(jsonStr) {
+            try {
+                const jsonObj = JSON.parse(jsonStr);
+                return JSON.stringify(jsonObj, null, 2);
+            } catch (error) {
+                throw error;
+            }
+        }
+        
+        // Minify JSON (remove whitespace)
+        function minifyJSON(jsonStr) {
+            try {
+                const jsonObj = JSON.parse(jsonStr);
+                return JSON.stringify(jsonObj);
+            } catch (error) {
+                throw error;
+            }
+        }
+        
+        // Validate JSON
+        function validateJSON(jsonStr) {
+            try {
+                JSON.parse(jsonStr);
+                return { valid: true, error: null };
+            } catch (error) {
+                return { valid: false, error: error.message };
+            }
+        }
+        
+        // Display status message
+        function showStatus(message, isValid) {
+            status.style.display = 'flex';
+            status.className = 'status';
+            if (isValid) {
+                status.classList.add('valid');
+                status.innerHTML = `<i class="fas fa-check-circle status-icon"></i><span>${message}</span>`;
+            } else {
+                status.classList.add('invalid');
+                status.innerHTML = `<i class="fas fa-exclamation-circle status-icon"></i><span>${message}</span>`;
+            }
+        }
+        
+        // Validate JSON
+        validateBtn.addEventListener('click', () => {
+            const input = jsonInput.value.trim();
+            if (!input) {
+                showStatus('Please enter some JSON data', false);
+                return;
+            }
+            
+            const result = validateJSON(input);
+            if (result.valid) {
+                showStatus('Your JSON is valid!', true);
+                // Auto-format if valid
+                try {
+                    jsonOutput.value = formatJSON(input);
+                } catch (e) {
+                    jsonOutput.value = 'Error formatting output';
+                }
+            } else {
+                showStatus(`Invalid JSON: ${result.error}`, false);
+                jsonOutput.value = 'Invalid JSON - Check input for errors';
+            }
+        });
+        
+        // Format JSON
+        formatBtn.addEventListener('click', () => {
+            const input = jsonInput.value.trim();
+            if (!input) {
+                showStatus('Please enter some JSON data', false);
+                return;
+            }
+            
+            try {
+                const formatted = formatJSON(input);
+                jsonOutput.value = formatted;
+                showStatus('JSON formatted successfully!', true);
+            } catch (error) {
+                showStatus(`Invalid JSON: ${error.message}`, false);
+                jsonOutput.value = 'Error formatting JSON';
+            }
+        });
+        
+        // Minify JSON
+        minifyBtn.addEventListener('click', () => {
+            const input = jsonInput.value.trim();
+            if (!input) {
+                showStatus('Please enter some JSON data', false);
+                return;
+            }
+            
+            try {
+                const minified = minifyJSON(input);
+                jsonOutput.value = minified;
+                showStatus('JSON minified successfully!', true);
+            } catch (error) {
+                showStatus(`Invalid JSON: ${error.message}`, false);
+                jsonOutput.value = 'Error minifying JSON';
+            }
+        });
+        
+        // Clear input and output
+        clearBtn.addEventListener('click', () => {
+            jsonInput.value = '';
+            jsonOutput.value = '';
+            status.style.display = 'none';
+            jsonInput.focus();
+        });
+        
+        // Copy output to clipboard
+        copyBtn.addEventListener('click', () => {
+            if (!jsonOutput.value || jsonOutput.value === 'Invalid JSON - Check input for errors') {
+                showStatus('Nothing to copy', false);
+                return;
+            }
+            
+            jsonOutput.select();
+            document.execCommand('copy');
+            
+            showStatus('Copied to clipboard!', true);
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 3000);
+        });
+        
+        // Load sample JSON
+        sampleBtn.addEventListener('click', () => {
+            jsonInput.value = JSON.stringify(sampleJSON, null, 2);
+            validateBtn.click(); // Automatically validate the sample
+        });
+        
+        // Auto-validate on input (with debounce)
+        let validateTimeout;
+        jsonInput.addEventListener('input', () => {
+            // Clear previous timeout
+            clearTimeout(validateTimeout);
+            
+            // Set new timeout
+            validateTimeout = setTimeout(() => {
+                const input = jsonInput.value.trim();
+                if (input) {
+                    const result = validateJSON(input);
+                    if (result.valid) {
+                        try {
+                            jsonOutput.value = formatJSON(input);
+                            showStatus('Valid JSON', true);
+                        } catch (e) {
+                            jsonOutput.value = 'Error formatting output';
+                        }
+                    } else {
+                        jsonOutput.value = 'Invalid JSON - Check input for errors';
+                        showStatus(`Invalid JSON: ${result.error}`, false);
+                    }
+                } else {
+                    jsonOutput.value = '';
+                    status.style.display = 'none';
+                }
+            }, 500); // 500ms debounce
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            
+            // Add syntax highlighting effect by coloring different parts of JSON
+            // This is a simplified version of syntax highlighting
+            jsonInput.addEventListener('input', function() {
+                // In a real implementation, you would use a library like Prism.js
+                // For now, we'll just use the theme colors
+            });
+            
+            // Focus on input when page loads
+            jsonInput.focus();
+        });
+    </script>
+</body>
+</html>
