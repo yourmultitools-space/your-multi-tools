@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XML Validator - Your Multi Tools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --dark-text: #f0f0f0;
+            --dark-accent: #4361ee;
+            --dark-secondary: #4cc9f0;
+            --dark-hover: #2a2a2a;
+            --dark-shadow: rgba(0, 0, 0, 0.5);
+            
+            --light-bg: #f8f9fa;
+            --light-card: #ffffff;
+            --light-text: #333333;
+            --light-accent: #4361ee;
+            --light-secondary: #3a86ff;
+            --light-hover: #f0f0f0;
+            --light-shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease, color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body.light-mode {
+            background-color: var(--light-bg);
+            color: var(--light-text);
+        }
+
+        /* Particles background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(67, 97, 238, 0.2);
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 20px;
+            position: relative;
+            z-index: 10;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--dark-secondary);
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .logo-text .domain {
+            font-size: 0.9rem;
+            color: var(--dark-text);
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .logo-text .domain {
+            color: var(--light-text);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--dark-card);
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 15px var(--dark-shadow);
+        }
+
+        .light-mode .theme-toggle {
+            background: var(--light-card);
+            box-shadow: 0 4px 15px var(--light-shadow);
+        }
+
+        .toggle-icon {
+            font-size: 1.4rem;
+        }
+
+        .toggle-text {
+            font-weight: 500;
+        }
+
+        /* Tool Header */
+        .tool-header {
+            text-align: center;
+            padding: 30px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .tool-header h2 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .light-mode .tool-header h2 {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tool-header p {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            margin-bottom: 30px;
+            color: var(--dark-text);
+            opacity: 0.9;
+        }
+
+        .light-mode .tool-header p {
+            color: var(--light-text);
+        }
+
+        /* Tool Container */
+        .tool-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        @media (min-width: 992px) {
+            .tool-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .tool-section {
+            background: var(--dark-card);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(76, 201, 240, 0.1);
+        }
+
+        .light-mode .tool-section {
+            background: var(--light-card);
+            box-shadow: 0 10px 30px var(--light-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .tool-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--dark-accent), var(--dark-secondary));
+        }
+
+        .light-mode .tool-section::before {
+            background: linear-gradient(90deg, var(--light-accent), var(--light-secondary));
+        }
+
+        .tool-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--dark-secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .light-mode .tool-section h3 {
+            color: var(--light-secondary);
+        }
+
+        .tool-section h3 i {
+            font-size: 1.3rem;
+        }
+
+        /* Editor */
+        .editor-container {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            height: 400px;
+        }
+
+        #line-numbers {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 50px;
+            height: 100%;
+            padding: 15px 5px;
+            background-color: rgba(30, 30, 30, 0.8);
+            color: #888;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow: hidden;
+            text-align: right;
+            border-right: 1px solid rgba(76, 201, 240, 0.2);
+        }
+
+        .light-mode #line-numbers {
+            background-color: rgba(240, 240, 240, 0.8);
+            color: #666;
+        }
+
+        #xml-input {
+            width: 100%;
+            height: 100%;
+            padding: 15px 15px 15px 65px;
+            border: none;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            resize: none;
+            background-color: rgba(25, 25, 35, 0.7);
+            color: var(--dark-text);
+            tab-size: 4;
+            -moz-tab-size: 4;
+        }
+
+        .light-mode #xml-input {
+            background-color: rgba(250, 250, 255, 0.9);
+            color: var(--light-text);
+        }
+
+        /* Buttons */
+        .tool-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tool-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(45deg, var(--dark-accent), var(--dark-secondary));
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .light-mode .tool-btn {
+            background: linear-gradient(45deg, var(--light-accent), var(--light-secondary));
+        }
+
+        .tool-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(67, 97, 238, 0.4);
+        }
+
+        .tool-btn.secondary {
+            background: rgba(67, 97, 238, 0.15);
+            color: var(--dark-text);
+        }
+
+        .light-mode .tool-btn.secondary {
+            background: rgba(67, 97, 238, 0.08);
+            color: var(--light-text);
+        }
+
+        /* Results */
+        .results-container {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: rgba(30, 30, 30, 0.7);
+        }
+
+        .light-mode .results-container {
+            background-color: rgba(240, 240, 240, 0.7);
+        }
+
+        .validation-result {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            background-color: rgba(46, 204, 113, 0.15);
+            border-left: 4px solid #2ecc71;
+        }
+
+        .validation-result.error {
+            background-color: rgba(231, 76, 60, 0.15);
+            border-left: 4px solid #e74c3c;
+        }
+
+        .validation-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .validation-details {
+            font-family: monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        .light-mode .validation-details {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .error-line {
+            background-color: rgba(231, 76, 60, 0.2);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px 30px;
+            color: var(--dark-text);
+            opacity: 0.7;
+            font-size: 1.1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+        }
+
+        .light-mode footer {
+            color: var(--light-text);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .footer-logo {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--dark-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .light-mode .footer-links a {
+            color: var(--light-text);
+        }
+
+        .footer-links a:hover {
+            color: var(--dark-secondary);
+            opacity: 1;
+        }
+
+        .light-mode .footer-links a:hover {
+            color: var(--light-secondary);
+        }
+
+        .copyright {
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .tool-header h2 {
+                font-size: 2.2rem;
+            }
+            
+            .tool-header p {
+                font-size: 1.1rem;
+            }
+            
+            .tool-buttons {
+                flex-direction: column;
+            }
+            
+            .tool-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .tool-header h2 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-check-circle logo-icon"></i>
+                <div class="logo-text">
+                    <h1>XML Validator</h1>
+                    <div class="domain">www.yourmultitools.space</div>
+                </div>
+            </div>
+            
+            <div class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon toggle-icon"></i>
+                <div class="toggle-text">Dark Mode</div>
+            </div>
+        </header>
+        
+        <section class="tool-header">
+            <h2>XML Validator Tool</h2>
+            <p>Validate your XML documents against syntax errors. Get detailed error reports with line numbers to quickly fix issues in your XML code.</p>
+        </section>
+        
+        <main>
+            <div class="tool-container">
+                <div class="tool-section">
+                    <h3><i class="fas fa-code"></i> XML Input</h3>
+                    <div class="editor-container">
+                        <div id="line-numbers">1</div>
+                        <textarea id="xml-input" placeholder="Paste your XML here..." spellcheck="false"></textarea>
+                    </div>
+                    <div class="tool-buttons">
+                        <button class="tool-btn" id="validate-btn">
+                            <i class="fas fa-check-circle"></i> Validate XML
+                        </button>
+                        <button class="tool-btn secondary" id="format-btn">
+                            <i class="fas fa-indent"></i> Format XML
+                        </button>
+                        <button class="tool-btn secondary" id="clear-btn">
+                            <i class="fas fa-trash"></i> Clear
+                        </button>
+                        <button class="tool-btn secondary" id="sample-btn">
+                            <i class="fas fa-file-code"></i> Load Sample
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="tool-section">
+                    <h3><i class="fas fa-clipboard-list"></i> Validation Results</h3>
+                    <div class="results-container" id="results-container">
+                        <div class="validation-result">
+                            <div class="validation-title">
+                                <i class="fas fa-info-circle"></i> Ready to validate
+                            </div>
+                            <p>Enter your XML code and click "Validate XML" to check for errors.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+   
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size
+                const size = Math.random() * 15 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation duration
+                const duration = Math.random() * 20 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                
+                // Random animation delay
+                const delay = Math.random() * 5;
+                particle.style.animationDelay = `${delay}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const toggleIcon = themeToggle.querySelector('.toggle-icon');
+        const toggleText = themeToggle.querySelector('.toggle-text');
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            body.classList.add('light-mode');
+            toggleIcon.classList.replace('fa-moon', 'fa-sun');
+            toggleText.textContent = 'Light Mode';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                toggleIcon.classList.replace('fa-moon', 'fa-sun');
+                toggleText.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'light');
+            } else {
+                toggleIcon.classList.replace('fa-sun', 'fa-moon');
+                toggleText.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+        
+        // XML Editor Functionality
+        const xmlInput = document.getElementById('xml-input');
+        const lineNumbers = document.getElementById('line-numbers');
+        const validateBtn = document.getElementById('validate-btn');
+        const formatBtn = document.getElementById('format-btn');
+        const clearBtn = document.getElementById('clear-btn');
+        const sampleBtn = document.getElementById('sample-btn');
+        const resultsContainer = document.getElementById('results-container');
+        
+        // Update line numbers
+        function updateLineNumbers() {
+            const lines = xmlInput.value.split('\n').length;
+            let numbers = '';
+            for (let i = 1; i <= lines; i++) {
+                numbers += i + '<br>';
+            }
+            lineNumbers.innerHTML = numbers;
+        }
+        
+        xmlInput.addEventListener('input', updateLineNumbers);
+        xmlInput.addEventListener('scroll', function() {
+            lineNumbers.scrollTop = xmlInput.scrollTop;
+        });
+        
+        // Load sample XML
+        sampleBtn.addEventListener('click', function() {
+            const sampleXML = `<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+    <book id="bk101">
+        <author>Gambardella, Matthew</author>
+        <title>XML Developer's Guide</title>
+        <genre>Computer</genre>
+        <price>44.95</price>
+        <publish_date>2000-10-01</publish_date>
+        <description>An in-depth look at creating applications with XML.</description>
+    </book>
+    <book id="bk102">
+        <author>Ralls, Kim</author>
+        <title>Midnight Rain</title>
+        <genre>Fantasy</genre>
+        <price>5.95</price>
+        <publish_date>2000-12-16</publish_date>
+        <description>A former architect battles corporate zombies.</description>
+    </book>
+</catalog>`;
+            
+            xmlInput.value = sampleXML;
+            updateLineNumbers();
+            resultsContainer.innerHTML = `
+                <div class="validation-result">
+                    <div class="validation-title">
+                        <i class="fas fa-info-circle"></i> Sample XML loaded
+                    </div>
+                    <p>Click "Validate XML" to check the sample or "Format XML" to prettify it.</p>
+                </div>
+            `;
+        });
+        
+        // Clear input
+        clearBtn.addEventListener('click', function() {
+            xmlInput.value = '';
+            updateLineNumbers();
+            resultsContainer.innerHTML = `
+                <div class="validation-result">
+                    <div class="validation-title">
+                        <i class="fas fa-info-circle"></i> Editor cleared
+                    </div>
+                    <p>Ready for new XML input.</p>
+                </div>
+            `;
+        });
+        
+        // Format XML - Fixed implementation
+        function formatXML(xml) {
+            // Add newlines after tags to separate elements
+            xml = xml.replace(/(>)(<)(\/*)/g, '$1\n$2$3');
+            
+            // Split into lines and filter out empty lines
+            let lines = xml.split('\n').filter(line => line.trim().length > 0);
+            
+            let indent = '';
+            const stack = [];
+            let formatted = '';
+            
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i].trim();
+                
+                // Skip empty lines
+                if (line.length === 0) continue;
+                
+                // Check for closing tags
+                if (line.startsWith('</')) {
+                    // Remove one level of indentation
+                    indent = indent.substring(2);
+                    formatted += indent + line + '\n';
+                } 
+                // Check for self-closing tags
+                else if (line.endsWith('/>')) {
+                    formatted += indent + line + '\n';
+                } 
+                // Check for opening tags
+                else if (line.startsWith('<')) {
+                    formatted += indent + line + '\n';
+                    // Add indentation for next line if it's not a self-closing tag
+                    if (!line.endsWith('/>') && !line.startsWith('<?') && !line.startsWith('<!')) {
+                        indent += '  ';
+                        stack.push(line.replace(/<([^\s>]+).*/, '</$1>'));
+                    }
+                } 
+                // Handle text content
+                else {
+                    formatted += indent + line + '\n';
+                }
+            }
+            
+            return formatted;
+        }
+        
+        formatBtn.addEventListener('click', function() {
+            try {
+                const xmlString = xmlInput.value;
+                if (!xmlString.trim()) {
+                    resultsContainer.innerHTML = `
+                        <div class="validation-result error">
+                            <div class="validation-title">
+                                <i class="fas fa-exclamation-circle"></i> Formatting error
+                            </div>
+                            <p>Please enter some XML to format.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const formatted = formatXML(xmlString);
+                xmlInput.value = formatted;
+                updateLineNumbers();
+                resultsContainer.innerHTML = `
+                    <div class="validation-result">
+                        <div class="validation-title">
+                            <i class="fas fa-check-circle"></i> XML formatted
+                        </div>
+                        <p>Your XML has been successfully formatted.</p>
+                    </div>
+                `;
+            } catch (error) {
+                resultsContainer.innerHTML = `
+                    <div class="validation-result error">
+                        <div class="validation-title">
+                            <i class="fas fa-exclamation-circle"></i> Formatting error
+                        </div>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        });
+        
+        // Validate XML
+        validateBtn.addEventListener('click', function() {
+            try {
+                const xmlString = xmlInput.value;
+                if (!xmlString.trim()) {
+                    resultsContainer.innerHTML = `
+                        <div class="validation-result error">
+                            <div class="validation-title">
+                                <i class="fas fa-exclamation-circle"></i> Validation error
+                            </div>
+                            <p>Please enter some XML to validate.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Parse and validate XML
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xmlString, "application/xml");
+                const parseError = xmlDoc.getElementsByTagName("parsererror")[0];
+                
+                if (parseError) {
+                    // Extract error information
+                    const errorText = parseError.textContent;
+                    let errorMessage = 'Invalid XML: ';
+                    let lineNumber = 1;
+                    
+                    // Try to extract line number from error message
+                    const lineMatch = errorText.match(/line (\d+)/);
+                    if (lineMatch) {
+                        lineNumber = parseInt(lineMatch[1]);
+                        errorMessage += `Error on line ${lineNumber}: `;
+                    }
+                    
+                    // Extract the actual error description
+                    const errorMatch = errorText.match(/(?:error|syntax error):(.+?)(?= at|$)/i);
+                    if (errorMatch) {
+                        errorMessage += errorMatch[1].trim();
+                    } else {
+                        errorMessage += errorText;
+                    }
+                    
+                    resultsContainer.innerHTML = `
+                        <div class="validation-result error">
+                            <div class="validation-title">
+                                <i class="fas fa-exclamation-circle"></i> Validation failed
+                            </div>
+                            <p>${errorMessage}</p>
+                            <div class="validation-details">${errorText}</div>
+                        </div>
+                    `;
+                    
+                    // Highlight the problematic line
+                    highlightErrorLine(lineNumber);
+                } else {
+                    resultsContainer.innerHTML = `
+                        <div class="validation-result">
+                            <div class="validation-title">
+                                <i class="fas fa-check-circle"></i> XML is valid
+                            </div>
+                            <p>Your XML document is well-formed and valid.</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultsContainer.innerHTML = `
+                    <div class="validation-result error">
+                        <div class="validation-title">
+                            <i class="fas fa-exclamation-circle"></i> Validation error
+                        </div>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        });
+        
+        // Highlight line with error
+        function highlightErrorLine(lineNumber) {
+            const lines = xmlInput.value.split('\n');
+            let formattedHTML = '';
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = i + 1;
+                if (line === lineNumber) {
+                    formattedHTML += `<div class="error-line">${escapeHTML(lines[i])}</div>`;
+                } else {
+                    formattedHTML += escapeHTML(lines[i]) + '\n';
+                }
+            }
+            
+            // Add to results
+            const errorDetails = document.createElement('div');
+            errorDetails.className = 'validation-details';
+            errorDetails.innerHTML = `<pre>${formattedHTML}</pre>`;
+            
+            const errorResult = resultsContainer.querySelector('.validation-result.error');
+            if (errorResult) {
+                if (!errorResult.querySelector('.validation-details:last-child')) {
+                    errorResult.appendChild(errorDetails);
+                } else {
+                    errorResult.replaceChild(errorDetails, errorResult.querySelector('.validation-details:last-child'));
+                }
+            }
+        }
+        
+        // Helper function to escape HTML
+        function escapeHTML(html) {
+            return html.replace(/&/g, "&amp;")
+                      .replace(/</g, "&lt;")
+                      .replace(/>/g, "&gt;")
+                      .replace(/"/g, "&quot;")
+                      .replace(/'/g, "&#039;");
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            updateLineNumbers();
+        });
+    </script>
+</body>
+</html>
