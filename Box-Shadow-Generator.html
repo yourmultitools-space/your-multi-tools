@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Box Shadow Generator - Your Multi Tools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --dark-text: #f0f0f0;
+            --dark-accent: #4361ee;
+            --dark-secondary: #4cc9f0;
+            --dark-hover: #2a2a2a;
+            --dark-shadow: rgba(0, 0, 0, 0.5);
+            
+            --light-bg: #f8f9fa;
+            --light-card: #ffffff;
+            --light-text: #333333;
+            --light-accent: #4361ee;
+            --light-secondary: #3a86ff;
+            --light-hover: #f0f0f0;
+            --light-shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease, color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body.light-mode {
+            background-color: var(--light-bg);
+            color: var(--light-text);
+        }
+
+        /* Particles background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(67, 97, 238, 0.2);
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            width: 100%;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 20px;
+            position: relative;
+            z-index: 10;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--dark-secondary);
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .logo-text .domain {
+            font-size: 0.9rem;
+            color: var(--dark-text);
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .logo-text .domain {
+            color: var(--light-text);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--dark-card);
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 15px var(--dark-shadow);
+        }
+
+        .light-mode .theme-toggle {
+            background: var(--light-card);
+            box-shadow: 0 4px 15px var(--light-shadow);
+        }
+
+        .toggle-icon {
+            font-size: 1.4rem;
+        }
+
+        .toggle-text {
+            font-weight: 500;
+        }
+
+        /* Tool Container */
+        .tool-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .tool-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Controls Section */
+        .controls {
+            background: var(--dark-card);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+        }
+
+        .light-mode .controls {
+            background: var(--light-card);
+            box-shadow: 0 10px 30px var(--light-shadow);
+        }
+
+        .preview {
+            background: var(--dark-card);
+            border-radius: 15px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+        }
+
+        .light-mode .preview {
+            background: var(--light-card);
+            box-shadow: 0 10px 30px var(--light-shadow);
+        }
+
+        h2 {
+            color: var(--dark-text);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .light-mode h2 {
+            color: var(--light-text);
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            color: var(--dark-text);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .light-mode h3 {
+            color: var(--light-text);
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .slider-container label {
+            width: 150px;
+            color: var(--dark-text);
+            font-weight: 500;
+        }
+
+        .light-mode .slider-container label {
+            color: var(--light-text);
+        }
+
+        input[type="range"] {
+            flex: 1;
+            height: 8px;
+            -webkit-appearance: none;
+            background: #2a2a2a;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .light-mode input[type="range"] {
+            background: #e0e0e0;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--dark-accent);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .light-mode input[type="range"]::-webkit-slider-thumb {
+            background: var(--light-accent);
+        }
+
+        .value-display {
+            width: 50px;
+            text-align: right;
+            margin-left: 15px;
+            color: var(--dark-text);
+            font-weight: 500;
+        }
+
+        .light-mode .value-display {
+            color: var(--light-text);
+        }
+
+        .color-input {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .color-input label {
+            width: 150px;
+            color: var(--dark-text);
+            font-weight: 500;
+        }
+
+        .light-mode .color-input label {
+            color: var(--light-text);
+        }
+
+        input[type="color"] {
+            width: 60px;
+            height: 40px;
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+
+        .checkbox-input {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .checkbox-input label {
+            width: 150px;
+            color: var(--dark-text);
+            font-weight: 500;
+        }
+
+        .light-mode .checkbox-input label {
+            color: var(--light-text);
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        /* Preview Box */
+        .preview-box {
+            width: 250px;
+            height: 250px;
+            background: var(--dark-card);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark-text);
+            font-weight: 500;
+        }
+
+        .light-mode .preview-box {
+            background: var(--light-card);
+            color: var(--light-text);
+        }
+
+        /* Code Output */
+        .code-output {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
+            font-family: 'Courier New', Courier, monospace;
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        .light-mode .code-output {
+            background: #2c3e50;
+            color: #ecf0f1;
+        }
+
+        .copy-btn {
+            background: linear-gradient(45deg, var(--dark-accent), var(--dark-secondary));
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .light-mode .copy-btn {
+            background: linear-gradient(45deg, var(--light-accent), var(--light-secondary));
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(67, 97, 238, 0.4);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px 30px;
+            color: var(--dark-text);
+            opacity: 0.7;
+            font-size: 1.1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 40px;
+        }
+
+        .light-mode footer {
+            color: var(--light-text);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .footer-logo {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--dark-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .light-mode .footer-links a {
+            color: var(--light-text);
+        }
+
+        .footer-links a:hover {
+            color: var(--dark-secondary);
+            opacity: 1;
+        }
+
+        .light-mode .footer-links a:hover {
+            color: var(--light-secondary);
+        }
+
+        .copyright {
+            margin-top: 20px;
+            font-size: 0.95rem;
+        }
+        
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--dark-card);
+            color: var(--dark-text);
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .light-mode .notification {
+            background: var(--light-card);
+            color: var(--light-text);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .tool-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .slider-container, .color-input, .checkbox-input {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .slider-container label, .color-input label, .checkbox-input label {
+                width: 100%;
+                margin-bottom: 8px;
+            }
+            
+            input[type="range"] {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span>CSS code copied to clipboard!</span>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-tools logo-icon"></i>
+                <div class="logo-text">
+                    <h1>Box Shadow Generator</h1>
+                    <div class="domain">www.yourmultitools.space</div>
+                </div>
+            </div>
+            
+            <div class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon toggle-icon"></i>
+                <div class="toggle-text">Dark Mode</div>
+            </div>
+        </header>
+        
+        <div class="tool-container">
+            <div class="controls">
+                <h2>Box Shadow Controls</h2>
+                
+                <div class="control-group">
+                    <h3>Position & Blur</h3>
+                    
+                    <div class="slider-container">
+                        <label for="h-offset">Horizontal Offset:</label>
+                        <input type="range" id="h-offset" min="-50" max="50" value="10">
+                        <span class="value-display" id="h-offset-value">10px</span>
+                    </div>
+                    
+                    <div class="slider-container">
+                        <label for="v-offset">Vertical Offset:</label>
+                        <input type="range" id="v-offset" min="-50" max="50" value="10">
+                        <span class="value-display" id="v-offset-value">10px</span>
+                    </div>
+                    
+                    <div class="slider-container">
+                        <label for="blur">Blur Radius:</label>
+                        <input type="range" id="blur" min="0" max="100" value="15">
+                        <span class="value-display" id="blur-value">15px</span>
+                    </div>
+                    
+                    <div class="slider-container">
+                        <label for="spread">Spread Radius:</label>
+                        <input type="range" id="spread" min="-50" max="50" value="0">
+                        <span class="value-display" id="spread-value">0px</span>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <h3>Color & Options</h3>
+                    
+                    <div class="color-input">
+                        <label for="shadow-color">Shadow Color:</label>
+                        <input type="color" id="shadow-color" value="#000000">
+                    </div>
+                    
+                    <div class="color-input">
+                        <label for="box-color">Box Color:</label>
+                        <input type="color" id="box-color" value="#4361ee">
+                    </div>
+                    
+                    <div class="checkbox-input">
+                        <label for="inset">Inset Shadow:</label>
+                        <input type="checkbox" id="inset">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="preview">
+                <h2>Preview</h2>
+                <div class="preview-box" id="preview-box"></div>
+                
+                <h3>CSS Code</h3>
+                <div class="code-output" id="code-output">
+                    box-shadow: 10px 10px 15px 0px rgba(0,0,0,0.75);
+                </div>
+                
+                <button class="copy-btn" id="copy-btn">
+                    <i class="fas fa-copy"></i> Copy CSS Code
+                </button>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size
+                const size = Math.random() * 15 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation duration
+                const duration = Math.random() * 20 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                
+                // Random animation delay
+                const delay = Math.random() * 5;
+                particle.style.animationDelay = `${delay}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const toggleIcon = themeToggle.querySelector('.toggle-icon');
+        const toggleText = themeToggle.querySelector('.toggle-text');
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            body.classList.add('light-mode');
+            toggleIcon.classList.replace('fa-moon', 'fa-sun');
+            toggleText.textContent = 'Light Mode';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                toggleIcon.classList.replace('fa-moon', 'fa-sun');
+                toggleText.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'light');
+            } else {
+                toggleIcon.classList.replace('fa-sun', 'fa-moon');
+                toggleText.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+        
+        // Box Shadow Generator Functionality
+        const hOffsetSlider = document.getElementById('h-offset');
+        const vOffsetSlider = document.getElementById('v-offset');
+        const blurSlider = document.getElementById('blur');
+        const spreadSlider = document.getElementById('spread');
+        const shadowColorInput = document.getElementById('shadow-color');
+        const boxColorInput = document.getElementById('box-color');
+        const insetCheckbox = document.getElementById('inset');
+        const previewBox = document.getElementById('preview-box');
+        const codeOutput = document.getElementById('code-output');
+        const copyBtn = document.getElementById('copy-btn');
+        const notification = document.getElementById('notification');
+        
+        // Value displays
+        const hOffsetValue = document.getElementById('h-offset-value');
+        const vOffsetValue = document.getElementById('v-offset-value');
+        const blurValue = document.getElementById('blur-value');
+        const spreadValue = document.getElementById('spread-value');
+        
+        // Update shadow function
+        function updateShadow() {
+            // Get values from controls
+            const hOffset = hOffsetSlider.value;
+            const vOffset = vOffsetSlider.value;
+            const blur = blurSlider.value;
+            const spread = spreadSlider.value;
+            const shadowColor = shadowColorInput.value;
+            const boxColor = boxColorInput.value;
+            const inset = insetCheckbox.checked;
+            
+            // Update value displays
+            hOffsetValue.textContent = `${hOffset}px`;
+            vOffsetValue.textContent = `${vOffset}px`;
+            blurValue.textContent = `${blur}px`;
+            spreadValue.textContent = `${spread}px`;
+            
+            // Create the box shadow value
+            const insetText = inset ? 'inset ' : '';
+            const shadow = `${insetText}${hOffset}px ${vOffset}px ${blur}px ${spread}px ${shadowColor}`;
+            
+            // Apply to preview box
+            previewBox.style.boxShadow = shadow;
+            previewBox.style.backgroundColor = boxColor;
+            
+            // Update code output
+            codeOutput.textContent = `box-shadow: ${shadow};`;
+        }
+        
+        // Copy CSS code to clipboard
+        copyBtn.addEventListener('click', () => {
+            const textArea = document.createElement('textarea');
+            textArea.value = codeOutput.textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            // Show notification
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        });
+        
+        // Add event listeners to all controls
+        hOffsetSlider.addEventListener('input', updateShadow);
+        vOffsetSlider.addEventListener('input', updateShadow);
+        blurSlider.addEventListener('input', updateShadow);
+        spreadSlider.addEventListener('input', updateShadow);
+        shadowColorInput.addEventListener('input', updateShadow);
+        boxColorInput.addEventListener('input', updateShadow);
+        insetCheckbox.addEventListener('change', updateShadow);
+        
+        // Initialize the shadow
+        updateShadow();
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+        });
+    </script>
+</body>
+</html>
