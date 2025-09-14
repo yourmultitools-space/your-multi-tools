@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV to JSON Converter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Starts Here */
+        :root {
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --dark-text: #f0f0f0;
+            --dark-accent: #4361ee;
+            --dark-secondary: #4cc9f0;
+            --dark-hover: #2a2a2a;
+            --dark-shadow: rgba(0, 0, 0, 0.5);
+            
+            --light-bg: #f8f9fa;
+            --light-card: #ffffff;
+            --light-text: #333333;
+            --light-accent: #4361ee;
+            --light-secondary: #3a86ff;
+            --light-hover: #f0f0f0;
+            --light-shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body.light-mode {
+            background-color: var(--light-bg);
+            color: var(--light-text);
+        }
+
+        /* Particles background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(67, 97, 238, 0.2);
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 0;
+            position: relative;
+            z-index: 10;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--dark-secondary);
+        }
+
+        .logo-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--dark-card);
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 15px var(--dark-shadow);
+        }
+
+        .light-mode .theme-toggle {
+            background: var(--light-card);
+            box-shadow: 0 4px 15px var(--light-shadow);
+        }
+
+        .toggle-icon { font-size: 1.4rem; }
+        .toggle-text { font-weight: 500; }
+
+        /* Converter Tool Section */
+        .converter-tool {
+            background: rgba(30, 30, 30, 0.7);
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 20px;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(76, 201, 240, 0.2);
+        }
+
+        .light-mode .converter-tool {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px var(--light-shadow);
+        }
+        
+        .tool-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .tool-header h2 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            font-family: 'Orbitron', sans-serif;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .light-mode .tool-header h2 {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tool-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .options-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 25px;
+            gap: 15px;
+        }
+
+        .options-bar label {
+            font-size: 1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            gap: 8px;
+        }
+
+        .options-bar input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--dark-accent);
+        }
+
+        .io-container {
+            display: flex;
+            gap: 30px;
+            width: 100%;
+        }
+
+        .io-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .io-box label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            opacity: 0.8;
+        }
+
+        textarea, pre {
+            width: 100%;
+            height: 400px;
+            background: var(--dark-bg);
+            color: var(--dark-text);
+            border: 2px solid var(--dark-hover);
+            border-radius: 15px;
+            padding: 15px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+            resize: none;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .light-mode textarea, .light-mode pre {
+            background: var(--light-hover);
+            color: var(--light-text);
+            border-color: #ddd;
+        }
+
+        textarea:focus, pre:focus {
+            outline: none;
+            border-color: var(--dark-accent);
+            box-shadow: 0 0 15px rgba(67, 97, 238, 0.4);
+        }
+
+        pre {
+            overflow: auto;
+            white-space: pre;
+            word-wrap: normal;
+        }
+        
+        pre code {
+            display: block;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 25px;
+            border: none;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--dark-accent), var(--dark-secondary));
+        }
+
+        .light-mode .btn-primary {
+            background: linear-gradient(45deg, var(--light-accent), var(--light-secondary));
+        }
+
+        .btn-secondary {
+            background: rgba(67, 97, 238, 0.15);
+            color: var(--dark-text);
+        }
+
+        .light-mode .btn-secondary {
+            background: rgba(67, 97, 238, 0.08);
+            color: var(--light-text);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(67, 97, 238, 0.4);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(67, 97, 238, 0.8);
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--dark-text);
+            opacity: 0.7;
+            font-size: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 40px;
+        }
+
+        .light-mode footer {
+            color: var(--light-text);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .tool-header h2 {
+                font-size: 2.2rem;
+            }
+            .io-container {
+                flex-direction: column;
+            }
+            textarea, pre {
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .converter-tool {
+                padding: 30px 20px;
+            }
+            .tool-header h2 {
+                font-size: 1.8rem;
+            }
+            .tool-header p {
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            header {
+                justify-content: center;
+            }
+            .logo-text h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-file-csv logo-icon"></i>
+                <div class="logo-text">
+                    <h1>CSV to JSON</h1>
+                </div>
+            </div>
+            
+            <div class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon toggle-icon"></i>
+                <div class="toggle-text">Dark Mode</div>
+            </div>
+        </header>
+        
+        <main>
+            <div class="converter-tool">
+                <div class="tool-header">
+                    <h2>CSV to JSON Converter</h2>
+                    <p>Easily convert your CSV data into structured JSON format.</p>
+                </div>
+                
+                <div class="options-bar">
+                    <label>
+                        <input type="checkbox" id="headerCheckbox" checked>
+                        First row is header
+                    </label>
+                </div>
+
+                <div class="io-container">
+                    <div class="io-box">
+                        <label for="csvInput">CSV Input</label>
+                        <textarea id="csvInput" placeholder="Paste your CSV data here...&#10;Example:&#10;id,name,email&#10;1,John Doe,john@example.com&#10;2,Jane Smith,jane@example.com"></textarea>
+                    </div>
+                    <div class="io-box">
+                        <label for="jsonOutput">JSON Output</label>
+                        <pre id="jsonOutput" tabindex="0"><code class="language-json"></code></pre>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button id="convertBtn" class="btn btn-primary"><i class="fas fa-sync-alt"></i> Convert</button>
+                    <button id="sampleBtn" class="btn btn-secondary"><i class="fas fa-vial"></i> Load Sample</button>
+                    <button id="copyBtn" class="btn btn-secondary"><i class="fas fa-copy"></i> Copy JSON</button>
+                    <button id="clearBtn" class="btn btn-secondary"><i class="fas fa-trash"></i> Clear All</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // JavaScript Starts Here
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- Theme Toggle ---
+            const themeToggle = document.getElementById('themeToggle');
+            const body = document.body;
+            const toggleIcon = themeToggle.querySelector('.toggle-icon');
+            const toggleText = themeToggle.querySelector('.toggle-text');
+
+            // Check for saved theme preference
+            if (localStorage.getItem('theme') === 'light') {
+                body.classList.add('light-mode');
+                toggleIcon.classList.replace('fa-moon', 'fa-sun');
+                toggleText.textContent = 'Light Mode';
+            }
+
+            themeToggle.addEventListener('click', () => {
+                body.classList.toggle('light-mode');
+                if (body.classList.contains('light-mode')) {
+                    toggleIcon.classList.replace('fa-moon', 'fa-sun');
+                    toggleText.textContent = 'Light Mode';
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    toggleIcon.classList.replace('fa-sun', 'fa-moon');
+                    toggleText.textContent = 'Dark Mode';
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
+
+            // --- Particle Background ---
+            const particlesContainer = document.getElementById('particles');
+            const numParticles = 30;
+            for (let i = 0; i < numParticles; i++) {
+                let particle = document.createElement('div');
+                particle.className = 'particle';
+                let size = Math.random() * 50 + 20;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100 + 100}%`; // Start below the screen
+                particle.style.animationDuration = `${Math.random() * 15 + 10}s`;
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                particlesContainer.appendChild(particle);
+            }
+
+            // --- Converter Logic ---
+            const csvInput = document.getElementById('csvInput');
+            const jsonOutput = document.getElementById('jsonOutput').querySelector('code');
+            const headerCheckbox = document.getElementById('headerCheckbox');
+            const convertBtn = document.getElementById('convertBtn');
+            const sampleBtn = document.getElementById('sampleBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const clearBtn = document.getElementById('clearBtn');
+
+            const convertCsvToJson = (csv, hasHeader) => {
+                try {
+                    const lines = csv.trim().split(/\r?\n/).filter(line => line.trim() !== '');
+                    if (lines.length === 0) return [];
+
+                    const headers = hasHeader ? lines.shift().split(',') : [];
+                    
+                    const result = lines.map(line => {
+                        const values = line.split(',');
+                        const obj = {};
+
+                        if (hasHeader) {
+                            headers.forEach((header, index) => {
+                                obj[header.trim()] = values[index] ? values[index].trim() : '';
+                            });
+                        } else {
+                            values.forEach((value, index) => {
+                                obj[`column${index + 1}`] = value ? value.trim() : '';
+                            });
+                        }
+                        return obj;
+                    });
+
+                    return result;
+                } catch (error) {
+                    return { error: "Invalid CSV format. Please check your data." };
+                }
+            };
+            
+            convertBtn.addEventListener('click', () => {
+                const csvData = csvInput.value;
+                if (!csvData.trim()) {
+                    jsonOutput.textContent = 'JSON output will appear here...';
+                    return;
+                }
+                const hasHeader = headerCheckbox.checked;
+                const jsonData = convertCsvToJson(csvData, hasHeader);
+                jsonOutput.textContent = JSON.stringify(jsonData, null, 2);
+            });
+
+            sampleBtn.addEventListener('click', () => {
+                const sampleCSV = `id,product_name,category,price,in_stock
+101,Laptop Pro,Electronics,1200,true
+102,Wireless Mouse,Electronics,25,true
+103,Coffee Maker,Home Appliances,80,false
+104,Desk Chair,Furniture,150,true`;
+                csvInput.value = sampleCSV;
+                headerCheckbox.checked = true;
+            });
+
+            copyBtn.addEventListener('click', () => {
+                if (jsonOutput.textContent && jsonOutput.textContent !== 'JSON output will appear here...') {
+                    navigator.clipboard.writeText(jsonOutput.textContent).then(() => {
+                        const originalText = copyBtn.innerHTML;
+                        copyBtn.innerHTML = `<i class="fas fa-check"></i> Copied!`;
+                        setTimeout(() => {
+                            copyBtn.innerHTML = originalText;
+                        }, 2000);
+                    });
+                }
+            });
+
+            clearBtn.addEventListener('click', () => {
+                csvInput.value = '';
+                jsonOutput.textContent = '';
+            });
+
+        });
+    </script>
+</body>
+</html>
