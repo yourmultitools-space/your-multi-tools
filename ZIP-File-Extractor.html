@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZIP File Extractor - Your Multi Tools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --dark-text: #f0f0f0;
+            --dark-accent: #4361ee;
+            --dark-secondary: #4cc9f0;
+            --dark-hover: #2a2a2a;
+            --dark-shadow: rgba(0, 0, 0, 0.5);
+            
+            --light-bg: #f8f9fa;
+            --light-card: #ffffff;
+            --light-text: #333333;
+            --light-accent: #4361ee;
+            --light-secondary: #3a86ff;
+            --light-hover: #f0f0f0;
+            --light-shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease, color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body.light-mode {
+            background-color: var(--light-bg);
+            color: var(--light-text);
+        }
+
+        /* Particles background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(67, 97, 238, 0.2);
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 20px;
+            position: relative;
+            z-index: 10;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--dark-secondary);
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .logo-text .domain {
+            font-size: 0.9rem;
+            color: var(--dark-text);
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .logo-text .domain {
+            color: var(--light-text);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--dark-card);
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 15px var(--dark-shadow);
+        }
+
+        .light-mode .theme-toggle {
+            background: var(--light-card);
+            box-shadow: 0 4px 15px var(--light-shadow);
+        }
+
+        .toggle-icon {
+            font-size: 1.4rem;
+        }
+
+        .toggle-text {
+            font-weight: 500;
+        }
+
+        /* Tool Header */
+        .tool-header {
+            text-align: center;
+            padding: 30px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .tool-header h2 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .light-mode .tool-header h2 {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tool-header p {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            margin-bottom: 30px;
+            color: var(--dark-text);
+            opacity: 0.9;
+        }
+
+        .light-mode .tool-header p {
+            color: var(--light-text);
+        }
+
+        /* Tool Container */
+        .tool-container {
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 30px auto;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(76, 201, 240, 0.1);
+        }
+
+        .light-mode .tool-container {
+            background: var(--light-card);
+            box-shadow: 0 10px 30px var(--light-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .tool-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--dark-accent), var(--dark-secondary));
+        }
+
+        .light-mode .tool-container::before {
+            background: linear-gradient(90deg, var(--light-accent), var(--light-secondary));
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed var(--dark-accent);
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            background: rgba(67, 97, 238, 0.05);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .light-mode .upload-area {
+            border: 2px dashed var(--light-accent);
+            background: rgba(67, 97, 238, 0.03);
+        }
+
+        .upload-area.highlight {
+            border-color: var(--dark-secondary);
+            background: rgba(76, 201, 240, 0.1);
+        }
+
+        .light-mode .upload-area.highlight {
+            border-color: var(--light-secondary);
+            background: rgba(58, 134, 255, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            color: var(--dark-accent);
+            margin-bottom: 20px;
+        }
+
+        .light-mode .upload-icon {
+            color: var(--light-accent);
+        }
+
+        .upload-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .upload-text p {
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .browse-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(45deg, var(--dark-accent), var(--dark-secondary));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .light-mode .browse-btn {
+            background: linear-gradient(45deg, var(--light-accent), var(--light-secondary));
+        }
+
+        .browse-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(67, 97, 238, 0.4);
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        /* File List */
+        .file-list {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .file-list h3 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: rgba(30, 30, 30, 0.5);
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .light-mode .file-item {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .file-icon {
+            font-size: 1.5rem;
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .file-icon {
+            color: var(--light-secondary);
+        }
+
+        .file-name {
+            font-weight: 500;
+        }
+
+        .file-size {
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        .extract-btn {
+            padding: 10px 20px;
+            background: linear-gradient(45deg, var(--dark-accent), var(--dark-secondary));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: none;
+            margin: 20px auto 0;
+        }
+
+        .light-mode .extract-btn {
+            background: linear-gradient(45deg, var(--light-accent), var(--light-secondary));
+        }
+
+        .extract-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(67, 97, 238, 0.4);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(30, 30, 30, 0.5);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .light-mode .progress-bar {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--dark-accent), var(--dark-secondary));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .light-mode .progress-fill {
+            background: linear-gradient(90deg, var(--light-accent), var(--light-secondary));
+        }
+
+        /* Results */
+        .results {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .results h3 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .download-all {
+            padding: 10px 20px;
+            background: linear-gradient(45deg, var(--dark-accent), var(--dark-secondary));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .light-mode .download-all {
+            background: linear-gradient(45deg, var(--light-accent), var(--light-secondary));
+        }
+
+        .download-all:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(67, 97, 238, 0.4);
+        }
+
+        .extracted-files {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .extracted-file {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(30, 30, 30, 0.5);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .light-mode .extracted-file {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .extracted-file:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .download-btn {
+            margin-left: auto;
+            color: var(--dark-secondary);
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .light-mode .download-btn {
+            color: var(--light-secondary);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 60px 20px 40px;
+            color: var(--dark-text);
+            opacity: 0.7;
+            font-size: 1.1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+        }
+
+        .light-mode footer {
+            color: var(--light-text);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .footer-logo {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--dark-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .light-mode .footer-links a {
+            color: var(--light-text);
+        }
+
+        .footer-links a:hover {
+            color: var(--dark-secondary);
+            opacity: 1;
+        }
+
+        .light-mode .footer-links a:hover {
+            color: var(--light-secondary);
+        }
+
+        .copyright {
+            margin-top: 20px;
+            font-size: 0.95rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .tool-header h2 {
+                font-size: 2.2rem;
+            }
+            
+            .tool-container {
+                padding: 25px;
+            }
+            
+            .upload-area {
+                padding: 25px;
+            }
+            
+            .upload-icon {
+                font-size: 3rem;
+            }
+            
+            .file-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .extracted-files {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .tool-header h2 {
+                font-size: 1.8rem;
+            }
+            
+            .tool-header p {
+                font-size: 1rem;
+            }
+            
+            .upload-area {
+                padding: 20px;
+            }
+            
+            .upload-text h3 {
+                font-size: 1.5rem;
+            }
+            
+            .tool-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-file-archive logo-icon"></i>
+                <div class="logo-text">
+                    <h1>ZIP File Extractor</h1>
+                    <div class="domain">www.yourmultitools.space</div>
+                </div>
+            </div>
+            
+            <div class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon toggle-icon"></i>
+                <div class="toggle-text">Dark Mode</div>
+            </div>
+        </header>
+        
+        <section class="tool-header">
+            <h2>Extract Files from ZIP Archives</h2>
+            <p>Upload a ZIP file to extract and access its contents. Our online tool preserves file structure and allows you to download individual files or all files at once.</p>
+        </section>
+        
+        <section class="tool-container">
+            <div class="upload-area" id="uploadArea">
+                <i class="fas fa-file-archive upload-icon"></i>
+                <div class="upload-text">
+                    <h3>Drop your ZIP file here</h3>
+                    <p>or click to browse your files</p>
+                    <button class="browse-btn">Browse Files</button>
+                    <input type="file" id="fileInput" accept=".zip">
+                </div>
+            </div>
+            
+            <div class="file-list" id="fileList">
+                <h3><i class="fas fa-folder-open"></i> Files in Archive</h3>
+                <div id="fileListContent"></div>
+            </div>
+            
+            <button class="extract-btn" id="extractBtn">Extract Files</button>
+            
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-header">
+                    <span>Extracting...</span>
+                    <span id="progressPercent">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+            
+            <div class="results" id="results">
+                <h3><i class="fas fa-check-circle"></i> Extraction Complete</h3>
+                <button class="download-all" id="downloadAll">Download All Files</button>
+                <div class="extracted-files" id="extractedFiles"></div>
+            </div>
+        </section>
+        
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size
+                const size = Math.random() * 20 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation duration
+                const duration = Math.random() * 20 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                
+                // Random animation delay
+                const delay = Math.random() * 5;
+                particle.style.animationDelay = `${delay}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const toggleIcon = themeToggle.querySelector('.toggle-icon');
+        const toggleText = themeToggle.querySelector('.toggle-text');
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            body.classList.add('light-mode');
+            toggleIcon.classList.replace('fa-moon', 'fa-sun');
+            toggleText.textContent = 'Light Mode';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                toggleIcon.classList.replace('fa-moon', 'fa-sun');
+                toggleText.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'light');
+            } else {
+                toggleIcon.classList.replace('fa-sun', 'fa-moon');
+                toggleText.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+        
+        // ZIP File Extractor Functionality
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+        const fileListContent = document.getElementById('fileListContent');
+        const extractBtn = document.getElementById('extractBtn');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressFill = document.getElementById('progressFill');
+        const progressPercent = document.getElementById('progressPercent');
+        const results = document.getElementById('results');
+        const extractedFiles = document.getElementById('extractedFiles');
+        const downloadAll = document.getElementById('downloadAll');
+        
+        let zipFile = null;
+        let extractedFileData = [];
+        
+        // Upload area click handler
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        // Drag and drop functionality
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, unhighlight, false);
+        });
+        
+        function highlight() {
+            uploadArea.classList.add('highlight');
+        }
+        
+        function unhighlight() {
+            uploadArea.classList.remove('highlight');
+        }
+        
+        uploadArea.addEventListener('drop', handleDrop, false);
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            if (files.length > 0 && files[0].name.endsWith('.zip')) {
+                handleFile(files[0]);
+            } else {
+                alert('Please drop a valid ZIP file');
+            }
+        }
+        
+        // File input change handler
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0 && e.target.files[0].name.endsWith('.zip')) {
+                handleFile(e.target.files[0]);
+            } else {
+                alert('Please select a valid ZIP file');
+            }
+        });
+        
+        // Handle the selected ZIP file
+        function handleFile(file) {
+            zipFile = file;
+            
+            // Display file info
+            uploadArea.innerHTML = `
+                <i class="fas fa-file-archive upload-icon"></i>
+                <div class="upload-text">
+                    <h3>${file.name}</h3>
+                    <p>${formatFileSize(file.size)}</p>
+                </div>
+            `;
+            
+            // Load and display ZIP contents
+            loadZipContents(file);
+        }
+        
+        // Format file size
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        // Load ZIP contents and display file list
+        function loadZipContents(file) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const zip = new JSZip();
+                
+                zip.loadAsync(e.target.result)
+                    .then(function(zip) {
+                        fileListContent.innerHTML = '';
+                        
+                        zip.forEach(function(relativePath, zipEntry) {
+                            if (!zipEntry.dir) {
+                                const fileItem = document.createElement('div');
+                                fileItem.classList.add('file-item');
+                                
+                                const fileInfo = document.createElement('div');
+                                fileInfo.classList.add('file-info');
+                                
+                                const fileIcon = document.createElement('i');
+                                fileIcon.classList.add('file-icon', 'fas', getFileIcon(relativePath));
+                                
+                                const fileName = document.createElement('div');
+                                fileName.classList.add('file-name');
+                                fileName.textContent = relativePath;
+                                
+                                fileInfo.appendChild(fileIcon);
+                                fileInfo.appendChild(fileName);
+                                
+                                const fileSize = document.createElement('div');
+                                fileSize.classList.add('file-size');
+                                fileSize.textContent = formatFileSize(zipEntry._data.uncompressedSize);
+                                
+                                fileItem.appendChild(fileInfo);
+                                fileItem.appendChild(fileSize);
+                                
+                                fileListContent.appendChild(fileItem);
+                            }
+                        });
+                        
+                        fileList.style.display = 'block';
+                        extractBtn.style.display = 'block';
+                    })
+                    .catch(function(error) {
+                        alert('Error reading ZIP file: ' + error.message);
+                    });
+            };
+            
+            reader.readAsArrayBuffer(file);
+        }
+        
+        // Get appropriate file icon based on extension
+        function getFileIcon(filename) {
+            const extension = filename.split('.').pop().toLowerCase();
+            
+            switch(extension) {
+                case 'pdf':
+                    return 'fa-file-pdf';
+                case 'doc':
+                case 'docx':
+                    return 'fa-file-word';
+                case 'xls':
+                case 'xlsx':
+                    return 'fa-file-excel';
+                case 'ppt':
+                case 'pptx':
+                    return 'fa-file-powerpoint';
+                case 'jpg':
+                case 'jpeg':
+                case 'png':
+                case 'gif':
+                case 'bmp':
+                    return 'fa-file-image';
+                case 'mp3':
+                case 'wav':
+                case 'ogg':
+                    return 'fa-file-audio';
+                case 'mp4':
+                case 'mov':
+                case 'avi':
+                case 'wmv':
+                    return 'fa-file-video';
+                case 'zip':
+                case 'rar':
+                case '7z':
+                    return 'fa-file-archive';
+                case 'html':
+                case 'htm':
+                    return 'fa-file-code';
+                case 'txt':
+                    return 'fa-file-alt';
+                default:
+                    return 'fa-file';
+            }
+        }
+        
+        // Extract button handler
+        extractBtn.addEventListener('click', () => {
+            if (!zipFile) return;
+            
+            extractBtn.style.display = 'none';
+            progressContainer.style.display = 'block';
+            
+            extractZipContents(zipFile);
+        });
+        
+        // Extract ZIP contents
+        function extractZipContents(file) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const zip = new JSZip();
+                
+                zip.loadAsync(e.target.result)
+                    .then(function(zip) {
+                        const files = [];
+                        let processed = 0;
+                        const total = Object.keys(zip.files).length;
+                        
+                        extractedFileData = [];
+                        
+                        zip.forEach(function(relativePath, zipEntry) {
+                            if (!zipEntry.dir) {
+                                files.push(
+                                    zipEntry.async('blob')
+                                        .then(function(content) {
+                                            // Update progress
+                                            processed++;
+                                            const percent = Math.round((processed / total) * 100);
+                                            progressFill.style.width = percent + '%';
+                                            progressPercent.textContent = percent + '%';
+                                            
+                                            // Store file data
+                                            extractedFileData.push({
+                                                name: relativePath,
+                                                content: content,
+                                                type: content.type
+                                            });
+                                        })
+                                );
+                            } else {
+                                // For directories, just count them
+                                processed++;
+                                const percent = Math.round((processed / total) * 100);
+                                progressFill.style.width = percent + '%';
+                                progressPercent.textContent = percent + '%';
+                            }
+                        });
+                        
+                        return Promise.all(files);
+                    })
+                    .then(function() {
+                        // Display extracted files
+                        displayExtractedFiles();
+                    })
+                    .catch(function(error) {
+                        alert('Error extracting ZIP file: ' + error.message);
+                        extractBtn.style.display = 'block';
+                        progressContainer.style.display = 'none';
+                    });
+            };
+            
+            reader.readAsArrayBuffer(file);
+        }
+        
+        // Display extracted files
+        function displayExtractedFiles() {
+            progressContainer.style.display = 'none';
+            results.style.display = 'block';
+            
+            extractedFiles.innerHTML = '';
+            
+            extractedFileData.forEach((file, index) => {
+                const fileElement = document.createElement('div');
+                fileElement.classList.add('extracted-file');
+                
+                const fileIcon = document.createElement('i');
+                fileIcon.classList.add('fas', getFileIcon(file.name));
+                
+                const fileName = document.createElement('div');
+                fileName.textContent = file.name;
+                
+                const downloadBtn = document.createElement('i');
+                downloadBtn.classList.add('download-btn', 'fas', 'fa-download');
+                downloadBtn.addEventListener('click', () => {
+                    downloadFile(file.content, file.name);
+                });
+                
+                fileElement.appendChild(fileIcon);
+                fileElement.appendChild(fileName);
+                fileElement.appendChild(downloadBtn);
+                
+                extractedFiles.appendChild(fileElement);
+            });
+        }
+        
+        // Download individual file
+        function downloadFile(content, filename) {
+            const url = URL.createObjectURL(content);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        // Download all files
+        downloadAll.addEventListener('click', () => {
+            extractedFileData.forEach(file => {
+                downloadFile(file.content, file.name);
+            });
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+        });
+    </script>
+</body>
+</html>
