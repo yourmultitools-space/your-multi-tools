@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VAT Calculator - Calculate Value Added Tax for Invoices</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        /* All your existing CSS remains the same */
+        :root {
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --dark-text: #f0f0f0;
+            --dark-accent: #4361ee;
+            --dark-secondary: #4cc9f0;
+            --dark-hover: #2a2a2a;
+            --dark-shadow: rgba(0, 0, 0, 0.5);
+            
+            --light-bg: #f8f9fa;
+            --light-card: #ffffff;
+            --light-text: #333333;
+            --light-accent: #4361ee;
+            --light-secondary: #3a86ff;
+            --light-hover: #f0f0f0;
+            --light-shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease, color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body.light-mode {
+            background-color: var(--light-bg);
+            color: var(--light-text);
+        }
+
+        /* Particles background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(67, 97, 238, 0.2);
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 20px;
+            position: relative;
+            z-index: 10;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--dark-secondary);
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .logo-text .domain {
+            font-size: 0.9rem;
+            color: var(--dark-text);
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .logo-text .domain {
+            color: var(--light-text);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--dark-card);
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 15px var(--dark-shadow);
+        }
+
+        .light-mode .theme-toggle {
+            background: var(--light-card);
+            box-shadow: 0 4px 15px var(--light-shadow);
+        }
+
+        .toggle-icon {
+            font-size: 1.4rem;
+        }
+
+        .toggle-text {
+            font-weight: 500;
+        }
+
+        /* Tool Section */
+        .tool-section {
+            max-width: 900px;
+            margin: 40px auto;
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            border: 1px solid rgba(76, 201, 240, 0.1);
+        }
+
+        .light-mode .tool-section {
+            background: var(--light-card);
+            box-shadow: 0 10px 30px var(--light-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .tool-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .tool-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .light-mode .tool-header h2 {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tool-header p {
+            font-size: 1.1rem;
+            color: var(--dark-text);
+            opacity: 0.8;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .light-mode .tool-header p {
+            color: var(--light-text);
+        }
+
+        /* Calculator Form */
+        .calculator-form {
+            margin-bottom: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border: 2px solid var(--dark-accent);
+            background: rgba(30, 30, 30, 0.7);
+            color: var(--dark-text);
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .light-mode .form-group input,
+        .light-mode .form-group select {
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--light-text);
+            border: 2px solid var(--light-accent);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--dark-secondary);
+            box-shadow: 0 5px 20px rgba(76, 201, 240, 0.4);
+        }
+
+        .light-mode .form-group input:focus,
+        .light-mode .form-group select:focus {
+            border-color: var(--light-secondary);
+        }
+
+        /* VAT Rate Presets */
+        .vat-presets {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .vat-preset {
+            padding: 8px 15px;
+            background: rgba(67, 97, 238, 0.15);
+            border: none;
+            border-radius: 50px;
+            color: var(--dark-text);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .light-mode .vat-preset {
+            background: rgba(67, 97, 238, 0.08);
+            color: var(--light-text);
+        }
+
+        .vat-preset:hover,
+        .vat-preset.active {
+            background: rgba(67, 97, 238, 0.8);
+            color: white;
+        }
+
+        /* Calculation Type */
+        .calculation-type {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .calc-option {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px;
+            background: rgba(30, 30, 30, 0.5);
+            border: 2px solid rgba(67, 97, 238, 0.3);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .light-mode .calc-option {
+            background: rgba(255, 255, 255, 0.5);
+            border: 2px solid rgba(67, 97, 238, 0.2);
+        }
+
+        .calc-option:hover {
+            border-color: var(--dark-secondary);
+        }
+
+        .calc-option.active {
+            background: rgba(67, 97, 238, 0.2);
+            border-color: var(--dark-secondary);
+        }
+
+        .calc-option i {
+            font-size: 1.5rem;
+            color: var(--dark-secondary);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .light-mode .calc-option i {
+            color: var(--light-secondary);
+        }
+
+        .calc-option h4 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .calc-option p {
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--dark-accent), var(--dark-secondary));
+            color: white;
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
+        }
+
+        .light-mode .btn-primary {
+            background: linear-gradient(45deg, var(--light-accent), var(--light-secondary));
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.6);
+        }
+
+        .btn-secondary {
+            background: rgba(30, 30, 30, 0.7);
+            color: var(--dark-text);
+            border: 2px solid var(--dark-accent);
+        }
+
+        .light-mode .btn-secondary {
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--light-text);
+            border: 2px solid var(--light-accent);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(30, 30, 30, 0.9);
+        }
+
+        .light-mode .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Results Section */
+        .results-section {
+            margin-top: 40px;
+            padding: 30px;
+            background: rgba(30, 30, 30, 0.5);
+            border-radius: 15px;
+            border: 1px solid rgba(76, 201, 240, 0.2);
+            display: none;
+        }
+
+        .light-mode .results-section {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .results-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .results-header h3 {
+            font-size: 1.5rem;
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .results-header h3 {
+            color: var(--light-secondary);
+        }
+
+        .print-btn {
+            padding: 8px 15px;
+            background: rgba(67, 97, 238, 0.2);
+            border: none;
+            border-radius: 50px;
+            color: var(--dark-text);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .light-mode .print-btn {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--light-text);
+        }
+
+        .print-btn:hover {
+            background: rgba(67, 97, 238, 0.4);
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .result-item {
+            padding: 20px;
+            background: rgba(30, 30, 30, 0.7);
+            border-radius: 10px;
+            border-left: 4px solid var(--dark-secondary);
+        }
+
+        .light-mode .result-item {
+            background: rgba(255, 255, 255, 0.7);
+            border-left: 4px solid var(--light-secondary);
+        }
+
+        .result-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .result-value {
+            color: var(--light-secondary);
+        }
+
+        /* Breakdown Table */
+        .breakdown-table {
+            width: 100%;
+            margin-top: 30px;
+            border-collapse: collapse;
+            background: rgba(30, 30, 30, 0.7);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .light-mode .breakdown-table {
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .breakdown-table th,
+        .breakdown-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(76, 201, 240, 0.2);
+        }
+
+        .light-mode .breakdown-table th,
+        .light-mode .breakdown-table td {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .breakdown-table th {
+            font-weight: 600;
+            color: var(--dark-secondary);
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        .light-mode .breakdown-table th {
+            color: var(--light-secondary);
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        .breakdown-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .breakdown-table .amount {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 60px 20px 40px;
+            color: var(--dark-text);
+            opacity: 0.7;
+            font-size: 1.1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+        }
+
+        .light-mode footer {
+            color: var(--light-text);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .footer-logo {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--dark-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .light-mode .footer-links a {
+            color: var(--light-text);
+        }
+
+        .footer-links a:hover {
+            color: var(--dark-secondary);
+            opacity: 1;
+        }
+
+        .light-mode .footer-links a:hover {
+            color: var(--light-secondary);
+        }
+
+        .copyright {
+            margin-top: 20px;
+            font-size: 0.95rem;
+        }
+
+        /* Print Styles */
+        @media print {
+            body, html {
+                width: 100%;
+                height: 100%;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: white !important;
+                color: black !important;
+            }
+            
+            body * {
+                visibility: hidden;
+                background: white !important;
+                color: black !important;
+            }
+            
+            .container, .tool-section, .results-section,
+            .results-section *, .results-section * * {
+                visibility: visible;
+                background: white !important;
+                color: black !important;
+                box-shadow: none !important;
+            }
+            
+            .container {
+                width: 100%;
+                max-width: 100%;
+                padding: 0;
+                margin: 0;
+            }
+            
+            .tool-section {
+                width: 100%;
+                max-width: 100%;
+                margin: 0;
+                padding: 20px;
+                border: none;
+                box-shadow: none !important;
+                border-radius: 0;
+            }
+            
+            .calculator-form, .tool-header, header, footer, .action-buttons,
+            .print-btn, .particles {
+                display: none !important;
+            }
+            
+            .results-section {
+                display: block !important;
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                width: 90%;
+                max-width: 800px;
+                margin: 0;
+                padding: 30px;
+                border: 1px solid #ddd;
+                box-shadow: none;
+                page-break-inside: avoid;
+            }
+            
+            .result-value, .results-header h3 {
+                color: black !important;
+            }
+            
+            .breakdown-table {
+                background: white !important;
+                color: black !important;
+                border: 1px solid #ddd;
+            }
+            
+            .breakdown-table th, .breakdown-table td {
+                color: black !important;
+                border-color: #ddd !important;
+            }
+            
+            .result-item {
+                background: white !important;
+                border: 1px solid #ddd;
+                color: black !important;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .tool-header h2 {
+                font-size: 2rem;
+            }
+            
+            .tool-section {
+                padding: 30px 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .logo-text h1 {
+                font-size: 1.6rem;
+            }
+            
+            .tool-header h2 {
+                font-size: 1.8rem;
+            }
+            
+            .tool-header p {
+                font-size: 1rem;
+            }
+            
+            .calc-option {
+                min-width: 100%;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .results-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .result-value {
+                font-size: 1.5rem;
+            }
+            
+            @media print {
+                .results-section {
+                    width: 95%;
+                    padding: 20px;
+                }
+                
+                .results-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+        }
+
+        @media (max-width: 576px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .tool-section {
+                padding: 20px 15px;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .breakdown-table {
+                font-size: 0.9rem;
+            }
+            
+            .breakdown-table th,
+            .breakdown-table td {
+                padding: 10px;
+            }
+            
+            @media print {
+                .results-section {
+                    padding: 15px;
+                }
+                
+                .result-value {
+                    font-size: 1.5rem;
+                }
+                
+                .breakdown-table {
+                    font-size: 0.8rem;
+                }
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-tools logo-icon"></i>
+                <div class="logo-text">
+                    <h1>VAT Calculator</h1>
+                    <div class="domain">www.yourmultitools.space</div>
+                </div>
+            </div>
+            
+            <div class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon toggle-icon"></i>
+                <div class="toggle-text">Dark Mode</div>
+            </div>
+        </header>
+        
+        <section class="tool-section">
+            <div class="tool-header">
+                <h2>VAT Calculator</h2>
+                <p>Calculate Value Added Tax (VAT) for invoices with precision. Our tool helps you determine VAT amounts, net prices, and gross prices with ease.</p>
+            </div>
+            
+            <div class="calculator-form">
+                <div class="form-group">
+                    <label for="amount">Amount</label>
+                    <input type="number" id="amount" placeholder="Enter amount" step="0.01" min="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="vatRate">VAT Rate (%)</label>
+                    <input type="number" id="vatRate" placeholder="Enter VAT rate" step="0.01" min="0" max="100" value="20">
+                    <div class="vat-presets">
+                        <button class="vat-preset" data-rate="0">0%</button>
+                        <button class="vat-preset" data-rate="5">5%</button>
+                        <button class="vat-preset" data-rate="7.5">7.5%</button>
+                        <button class="vat-preset active" data-rate="20">20%</button>
+                        <button class="vat-preset" data-rate="21">21%</button>
+                        <button class="vat-preset" data-rate="25">25%</button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Calculation Type</label>
+                    <div class="calculation-type">
+                        <div class="calc-option active" data-type="add">
+                            <i class="fas fa-plus-circle"></i>
+                            <h4>Add VAT</h4>
+                            <p>Calculate VAT and add to amount</p>
+                        </div>
+                        <div class="calc-option" data-type="remove">
+                            <i class="fas fa-minus-circle"></i>
+                            <h4>Remove VAT</h4>
+                            <p>Extract VAT from total amount</p>
+                        </div>
+                        <div class="calc-option" data-type="vat-only">
+                            <i class="fas fa-percentage"></i>
+                            <h4>VAT Only</h4>
+                            <p>Calculate VAT amount only</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="calculateBtn">
+                        <i class="fas fa-calculator"></i> Calculate VAT
+                    </button>
+                    <button class="btn btn-secondary" id="resetBtn">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                </div>
+            </div>
+            
+            <div class="results-section" id="resultsSection">
+                <div class="results-header">
+                    <h3>Calculation Results</h3>
+                    <button class="print-btn" id="printBtn">
+                        <i class="fas fa-print"></i> Print Results
+                    </button>
+                </div>
+                
+                <div class="results-grid">
+                    <div class="result-item">
+                        <div class="result-label">Net Amount</div>
+                        <div class="result-value" id="netAmount">0.00</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">VAT Amount</div>
+                        <div class="result-value" id="vatAmount">0.00</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Total Amount</div>
+                        <div class="result-value" id="totalAmount">0.00</div>
+                    </div>
+                </div>
+                
+                <table class="breakdown-table">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Rate</th>
+                            <th class="amount">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="description1">Net Amount</td>
+                            <td>-</td>
+                            <td class="amount" id="tableNetAmount">0.00</td>
+                        </tr>
+                        <tr>
+                            <td id="description2">VAT</td>
+                            <td id="tableVatRate">20%</td>
+                            <td class="amount" id="tableVatAmount">0.00</td>
+                        </tr>
+                        <tr>
+                            <td id="description3">Total Amount</td>
+                            <td>-</td>
+                            <td class="amount" id="tableTotalAmount">0.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size
+                const size = Math.random() * 20 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation duration
+                const duration = Math.random() * 20 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                
+                // Random animation delay
+                const delay = Math.random() * 5;
+                particle.style.animationDelay = `${delay}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const toggleIcon = themeToggle.querySelector('.toggle-icon');
+        const toggleText = themeToggle.querySelector('.toggle-text');
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            body.classList.add('light-mode');
+            toggleIcon.classList.replace('fa-moon', 'fa-sun');
+            toggleText.textContent = 'Light Mode';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                toggleIcon.classList.replace('fa-moon', 'fa-sun');
+                toggleText.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'light');
+            } else {
+                toggleIcon.classList.replace('fa-sun', 'fa-moon');
+                toggleText.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+        
+        // VAT Calculator Functionality
+        const amountInput = document.getElementById('amount');
+        const vatRateInput = document.getElementById('vatRate');
+        const vatPresets = document.querySelectorAll('.vat-preset');
+        const calcOptions = document.querySelectorAll('.calc-option');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const printBtn = document.getElementById('printBtn');
+        const resultsSection = document.getElementById('resultsSection');
+        
+        // Results elements
+        const netAmountEl = document.getElementById('netAmount');
+        const vatAmountEl = document.getElementById('vatAmount');
+        const totalAmountEl = document.getElementById('totalAmount');
+        const tableNetAmountEl = document.getElementById('tableNetAmount');
+        const tableVatAmountEl = document.getElementById('tableVatAmount');
+        const tableTotalAmountEl = document.getElementById('tableTotalAmount');
+        const tableVatRateEl = document.getElementById('tableVatRate');
+        const description1El = document.getElementById('description1');
+        const description2El = document.getElementById('description2');
+        const description3El = document.getElementById('description3');
+        
+        // VAT Preset Buttons
+        vatPresets.forEach(button => {
+            button.addEventListener('click', () => {
+                const rate = button.getAttribute('data-rate');
+                vatRateInput.value = rate;
+                
+                // Update active state
+                vatPresets.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+            });
+        });
+        
+        // Calculation Type Options
+        let calculationType = 'add';
+        
+        calcOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                // Update active state
+                calcOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                
+                // Update calculation type
+                calculationType = option.getAttribute('data-type');
+            });
+        });
+        
+        // Format number without currency symbol
+        function formatNumber(amount) {
+            return parseFloat(amount).toFixed(2);
+        }
+        
+        // Calculate VAT
+        function calculateVAT() {
+            const amount = parseFloat(amountInput.value);
+            const vatRate = parseFloat(vatRateInput.value);
+            
+            if (isNaN(amount) || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+            
+            if (isNaN(vatRate) || vatRate < 0) {
+                alert('Please enter a valid VAT rate');
+                return;
+            }
+            
+            let netAmount, vatAmount, totalAmount;
+            
+            switch (calculationType) {
+                case 'add':
+                    netAmount = amount;
+                    vatAmount = netAmount * (vatRate / 100);
+                    totalAmount = netAmount + vatAmount;
+                    
+                    description1El.textContent = 'Net Amount';
+                    description2El.textContent = 'VAT';
+                    description3El.textContent = 'Total Amount';
+                    break;
+                    
+                case 'remove':
+                    totalAmount = amount;
+                    netAmount = totalAmount / (1 + (vatRate / 100));
+                    vatAmount = totalAmount - netAmount;
+                    
+                    description1El.textContent = 'Net Amount';
+                    description2El.textContent = 'VAT';
+                    description3El.textContent = 'Total Amount';
+                    break;
+                    
+                case 'vat-only':
+                    netAmount = amount;
+                    vatAmount = netAmount * (vatRate / 100);
+                    totalAmount = netAmount + vatAmount;
+                    
+                    description1El.textContent = 'Base Amount';
+                    description2El.textContent = 'VAT Amount';
+                    description3El.textContent = 'Total Amount';
+                    break;
+            }
+            
+            // Update results
+            netAmountEl.textContent = formatNumber(netAmount);
+            vatAmountEl.textContent = formatNumber(vatAmount);
+            totalAmountEl.textContent = formatNumber(totalAmount);
+            
+            tableNetAmountEl.textContent = formatNumber(netAmount);
+            tableVatAmountEl.textContent = formatNumber(vatAmount);
+            tableTotalAmountEl.textContent = formatNumber(totalAmount);
+            tableVatRateEl.textContent = `${vatRate}%`;
+            
+            // Show results section
+            resultsSection.classList.add('show');
+        }
+        
+        // Reset Form
+        function resetForm() {
+            amountInput.value = '';
+            vatRateInput.value = '20';
+            
+            // Reset VAT presets
+            vatPresets.forEach(btn => btn.classList.remove('active'));
+            vatPresets[3].classList.add('active'); // Select 20% by default
+            
+            // Reset calculation type
+            calcOptions.forEach(opt => opt.classList.remove('active'));
+            calcOptions[0].classList.add('active'); // Select "Add VAT" by default
+            calculationType = 'add';
+            
+            // Hide results section
+            resultsSection.classList.remove('show');
+        }
+        
+        // Print Results
+        function printResults() {
+            window.print();
+        }
+        
+        // Event Listeners
+        calculateBtn.addEventListener('click', calculateVAT);
+        resetBtn.addEventListener('click', resetForm);
+        printBtn.addEventListener('click', printResults);
+        
+        // Allow Enter key to calculate
+        amountInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                calculateVAT();
+            }
+        });
+        
+        vatRateInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                calculateVAT();
+            }
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+        });
+    </script>
+</body>
+</html>
