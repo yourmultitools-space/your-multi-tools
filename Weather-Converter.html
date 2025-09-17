@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Converter - Convert Between Celsius and Fahrenheit</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --dark-text: #f0f0f0;
+            --dark-accent: #4361ee;
+            --dark-secondary: #4cc9f0;
+            --dark-hover: #2a2a2a;
+            --dark-shadow: rgba(0, 0, 0, 0.5);
+            
+            --light-bg: #f8f9fa;
+            --light-card: #ffffff;
+            --light-text: #333333;
+            --light-accent: #4361ee;
+            --light-secondary: #3a86ff;
+            --light-hover: #f0f0f0;
+            --light-shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease, color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body.light-mode {
+            background-color: var(--light-bg);
+            color: var(--light-text);
+        }
+
+        /* Particles background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(67, 97, 238, 0.2);
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 20px;
+            position: relative;
+            z-index: 10;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--dark-secondary);
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .logo-text .domain {
+            font-size: 0.9rem;
+            color: var(--dark-text);
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .logo-text .domain {
+            color: var(--light-text);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--dark-card);
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 15px var(--dark-shadow);
+        }
+
+        .light-mode .theme-toggle {
+            background: var(--light-card);
+            box-shadow: 0 4px 15px var(--light-shadow);
+        }
+
+        .toggle-icon {
+            font-size: 1.4rem;
+        }
+
+        .toggle-text {
+            font-weight: 500;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 40px 20px 60px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero h2 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .light-mode .hero h2 {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            line-height: 1.7;
+            margin-bottom: 40px;
+            color: var(--dark-text);
+            opacity: 0.9;
+        }
+
+        .light-mode .hero p {
+            color: var(--light-text);
+        }
+
+        /* Main Converter Section */
+        .converter-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            border: 1px solid rgba(76, 201, 240, 0.1);
+            margin-bottom: 40px;
+        }
+
+        .light-mode .converter-container {
+            background: var(--light-card);
+            box-shadow: 0 10px 30px var(--light-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .converter-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .converter-header h3 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            color: var(--dark-text);
+        }
+
+        .light-mode .converter-header h3 {
+            color: var(--light-text);
+        }
+
+        .converter-header p {
+            color: var(--dark-text);
+            opacity: 0.8;
+            font-size: 1.1rem;
+        }
+
+        .light-mode .converter-header p {
+            color: var(--light-text);
+        }
+
+        .converter-box {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .temp-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            position: relative;
+        }
+
+        .temp-input-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .temp-input-wrapper {
+            position: relative;
+        }
+
+        .temp-input {
+            width: 100%;
+            padding: 20px 25px;
+            border-radius: 15px;
+            border: 2px solid var(--dark-accent);
+            background: rgba(30, 30, 30, 0.7);
+            color: var(--dark-text);
+            font-size: 1.5rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .light-mode .temp-input {
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--light-text);
+            border: 2px solid var(--light-accent);
+        }
+
+        .temp-input:focus {
+            outline: none;
+            border-color: var(--dark-secondary);
+            box-shadow: 0 5px 20px rgba(76, 201, 240, 0.4);
+        }
+
+        .light-mode .temp-input:focus {
+            border-color: var(--light-secondary);
+        }
+
+        .temp-unit {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: var(--dark-secondary);
+            font-weight: 600;
+        }
+
+        .light-mode .temp-unit {
+            color: var(--light-secondary);
+        }
+
+        .conversion-direction {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .conversion-arrow {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(67, 97, 238, 0.1);
+            padding: 15px 25px;
+            border-radius: 50px;
+            border: 1px solid rgba(76, 201, 240, 0.2);
+        }
+
+        .light-mode .conversion-arrow {
+            background: rgba(67, 97, 238, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .from-to-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .from-to-text {
+            color: var(--light-secondary);
+        }
+
+        .conversion-arrow i {
+            font-size: 1.5rem;
+            color: var(--dark-secondary);
+            animation: pulse 2s infinite;
+        }
+
+        .light-mode .conversion-arrow i {
+            color: var(--light-secondary);
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .swap-btn {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .swap-btn button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 25px;
+            background: linear-gradient(45deg, var(--dark-accent), var(--dark-secondary));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .light-mode .swap-btn button {
+            background: linear-gradient(45deg, var(--light-accent), var(--light-secondary));
+        }
+
+        .swap-btn button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(67, 97, 238, 0.4);
+        }
+
+        /* Common Temperatures Section */
+        .common-temps {
+            margin-top: 40px;
+        }
+
+        .common-temps h4 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+            color: var(--dark-text);
+        }
+
+        .light-mode .common-temps h4 {
+            color: var(--light-text);
+        }
+
+        .temp-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .temp-card {
+            background: rgba(67, 97, 238, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(76, 201, 240, 0.2);
+        }
+
+        .light-mode .temp-card {
+            background: rgba(67, 97, 238, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .temp-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.3);
+            background: rgba(67, 97, 238, 0.2);
+        }
+
+        .light-mode .temp-card:hover {
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        .temp-card h5 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--dark-text);
+        }
+
+        .light-mode .temp-card h5 {
+            color: var(--light-text);
+        }
+
+        .temp-card .temp-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .temp-card .temp-value {
+            color: var(--light-secondary);
+        }
+
+        /* Conversion Formula Section */
+        .formula-section {
+            margin-top: 40px;
+            padding: 25px;
+            background: rgba(67, 97, 238, 0.1);
+            border-radius: 15px;
+            border: 1px solid rgba(76, 201, 240, 0.2);
+        }
+
+        .light-mode .formula-section {
+            background: rgba(67, 97, 238, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .formula-section h4 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--dark-text);
+        }
+
+        .light-mode .formula-section h4 {
+            color: var(--light-text);
+        }
+
+        .formula {
+            font-family: 'Courier New', monospace;
+            background: rgba(30, 30, 30, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-size: 1.1rem;
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .formula {
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--light-secondary);
+        }
+
+        /* History Section */
+        .history-section {
+            margin-top: 40px;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .history-header h4 {
+            font-size: 1.5rem;
+            color: var(--dark-text);
+        }
+
+        .light-mode .history-header h4 {
+            color: var(--light-text);
+        }
+
+        .clear-history-btn {
+            padding: 8px 15px;
+            background: rgba(255, 59, 48, 0.2);
+            border: 1px solid rgba(255, 59, 48, 0.3);
+            border-radius: 8px;
+            color: #ff3b30;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .clear-history-btn:hover {
+            background: rgba(255, 59, 48, 0.3);
+        }
+
+        .history-list {
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 10px;
+            background: rgba(30, 30, 30, 0.5);
+            border-radius: 10px;
+        }
+
+        .light-mode .history-list {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.95rem;
+        }
+
+        .light-mode .history-item {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .empty-history {
+            text-align: center;
+            padding: 20px;
+            color: var(--dark-text);
+            opacity: 0.7;
+        }
+
+        .light-mode .empty-history {
+            color: var(--light-text);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 60px 20px 40px;
+            color: var(--dark-text);
+            opacity: 0.7;
+            font-size: 1.1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+        }
+
+        .light-mode footer {
+            color: var(--light-text);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .footer-logo {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--dark-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .light-mode .footer-links a {
+            color: var(--light-text);
+        }
+
+        .footer-links a:hover {
+            color: var(--dark-secondary);
+            opacity: 1;
+        }
+
+        .light-mode .footer-links a:hover {
+            color: var(--light-secondary);
+        }
+
+        .copyright {
+            margin-top: 20px;
+            font-size: 0.95rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero h2 {
+                font-size: 3rem;
+            }
+            
+            .converter-container {
+                padding: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 2.5rem;
+            }
+            
+            .logo-text h1 {
+                font-size: 1.6rem;
+            }
+            
+            .converter-container {
+                padding: 25px;
+            }
+            
+            .temp-cards {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .conversion-arrow {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .converter-container {
+                padding: 20px;
+            }
+            
+            .temp-input {
+                font-size: 1.2rem;
+                padding: 15px 20px;
+            }
+            
+            .footer-links {
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .temp-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-thermometer-half logo-icon"></i>
+                <div class="logo-text">
+                    <h1>Weather Converter</h1>
+                    <div class="domain">www.yourmultitools.space</div>
+                </div>
+            </div>
+            
+            <div class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon toggle-icon"></i>
+                <div class="toggle-text">Dark Mode</div>
+            </div>
+        </header>
+        
+        <section class="hero">
+            <h2>Temperature Conversion Made Easy</h2>
+            <p>Quickly convert between Celsius and Fahrenheit with our simple and accurate weather converter tool.</p>
+        </section>
+        
+        <div class="converter-container">
+            <div class="converter-header">
+                <h3>Temperature Converter</h3>
+                <p>Enter a temperature in either Celsius or Fahrenheit to convert it instantly</p>
+            </div>
+            
+            <div class="converter-box">
+                <div class="temp-input-group">
+                    <div class="temp-input-label">
+                        <i class="fas fa-temperature-low"></i>
+                        <span>Celsius (°C)</span>
+                    </div>
+                    <div class="temp-input-wrapper">
+                        <input type="number" id="celsiusInput" class="temp-input" placeholder="Enter Celsius" step="0.01">
+                        <span class="temp-unit">°C</span>
+                    </div>
+                </div>
+                
+                <div class="conversion-direction">
+                    <div class="conversion-arrow">
+                        <span class="from-to-text" id="fromUnit">Celsius</span>
+                        <i class="fas fa-arrow-right"></i>
+                        <span class="from-to-text" id="toUnit">Fahrenheit</span>
+                    </div>
+                </div>
+                
+                <div class="temp-input-group">
+                    <div class="temp-input-label">
+                        <i class="fas fa-temperature-high"></i>
+                        <span>Fahrenheit (°F)</span>
+                    </div>
+                    <div class="temp-input-wrapper">
+                        <input type="number" id="fahrenheitInput" class="temp-input" placeholder="Enter Fahrenheit" step="0.01">
+                        <span class="temp-unit">°F</span>
+                    </div>
+                </div>
+                
+                <div class="swap-btn">
+                    <button id="swapBtn">
+                        <i class="fas fa-exchange-alt"></i>
+                        Swap Conversion Direction
+                    </button>
+                </div>
+            </div>
+            
+            <div class="common-temps">
+                <h4>Common Temperature References</h4>
+                <div class="temp-cards">
+                    <div class="temp-card" data-celsius="0" data-fahrenheit="32">
+                        <h5>Water Freezes</h5>
+                        <div class="temp-value">0°C / 32°F</div>
+                    </div>
+                    <div class="temp-card" data-celsius="100" data-fahrenheit="212">
+                        <h5>Water Boils</h5>
+                        <div class="temp-value">100°C / 212°F</div>
+                    </div>
+                    <div class="temp-card" data-celsius="37" data-fahrenheit="98.6">
+                        <h5>Body Temperature</h5>
+                        <div class="temp-value">37°C / 98.6°F</div>
+                    </div>
+                    <div class="temp-card" data-celsius="20" data-fahrenheit="68">
+                        <h5>Room Temperature</h5>
+                        <div class="temp-value">20°C / 68°F</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="formula-section">
+                <h4>Conversion Formulas</h4>
+                <div class="formula">Celsius to Fahrenheit: °F = (°C × 9/5) + 32</div>
+                <div class="formula">Fahrenheit to Celsius: °C = (°F - 32) × 5/9</div>
+            </div>
+            
+            <div class="history-section">
+                <div class="history-header">
+                    <h4>Conversion History</h4>
+                    <button class="clear-history-btn" id="clearHistory">Clear History</button>
+                </div>
+                <div class="history-list" id="historyList">
+                    <div class="empty-history">No conversion history yet</div>
+                </div>
+            </div>
+        </div>
+        
+     </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size
+                const size = Math.random() * 20 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation duration
+                const duration = Math.random() * 20 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                
+                // Random animation delay
+                const delay = Math.random() * 5;
+                particle.style.animationDelay = `${delay}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const toggleIcon = themeToggle.querySelector('.toggle-icon');
+        const toggleText = themeToggle.querySelector('.toggle-text');
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            body.classList.add('light-mode');
+            toggleIcon.classList.replace('fa-moon', 'fa-sun');
+            toggleText.textContent = 'Light Mode';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                toggleIcon.classList.replace('fa-moon', 'fa-sun');
+                toggleText.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'light');
+            } else {
+                toggleIcon.classList.replace('fa-sun', 'fa-moon');
+                toggleText.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+        
+        // Temperature Conversion Logic
+        const celsiusInput = document.getElementById('celsiusInput');
+        const fahrenheitInput = document.getElementById('fahrenheitInput');
+        const swapBtn = document.getElementById('swapBtn');
+        const clearHistoryButton = document.getElementById('clearHistory');
+        const historyList = document.getElementById('historyList');
+        const tempCards = document.querySelectorAll('.temp-card');
+        const fromUnit = document.getElementById('fromUnit');
+        const toUnit = document.getElementById('toUnit');
+        
+        // Track conversion direction
+        let conversionDirection = 'c-to-f'; // Default: Celsius to Fahrenheit
+        
+        // Load conversion history from localStorage
+        let conversionHistory = JSON.parse(localStorage.getItem('tempConversionHistory')) || [];
+        
+        // Initialize history display
+        updateHistoryDisplay();
+        
+        // Convert Celsius to Fahrenheit
+        function celsiusToFahrenheit(celsius) {
+            return (celsius * 9/5) + 32;
+        }
+        
+        // Convert Fahrenheit to Celsius
+        function fahrenheitToCelsius(fahrenheit) {
+            return (fahrenheit - 32) * 5/9;
+        }
+        
+        // Add conversion to history
+        function addToHistory(celsius, fahrenheit) {
+            // Check if this conversion is already in history
+            const exists = conversionHistory.some(item => 
+                item.celsius === parseFloat(celsius).toFixed(2) && 
+                item.fahrenheit === parseFloat(fahrenheit).toFixed(2)
+            );
+            
+            if (!exists) {
+                const timestamp = new Date().toLocaleTimeString();
+                conversionHistory.unshift({
+                    celsius: parseFloat(celsius).toFixed(2),
+                    fahrenheit: parseFloat(fahrenheit).toFixed(2),
+                    timestamp: timestamp
+                });
+                
+                // Keep only the last 10 conversions
+                if (conversionHistory.length > 10) {
+                    conversionHistory = conversionHistory.slice(0, 10);
+                }
+                
+                // Save to localStorage
+                localStorage.setItem('tempConversionHistory', JSON.stringify(conversionHistory));
+                
+                // Update display
+                updateHistoryDisplay();
+            }
+        }
+        
+        // Update history display
+        function updateHistoryDisplay() {
+            if (conversionHistory.length === 0) {
+                historyList.innerHTML = '<div class="empty-history">No conversion history yet</div>';
+                return;
+            }
+            
+            historyList.innerHTML = '';
+            conversionHistory.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.classList.add('history-item');
+                historyItem.innerHTML = `
+                    <span>${item.celsius}°C = ${item.fahrenheit}°F</span>
+                    <span>${item.timestamp}</span>
+                `;
+                historyList.appendChild(historyItem);
+            });
+        }
+        
+        // Clear history
+        clearHistoryButton.addEventListener('click', () => {
+            conversionHistory = [];
+            localStorage.removeItem('tempConversionHistory');
+            updateHistoryDisplay();
+        });
+        
+        // Handle Celsius input
+        celsiusInput.addEventListener('input', () => {
+            const celsius = parseFloat(celsiusInput.value);
+            if (!isNaN(celsius)) {
+                const fahrenheit = celsiusToFahrenheit(celsius);
+                fahrenheitInput.value = fahrenheit.toFixed(2);
+                
+                // Add to history only if user stops typing for a moment
+                clearTimeout(celsiusInput.timer);
+                celsiusInput.timer = setTimeout(() => {
+                    addToHistory(celsius, fahrenheit);
+                }, 1000);
+            } else {
+                fahrenheitInput.value = '';
+            }
+        });
+        
+        // Handle Fahrenheit input
+        fahrenheitInput.addEventListener('input', () => {
+            const fahrenheit = parseFloat(fahrenheitInput.value);
+            if (!isNaN(fahrenheit)) {
+                const celsius = fahrenheitToCelsius(fahrenheit);
+                celsiusInput.value = celsius.toFixed(2);
+                
+                // Add to history only if user stops typing for a moment
+                clearTimeout(fahrenheitInput.timer);
+                fahrenheitInput.timer = setTimeout(() => {
+                    addToHistory(celsius, fahrenheit);
+                }, 1000);
+            } else {
+                celsiusInput.value = '';
+            }
+        });
+        
+        // Swap conversion direction
+        swapBtn.addEventListener('click', () => {
+            // Toggle conversion direction
+            conversionDirection = conversionDirection === 'c-to-f' ? 'f-to-c' : 'c-to-f';
+            
+            // Update direction text
+            if (conversionDirection === 'c-to-f') {
+                fromUnit.textContent = 'Celsius';
+                toUnit.textContent = 'Fahrenheit';
+            } else {
+                fromUnit.textContent = 'Fahrenheit';
+                toUnit.textContent = 'Celsius';
+            }
+            
+            // Swap input values with proper conversion
+            if (celsiusInput.value && fahrenheitInput.value) {
+                if (conversionDirection === 'c-to-f') {
+                    // If we're switching to C to F, convert F to C
+                    const fahrenheit = parseFloat(fahrenheitInput.value);
+                    celsiusInput.value = fahrenheitToCelsius(fahrenheit).toFixed(2);
+                } else {
+                    // If we're switching to F to C, convert C to F
+                    const celsius = parseFloat(celsiusInput.value);
+                    fahrenheitInput.value = celsiusToFahrenheit(celsius).toFixed(2);
+                }
+            }
+        });
+        
+        // Handle common temperature card clicks
+        tempCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const celsius = card.getAttribute('data-celsius');
+                const fahrenheit = card.getAttribute('data-fahrenheit');
+                
+                celsiusInput.value = celsius;
+                fahrenheitInput.value = fahrenheit;
+                
+                addToHistory(celsius, fahrenheit);
+            });
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+        });
+    </script>
+</body>
+</html>
