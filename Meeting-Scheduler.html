@@ -1,0 +1,1477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Scheduler - Schedule Across Time Zones</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --dark-text: #f0f0f0;
+            --dark-accent: #4361ee;
+            --dark-secondary: #4cc9f0;
+            --dark-hover: #2a2a2a;
+            --dark-shadow: rgba(0, 0, 0, 0.5);
+            
+            --light-bg: #f8f9fa;
+            --light-card: #ffffff;
+            --light-text: #333333;
+            --light-accent: #4361ee;
+            --light-secondary: #3a86ff;
+            --light-hover: #f0f0f0;
+            --light-shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease, color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body.light-mode {
+            background-color: var(--light-bg);
+            color: var(--light-text);
+        }
+
+        /* Particles background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(67, 97, 238, 0.2);
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 20px;
+            position: relative;
+            z-index: 10;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--dark-secondary);
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .logo-text .domain {
+            font-size: 0.9rem;
+            color: var(--dark-text);
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .logo-text .domain {
+            color: var(--light-text);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--dark-card);
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 15px var(--dark-shadow);
+        }
+
+        .light-mode .theme-toggle {
+            background: var(--light-card);
+            box-shadow: 0 4px 15px var(--light-shadow);
+        }
+
+        .toggle-icon {
+            font-size: 1.4rem;
+        }
+
+        .toggle-text {
+            font-weight: 500;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 40px 20px 60px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero h2 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .light-mode .hero h2 {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            line-height: 1.7;
+            margin-bottom: 40px;
+            color: var(--dark-text);
+            opacity: 0.9;
+        }
+
+        .light-mode .hero p {
+            color: var(--light-text);
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        /* Scheduler Form */
+        .scheduler-form {
+            flex: 1;
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            border: 1px solid rgba(76, 201, 240, 0.1);
+        }
+
+        .light-mode .scheduler-form {
+            background: var(--light-card);
+            box-shadow: 0 10px 30px var(--light-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid rgba(67, 97, 238, 0.3);
+            background: rgba(30, 30, 30, 0.7);
+            color: var(--dark-text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .light-mode .form-group input,
+        .light-mode .form-group select,
+        .light-mode .form-group textarea {
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--light-text);
+            border: 2px solid rgba(67, 97, 238, 0.2);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--dark-secondary);
+            box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.2);
+        }
+
+        .light-mode .form-group input:focus,
+        .light-mode .form-group select:focus,
+        .light-mode .form-group textarea:focus {
+            border-color: var(--light-secondary);
+            box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.2);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--dark-accent), var(--dark-secondary));
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .light-mode .btn-primary {
+            background: linear-gradient(45deg, var(--light-accent), var(--light-secondary));
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(67, 97, 238, 0.4);
+        }
+
+        /* Time Zone Display */
+        .timezone-display {
+            flex: 1;
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            border: 1px solid rgba(76, 201, 240, 0.1);
+        }
+
+        .light-mode .timezone-display {
+            background: var(--light-card);
+            box-shadow: 0 10px 30px var(--light-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .timezone-display h3 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .timezone-display h3 {
+            color: var(--light-secondary);
+        }
+
+        .timezone-card {
+            background: rgba(67, 97, 238, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .light-mode .timezone-card {
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        .timezone-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .timezone-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .timezone-time {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .timezone-time {
+            color: var(--light-secondary);
+        }
+
+        .add-timezone {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .add-timezone select {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid rgba(67, 97, 238, 0.3);
+            background: rgba(30, 30, 30, 0.7);
+            color: var(--dark-text);
+        }
+
+        .light-mode .add-timezone select {
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--light-text);
+        }
+
+        /* Calendar Section */
+        .calendar-section {
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            border: 1px solid rgba(76, 201, 240, 0.1);
+        }
+
+        .light-mode .calendar-section {
+            background: var(--light-card);
+            box-shadow: 0 10px 30px var(--light-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .calendar-header h3 {
+            font-size: 1.8rem;
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .calendar-header h3 {
+            color: var(--light-secondary);
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 10px;
+        }
+
+        .calendar-nav button {
+            background: rgba(67, 97, 238, 0.2);
+            border: none;
+            color: var(--dark-text);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .light-mode .calendar-nav button {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--light-text);
+        }
+
+        .calendar-nav button:hover {
+            background: rgba(67, 97, 238, 0.5);
+            color: white;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+
+        .calendar-day-header {
+            text-align: center;
+            font-weight: 600;
+            padding: 10px 0;
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .calendar-day-header {
+            color: var(--light-secondary);
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .calendar-day:hover {
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        .light-mode .calendar-day:hover {
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        .calendar-day.other-month {
+            opacity: 0.3;
+        }
+
+        .calendar-day.today {
+            background: rgba(67, 97, 238, 0.2);
+            font-weight: 700;
+        }
+
+        .light-mode .calendar-day.today {
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        .calendar-day.selected {
+            background: linear-gradient(45deg, var(--dark-accent), var(--dark-secondary));
+            color: white;
+        }
+
+        .calendar-day-number {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .calendar-day-indicator {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--dark-secondary);
+        }
+
+        .light-mode .calendar-day-indicator {
+            background: var(--light-secondary);
+        }
+
+        /* Meeting List */
+        .meeting-list {
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            border: 1px solid rgba(76, 201, 240, 0.1);
+        }
+
+        .light-mode .meeting-list {
+            background: var(--light-card);
+            box-shadow: 0 10px 30px var(--light-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .meeting-list h3 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .meeting-list h3 {
+            color: var(--light-secondary);
+        }
+
+        .meeting-item {
+            background: rgba(67, 97, 238, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .light-mode .meeting-item {
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        .meeting-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .meeting-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--dark-accent), var(--dark-secondary));
+        }
+
+        .light-mode .meeting-item::before {
+            background: linear-gradient(to bottom, var(--light-accent), var(--light-secondary));
+        }
+
+        .meeting-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .meeting-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .meeting-detail {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .meeting-detail i {
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .meeting-detail i {
+            color: var(--light-secondary);
+        }
+
+        .meeting-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            border-radius: 50px;
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-edit {
+            background: rgba(67, 97, 238, 0.2);
+            color: var(--dark-text);
+        }
+
+        .light-mode .btn-edit {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--light-text);
+        }
+
+        .btn-edit:hover {
+            background: rgba(67, 97, 238, 0.4);
+        }
+
+        .btn-delete {
+            background: rgba(244, 67, 54, 0.2);
+            color: var(--dark-text);
+        }
+
+        .light-mode .btn-delete {
+            background: rgba(244, 67, 54, 0.1);
+            color: var(--light-text);
+        }
+
+        .btn-delete:hover {
+            background: rgba(244, 67, 54, 0.4);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--dark-text);
+            opacity: 0.7;
+        }
+
+        .light-mode .empty-state {
+            color: var(--light-text);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--dark-secondary);
+            margin-bottom: 15px;
+        }
+
+        .light-mode .empty-state i {
+            color: var(--light-secondary);
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--dark-card);
+            color: var(--dark-text);
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .light-mode .notification {
+            background: var(--light-card);
+            color: var(--light-text);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .notification.success {
+            border-left: 4px solid #4caf50;
+        }
+
+        .notification.error {
+            border-left: 4px solid #f44336;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .hero h2 {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 2.5rem;
+            }
+            
+            .logo-text h1 {
+                font-size: 1.6rem;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .calendar-grid {
+                gap: 5px;
+            }
+            
+            .meeting-details {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .scheduler-form,
+            .timezone-display,
+            .calendar-section,
+            .meeting-list {
+                padding: 20px;
+            }
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            position: relative;
+        }
+
+        .light-mode .modal-content {
+            background: var(--light-card);
+            box-shadow: 0 10px 30px var(--light-shadow);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            font-size: 1.8rem;
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .modal-header h3 {
+            color: var(--light-secondary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--dark-text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .light-mode .modal-close {
+            color: var(--light-text);
+        }
+
+        .modal-close:hover {
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .modal-close:hover {
+            color: var(--light-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText">Meeting scheduled successfully!</span>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-calendar-check logo-icon"></i>
+                <div class="logo-text">
+                    <h1>Meeting Scheduler</h1>
+                    <div class="domain">www.yourmultitools.space</div>
+                </div>
+            </div>
+            
+            <div class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon toggle-icon"></i>
+                <div class="toggle-text">Dark Mode</div>
+            </div>
+        </header>
+        
+        <section class="hero">
+            <h2>Schedule Meetings Across Time Zones</h2>
+            <p>Effortlessly plan meetings with participants in different time zones. Never worry about time conversion again.</p>
+        </section>
+        
+        <div class="main-content">
+            <div class="scheduler-form">
+                <h3>Schedule New Meeting</h3>
+                <form id="meetingForm">
+                    <div class="form-group">
+                        <label for="meetingTitle">Meeting Title</label>
+                        <input type="text" id="meetingTitle" placeholder="Enter meeting title" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="meetingDescription">Description</label>
+                        <textarea id="meetingDescription" rows="3" placeholder="Enter meeting description"></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="meetingDate">Date</label>
+                            <input type="date" id="meetingDate" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="meetingTime">Time</label>
+                            <input type="time" id="meetingTime" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="meetingDuration">Duration</label>
+                            <select id="meetingDuration" required>
+                                <option value="15">15 minutes</option>
+                                <option value="30" selected>30 minutes</option>
+                                <option value="45">45 minutes</option>
+                                <option value="60">1 hour</option>
+                                <option value="90">1.5 hours</option>
+                                <option value="120">2 hours</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="meetingTimezone">Your Time Zone</label>
+                            <select id="meetingTimezone" required>
+                                <option value="UTC">UTC</option>
+                                <option value="America/New_York">Eastern Time (ET)</option>
+                                <option value="America/Chicago">Central Time (CT)</option>
+                                <option value="America/Denver">Mountain Time (MT)</option>
+                                <option value="America/Los_Angeles">Pacific Time (PT)</option>
+                                <option value="Europe/London">London (GMT)</option>
+                                <option value="Europe/Paris">Central European Time</option>
+                                <option value="Asia/Tokyo">Japan Standard Time</option>
+                                <option value="Asia/Shanghai">China Standard Time</option>
+                                <option value="Australia/Sydney">Australian Eastern Time</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="meetingRecurring"> Recurring Meeting
+                        </label>
+                    </div>
+                    
+                    <div class="form-group" id="recurringOptions" style="display: none;">
+                        <label for="recurringFrequency">Frequency</label>
+                        <select id="recurringFrequency">
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-calendar-plus"></i> Schedule Meeting
+                    </button>
+                </form>
+            </div>
+            
+            <div class="timezone-display">
+                <h3>Time Zone Comparison</h3>
+                <div id="timezoneCards">
+                    <div class="timezone-card">
+                        <div class="timezone-name">Your Time</div>
+                        <div class="timezone-time" id="localTime">--:--</div>
+                    </div>
+                </div>
+                
+                <div class="add-timezone">
+                    <select id="addTimezoneSelect">
+                        <option value="">Select a time zone</option>
+                        <option value="America/New_York">Eastern Time (ET)</option>
+                        <option value="America/Chicago">Central Time (CT)</option>
+                        <option value="America/Denver">Mountain Time (MT)</option>
+                        <option value="America/Los_Angeles">Pacific Time (PT)</option>
+                        <option value="Europe/London">London (GMT)</option>
+                        <option value="Europe/Paris">Central European Time</option>
+                        <option value="Asia/Tokyo">Japan Standard Time</option>
+                        <option value="Asia/Shanghai">China Standard Time</option>
+                        <option value="Australia/Sydney">Australian Eastern Time</option>
+                        <option value="Pacific/Auckland">New Zealand Time</option>
+                    </select>
+                    <button id="addTimezoneBtn" class="btn-primary">
+                        <i class="fas fa-plus"></i> Add
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="calendar-section">
+            <div class="calendar-header">
+                <h3 id="calendarMonth">June 2023</h3>
+                <div class="calendar-nav">
+                    <button id="prevMonth"><i class="fas fa-chevron-left"></i></button>
+                    <button id="todayBtn">Today</button>
+                    <button id="nextMonth"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+            
+            <div class="calendar-grid" id="calendarGrid">
+                <!-- Calendar will be generated by JavaScript -->
+            </div>
+        </div>
+        
+        <div class="meeting-list">
+            <h3>Upcoming Meetings</h3>
+            <div id="meetingsList">
+                <div class="empty-state">
+                    <i class="fas fa-calendar-times"></i>
+                    <p>No meetings scheduled yet. Create your first meeting!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size
+                const size = Math.random() * 20 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation duration
+                const duration = Math.random() * 20 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                
+                // Random animation delay
+                const delay = Math.random() * 5;
+                particle.style.animationDelay = `${delay}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const toggleIcon = themeToggle.querySelector('.toggle-icon');
+        const toggleText = themeToggle.querySelector('.toggle-text');
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            body.classList.add('light-mode');
+            toggleIcon.classList.replace('fa-moon', 'fa-sun');
+            toggleText.textContent = 'Light Mode';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                toggleIcon.classList.replace('fa-moon', 'fa-sun');
+                toggleText.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'light');
+            } else {
+                toggleIcon.classList.replace('fa-sun', 'fa-moon');
+                toggleText.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+        
+        // Meeting Form Functionality
+        const meetingForm = document.getElementById('meetingForm');
+        const meetingRecurring = document.getElementById('meetingRecurring');
+        const recurringOptions = document.getElementById('recurringOptions');
+        
+        meetingRecurring.addEventListener('change', function() {
+            if (this.checked) {
+                recurringOptions.style.display = 'block';
+            } else {
+                recurringOptions.style.display = 'none';
+            }
+        });
+        
+        // Set today's date as default
+        const today = new Date();
+        const formattedDate = today.toISOString().split('T')[0];
+        document.getElementById('meetingDate').value = formattedDate;
+        
+        // Handle form submission
+        meetingForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const title = document.getElementById('meetingTitle').value;
+            const description = document.getElementById('meetingDescription').value;
+            const date = document.getElementById('meetingDate').value;
+            const time = document.getElementById('meetingTime').value;
+            const duration = document.getElementById('meetingDuration').value;
+            const timezone = document.getElementById('meetingTimezone').value;
+            const participants = document.getElementById('meetingParticipants').value;
+            const isRecurring = meetingRecurring.checked;
+            const recurringFrequency = document.getElementById('recurringFrequency').value;
+            
+            // Create meeting object
+            const meeting = {
+                id: Date.now(),
+                title,
+                description,
+                date,
+                time,
+                duration,
+                timezone,
+                participants: participants.split(',').map(p => p.trim()).filter(p => p),
+                isRecurring,
+                recurringFrequency: isRecurring ? recurringFrequency : null
+            };
+            
+            // Save meeting to localStorage
+            let meetings = JSON.parse(localStorage.getItem('meetings')) || [];
+            meetings.push(meeting);
+            localStorage.setItem('meetings', JSON.stringify(meetings));
+            
+            // Show notification
+            showNotification('Meeting scheduled successfully!', 'success');
+            
+            // Reset form
+            meetingForm.reset();
+            document.getElementById('meetingDate').value = formattedDate;
+            recurringOptions.style.display = 'none';
+            
+            // Update meetings list
+            displayMeetings();
+            
+            // Update calendar
+            generateCalendar();
+        });
+        
+        // Time Zone Functionality
+        const timezoneCards = document.getElementById('timezoneCards');
+        const addTimezoneSelect = document.getElementById('addTimezoneSelect');
+        const addTimezoneBtn = document.getElementById('addTimezoneBtn');
+        
+        // Function to format time
+        function formatTime(date, timezone) {
+            return new Date(date.toLocaleString("en-US", {timeZone: timezone})).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        }
+        
+        // Function to update time displays
+        function updateTimeDisplays() {
+            const now = new Date();
+            
+            // Update local time
+            const localTimeElement = document.getElementById('localTime');
+            if (localTimeElement) {
+                localTimeElement.textContent = formatTime(now, Intl.DateTimeFormat().resolvedOptions().timeZone);
+            }
+            
+            // Update all timezone cards
+            const timezoneElements = document.querySelectorAll('.timezone-card');
+            timezoneElements.forEach(card => {
+                const timezoneName = card.querySelector('.timezone-name').textContent;
+                const timezoneTime = card.querySelector('.timezone-time');
+                
+                if (timezoneName !== 'Your Time') {
+                    const timezone = getTimezoneFromName(timezoneName);
+                    if (timezone) {
+                        timezoneTime.textContent = formatTime(now, timezone);
+                    }
+                }
+            });
+        }
+        
+        // Function to get timezone from name
+        function getTimezoneFromName(name) {
+            const timezones = {
+                'Eastern Time (ET)': 'America/New_York',
+                'Central Time (CT)': 'America/Chicago',
+                'Mountain Time (MT)': 'America/Denver',
+                'Pacific Time (PT)': 'America/Los_Angeles',
+                'London (GMT)': 'Europe/London',
+                'Central European Time': 'Europe/Paris',
+                'Japan Standard Time': 'Asia/Tokyo',
+                'China Standard Time': 'Asia/Shanghai',
+                'Australian Eastern Time': 'Australia/Sydney',
+                'New Zealand Time': 'Pacific/Auckland'
+            };
+            
+            return timezones[name];
+        }
+        
+        // Function to get name from timezone
+        function getNameFromTimezone(timezone) {
+            const names = {
+                'America/New_York': 'Eastern Time (ET)',
+                'America/Chicago': 'Central Time (CT)',
+                'America/Denver': 'Mountain Time (MT)',
+                'America/Los_Angeles': 'Pacific Time (PT)',
+                'Europe/London': 'London (GMT)',
+                'Europe/Paris': 'Central European Time',
+                'Asia/Tokyo': 'Japan Standard Time',
+                'Asia/Shanghai': 'China Standard Time',
+                'Australia/Sydney': 'Australian Eastern Time',
+                'Pacific/Auckland': 'New Zealand Time'
+            };
+            
+            return names[timezone];
+        }
+        
+        // Add timezone button functionality
+        addTimezoneBtn.addEventListener('click', function() {
+            const selectedTimezone = addTimezoneSelect.value;
+            
+            if (selectedTimezone) {
+                const timezoneName = getNameFromTimezone(selectedTimezone);
+                
+                // Create new timezone card
+                const timezoneCard = document.createElement('div');
+                timezoneCard.className = 'timezone-card';
+                timezoneCard.innerHTML = `
+                    <div class="timezone-name">${timezoneName}</div>
+                    <div class="timezone-time">${formatTime(new Date(), selectedTimezone)}</div>
+                `;
+                
+                // Add remove button
+                const removeBtn = document.createElement('button');
+                removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+                removeBtn.style.background = 'none';
+                removeBtn.style.border = 'none';
+                removeBtn.style.color = 'inherit';
+                removeBtn.style.cursor = 'pointer';
+                removeBtn.style.marginLeft = '10px';
+                
+                removeBtn.addEventListener('click', function() {
+                    timezoneCard.remove();
+                });
+                
+                timezoneCard.querySelector('.timezone-name').appendChild(removeBtn);
+                timezoneCards.appendChild(timezoneCard);
+                
+                // Reset select
+                addTimezoneSelect.value = '';
+            }
+        });
+        
+        // Update time every second
+        setInterval(updateTimeDisplays, 1000);
+        updateTimeDisplays();
+        
+        // Calendar Functionality
+        const calendarGrid = document.getElementById('calendarGrid');
+        const calendarMonth = document.getElementById('calendarMonth');
+        const prevMonthBtn = document.getElementById('prevMonth');
+        const nextMonthBtn = document.getElementById('nextMonth');
+        const todayBtn = document.getElementById('todayBtn');
+        
+        let currentDate = new Date();
+        let selectedDate = null;
+        
+        // Function to generate calendar
+        function generateCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            // Update month display
+            calendarMonth.textContent = new Date(year, month).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+            
+            // Clear calendar
+            calendarGrid.innerHTML = '';
+            
+            // Add day headers
+            const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            dayHeaders.forEach(day => {
+                const dayHeader = document.createElement('div');
+                dayHeader.className = 'calendar-day-header';
+                dayHeader.textContent = day;
+                calendarGrid.appendChild(dayHeader);
+            });
+            
+            // Get first day of month and number of days
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const daysInPrevMonth = new Date(year, month, 0).getDate();
+            
+            // Add previous month days
+            for (let i = firstDay - 1; i >= 0; i--) {
+                const day = document.createElement('div');
+                day.className = 'calendar-day other-month';
+                day.innerHTML = `<div class="calendar-day-number">${daysInPrevMonth - i}</div>`;
+                calendarGrid.appendChild(day);
+            }
+            
+            // Get meetings for this month
+            const meetings = JSON.parse(localStorage.getItem('meetings')) || [];
+            
+            // Add current month days
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                
+                // Check if this is today
+                const dayDate = new Date(year, month, day);
+                const today = new Date();
+                if (dayDate.toDateString() === today.toDateString()) {
+                    dayElement.classList.add('today');
+                }
+                
+                // Check if this day has meetings
+                const dayMeetings = meetings.filter(meeting => {
+                    const meetingDate = new Date(meeting.date);
+                    return meetingDate.getDate() === day && 
+                           meetingDate.getMonth() === month && 
+                           meetingDate.getFullYear() === year;
+                });
+                
+                if (dayMeetings.length > 0) {
+                    dayElement.innerHTML = `
+                        <div class="calendar-day-number">${day}</div>
+                        <div class="calendar-day-indicator"></div>
+                    `;
+                } else {
+                    dayElement.innerHTML = `<div class="calendar-day-number">${day}</div>`;
+                }
+                
+                // Add click event
+                dayElement.addEventListener('click', function() {
+                    // Remove previous selection
+                    document.querySelectorAll('.calendar-day.selected').forEach(el => {
+                        el.classList.remove('selected');
+                    });
+                    
+                    // Add selection to this day
+                    dayElement.classList.add('selected');
+                    
+                    // Update selected date
+                    selectedDate = new Date(year, month, day);
+                    
+                    // Update form date
+                    document.getElementById('meetingDate').value = selectedDate.toISOString().split('T')[0];
+                });
+                
+                calendarGrid.appendChild(dayElement);
+            }
+            
+            // Add next month days to fill grid
+            const totalCells = calendarGrid.children.length - 7; // Subtract day headers
+            const remainingCells = 42 - totalCells; // 6 rows x 7 days = 42
+            
+            for (let day = 1; day <= remainingCells; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day other-month';
+                dayElement.innerHTML = `<div class="calendar-day-number">${day}</div>`;
+                calendarGrid.appendChild(dayElement);
+            }
+        }
+        
+        // Calendar navigation
+        prevMonthBtn.addEventListener('click', function() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            generateCalendar();
+        });
+        
+        nextMonthBtn.addEventListener('click', function() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            generateCalendar();
+        });
+        
+        todayBtn.addEventListener('click', function() {
+            currentDate = new Date();
+            generateCalendar();
+        });
+        
+        // Display meetings
+        function displayMeetings() {
+            const meetingsList = document.getElementById('meetingsList');
+            const meetings = JSON.parse(localStorage.getItem('meetings')) || [];
+            
+            if (meetings.length === 0) {
+                meetingsList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-times"></i>
+                        <p>No meetings scheduled yet. Create your first meeting!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Sort meetings by date and time
+            meetings.sort((a, b) => {
+                const dateA = new Date(`${a.date}T${a.time}`);
+                const dateB = new Date(`${b.date}T${b.time}`);
+                return dateA - dateB;
+            });
+            
+            // Filter only future meetings
+            const now = new Date();
+            const futureMeetings = meetings.filter(meeting => {
+                const meetingDate = new Date(`${meeting.date}T${meeting.time}`);
+                return meetingDate > now;
+            });
+            
+            if (futureMeetings.length === 0) {
+                meetingsList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-check"></i>
+                        <p>No upcoming meetings. All meetings are in the past.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Display meetings
+            meetingsList.innerHTML = '';
+            futureMeetings.forEach(meeting => {
+                const meetingDate = new Date(`${meeting.date}T${meeting.time}`);
+                const formattedDate = meetingDate.toLocaleDateString('en-US', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+                const formattedTime = meetingDate.toLocaleTimeString('en-US', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+                
+                const meetingItem = document.createElement('div');
+                meetingItem.className = 'meeting-item';
+                meetingItem.innerHTML = `
+                    <div class="meeting-title">${meeting.title}</div>
+                    <div class="meeting-details">
+                        <div class="meeting-detail">
+                            <i class="fas fa-calendar"></i>
+                            <span>${formattedDate}</span>
+                        </div>
+                        <div class="meeting-detail">
+                            <i class="fas fa-clock"></i>
+                            <span>${formattedTime}</span>
+                        </div>
+                        <div class="meeting-detail">
+                            <i class="fas fa-hourglass-half"></i>
+                            <span>${meeting.duration} minutes</span>
+                        </div>
+                        <div class="meeting-detail">
+                            <i class="fas fa-globe"></i>
+                            <span>${getNameFromTimezone(meeting.timezone) || meeting.timezone}</span>
+                        </div>
+                    </div>
+                    <div class="meeting-actions">
+                        <button class="btn-small btn-edit" onclick="editMeeting(${meeting.id})">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn-small btn-delete" onclick="deleteMeeting(${meeting.id})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                `;
+                
+                meetingsList.appendChild(meetingItem);
+            });
+        }
+        
+        // Delete meeting
+        function deleteMeeting(id) {
+            if (confirm('Are you sure you want to delete this meeting?')) {
+                let meetings = JSON.parse(localStorage.getItem('meetings')) || [];
+                meetings = meetings.filter(meeting => meeting.id !== id);
+                localStorage.setItem('meetings', JSON.stringify(meetings));
+                
+                showNotification('Meeting deleted successfully!', 'success');
+                displayMeetings();
+                generateCalendar();
+            }
+        }
+        
+        // Edit meeting (placeholder function)
+        function editMeeting(id) {
+            showNotification('Edit functionality coming soon!', 'error');
+        }
+        
+        // Show notification
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            
+            notificationText.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            generateCalendar();
+            displayMeetings();
+        });
+    </script>
+</body>
+</html>
