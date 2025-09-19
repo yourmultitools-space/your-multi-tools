@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sunrise/Sunset Calculator - Your Multi Tools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --dark-text: #f0f0f0;
+            --dark-accent: #4361ee;
+            --dark-secondary: #4cc9f0;
+            --dark-hover: #2a2a2a;
+            --dark-shadow: rgba(0, 0, 0, 0.5);
+            
+            --light-bg: #f8f9fa;
+            --light-card: #ffffff;
+            --light-text: #333333;
+            --light-accent: #4361ee;
+            --light-secondary: #3a86ff;
+            --light-hover: #f0f0f0;
+            --light-shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease, color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body.light-mode {
+            background-color: var(--light-bg);
+            color: var(--light-text);
+        }
+
+        /* Particles background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(67, 97, 238, 0.2);
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 20px;
+            position: relative;
+            z-index: 10;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--dark-secondary);
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .logo-text .domain {
+            font-size: 0.9rem;
+            color: var(--dark-text);
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .logo-text .domain {
+            color: var(--light-text);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--dark-card);
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 15px var(--dark-shadow);
+        }
+
+        .light-mode .theme-toggle {
+            background: var(--light-card);
+            box-shadow: 0 4px 15px var(--light-shadow);
+        }
+
+        .toggle-icon {
+            font-size: 1.4rem;
+        }
+
+        .toggle-text {
+            font-weight: 500;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 40px 20px 60px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero h2 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .light-mode .hero h2 {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            line-height: 1.7;
+            margin-bottom: 40px;
+            color: var(--dark-text);
+            opacity: 0.9;
+        }
+
+        .light-mode .hero p {
+            color: var(--light-text);
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Input Section */
+        .input-section {
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            border: 1px solid rgba(76, 201, 240, 0.1);
+        }
+
+        .light-mode .input-section {
+            background: var(--light-card);
+            box-shadow: 0 10px 30px var(--light-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid rgba(67, 97, 238, 0.3);
+            background: rgba(30, 30, 30, 0.7);
+            color: var(--dark-text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .light-mode .input-group input, .light-mode .input-group select {
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--light-text);
+            border: 2px solid rgba(67, 97, 238, 0.2);
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: var(--dark-secondary);
+            box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.2);
+        }
+
+        .light-mode .input-group input:focus, .light-mode .input-group select:focus {
+            border-color: var(--light-secondary);
+        }
+
+        .input-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .input-row .input-group {
+            flex: 1;
+        }
+
+        .location-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(67, 97, 238, 0.15);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 20px;
+            color: var(--dark-text);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .light-mode .location-btn {
+            background: rgba(67, 97, 238, 0.08);
+            color: var(--light-text);
+        }
+
+        .location-btn:hover {
+            background: rgba(67, 97, 238, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .location-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(45deg, var(--dark-accent), var(--dark-secondary));
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .light-mode .calculate-btn {
+            background: linear-gradient(45deg, var(--light-accent), var(--light-secondary));
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(67, 97, 238, 0.4);
+        }
+
+        /* Results Section */
+        .results-section {
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            border: 1px solid rgba(76, 201, 240, 0.1);
+            display: none;
+        }
+
+        .light-mode .results-section {
+            background: var(--light-card);
+            box-shadow: 0 10px 30px var(--light-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .results-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .results-header h3 {
+            font-size: 1.8rem;
+            color: var(--dark-text);
+        }
+
+        .light-mode .results-header h3 {
+            color: var(--light-text);
+        }
+
+        .results-header i {
+            font-size: 2rem;
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .results-header i {
+            color: var(--light-secondary);
+        }
+
+        .location-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(30, 30, 30, 0.5);
+            border-radius: 15px;
+            border: 1px solid rgba(76, 201, 240, 0.1);
+        }
+
+        .light-mode .location-info {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .location-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .location-name {
+            color: var(--light-secondary);
+        }
+
+        .location-coords {
+            font-size: 1rem;
+            color: var(--dark-text);
+            opacity: 0.8;
+        }
+
+        .light-mode .location-coords {
+            color: var(--light-text);
+        }
+
+        .sun-times {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .sun-time-card {
+            background: rgba(30, 30, 30, 0.5);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(76, 201, 240, 0.1);
+        }
+
+        .light-mode .sun-time-card {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .sun-time-card i {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .sun-time-card i {
+            color: var(--light-secondary);
+        }
+
+        .sun-time-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--dark-text);
+        }
+
+        .light-mode .sun-time-card h4 {
+            color: var(--light-text);
+        }
+
+        .sun-time-card .time {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .sun-time-card .time {
+            color: var(--light-secondary);
+        }
+
+        /* Daylight Info */
+        .daylight-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .daylight-card {
+            background: rgba(30, 30, 30, 0.5);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(76, 201, 240, 0.1);
+        }
+
+        .light-mode .daylight-card {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .daylight-card h4 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: var(--dark-text);
+        }
+
+        .light-mode .daylight-card h4 {
+            color: var(--light-text);
+        }
+
+        .daylight-card .value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .daylight-card .value {
+            color: var(--light-secondary);
+        }
+
+        /* Error Message */
+        .error-message {
+            background: rgba(244, 67, 54, 0.2);
+            border-left: 4px solid #f44336;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .light-mode .error-message {
+            background: rgba(244, 67, 54, 0.1);
+        }
+
+        .error-message i {
+            color: #f44336;
+            margin-right: 10px;
+        }
+
+        /* Success Message */
+        .success-message {
+            background: rgba(76, 175, 80, 0.2);
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .light-mode .success-message {
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        .success-message i {
+            color: #4caf50;
+            margin-right: 10px;
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid var(--dark-secondary);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        .light-mode .spinner {
+            border-top: 4px solid var(--light-secondary);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 60px 20px 40px;
+            color: var(--dark-text);
+            opacity: 0.7;
+            font-size: 1.1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+        }
+
+        .light-mode footer {
+            color: var(--light-text);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .footer-logo {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--dark-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .light-mode .footer-links a {
+            color: var(--light-text);
+        }
+
+        .footer-links a:hover {
+            color: var(--dark-secondary);
+            opacity: 1;
+        }
+
+        .light-mode .footer-links a:hover {
+            color: var(--light-secondary);
+        }
+
+        .copyright {
+            margin-top: 20px;
+            font-size: 0.95rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero h2 {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 2.5rem;
+            }
+            
+            .logo-text h1 {
+                font-size: 1.6rem;
+            }
+            
+            .input-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .sun-times {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
+
+        @media (max-width: 576px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-tools logo-icon"></i>
+                <div class="logo-text">
+                    <h1>Sunrise/Sunset Calculator</h1>
+                    <div class="domain">www.yourmultitools.space</div>
+                </div>
+            </div>
+            
+            <div class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon toggle-icon"></i>
+                <div class="toggle-text">Dark Mode</div>
+            </div>
+        </header>
+        
+        <section class="hero">
+            <h2>Sunrise/Sunset Calculator</h2>
+            <p>Calculate sunrise and sunset times for any location in the world. Get accurate solar information including dawn, dusk, and daylight duration.</p>
+        </section>
+        
+        <main class="main-content">
+            <div class="input-section">
+                <button class="location-btn" id="getLocationBtn">
+                    <i class="fas fa-location-arrow"></i>
+                    Use My Current Location
+                </button>
+                
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="latitude">Latitude</label>
+                        <input type="number" id="latitude" placeholder="e.g., 40.7128" step="0.0001" min="-90" max="90">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="longitude">Longitude</label>
+                        <input type="number" id="longitude" placeholder="e.g., -74.0060" step="0.0001" min="-180" max="180">
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="date">Date</label>
+                    <input type="date" id="date">
+                </div>
+                
+                <div class="input-group">
+                    <label for="timezone">Timezone</label>
+                    <select id="timezone">
+                        <option value="auto">Auto-detect</option>
+                        <option value="-12">UTC-12:00</option>
+                        <option value="-11">UTC-11:00</option>
+                        <option value="-10">UTC-10:00</option>
+                        <option value="-9">UTC-09:00</option>
+                        <option value="-8">UTC-08:00</option>
+                        <option value="-7">UTC-07:00</option>
+                        <option value="-6">UTC-06:00</option>
+                        <option value="-5">UTC-05:00</option>
+                        <option value="-4">UTC-04:00</option>
+                        <option value="-3">UTC-03:00</option>
+                        <option value="-2">UTC-02:00</option>
+                        <option value="-1">UTC-01:00</option>
+                        <option value="0">UTC±00:00</option>
+                        <option value="1">UTC+01:00</option>
+                        <option value="2">UTC+02:00</option>
+                        <option value="3">UTC+03:00</option>
+                        <option value="4">UTC+04:00</option>
+                        <option value="5">UTC+05:00</option>
+                        <option value="5.5">UTC+05:30</option>
+                        <option value="6">UTC+06:00</option>
+                        <option value="7">UTC+07:00</option>
+                        <option value="8">UTC+08:00</option>
+                        <option value="9">UTC+09:00</option>
+                        <option value="10">UTC+10:00</option>
+                        <option value="11">UTC+11:00</option>
+                        <option value="12">UTC+12:00</option>
+                        <option value="13">UTC+13:00</option>
+                        <option value="14">UTC+14:00</option>
+                    </select>
+                </div>
+                
+                <button class="calculate-btn" id="calculateBtn">
+                    <i class="fas fa-sun"></i> Calculate Sun Times
+                </button>
+                
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Calculating sun times...</p>
+                </div>
+                
+                <div class="error-message" id="errorMessage">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="errorText">An error occurred. Please try again.</span>
+                </div>
+                
+                <div class="success-message" id="successMessage">
+                    <i class="fas fa-check-circle"></i>
+                    <span id="successText">Location detected successfully!</span>
+                </div>
+            </div>
+            
+            <div class="results-section" id="resultsSection">
+                <div class="results-header">
+                    <i class="fas fa-sun"></i>
+                    <h3>Sun Times</h3>
+                </div>
+                
+                <div class="location-info">
+                    <div class="location-name" id="locationName">--</div>
+                    <div class="location-coords" id="locationCoords">--</div>
+                </div>
+                
+                <div class="sun-times">
+                    <div class="sun-time-card">
+                        <i class="fas fa-sun"></i>
+                        <h4>Sunrise</h4>
+                        <div class="time" id="sunriseTime">--:--</div>
+                    </div>
+                    
+                    <div class="sun-time-card">
+                        <i class="fas fa-cloud-sun"></i>
+                        <h4>Solar Noon</h4>
+                        <div class="time" id="solarNoonTime">--:--</div>
+                    </div>
+                    
+                    <div class="sun-time-card">
+                        <i class="fas fa-moon"></i>
+                        <h4>Sunset</h4>
+                        <div class="time" id="sunsetTime">--:--</div>
+                    </div>
+                </div>
+                
+                <div class="daylight-info">
+                    <div class="daylight-card">
+                        <h4>Daylight Duration</h4>
+                        <div class="value" id="daylightDuration">--:--</div>
+                    </div>
+                    
+                    <div class="daylight-card">
+                        <h4>Civil Dawn</h4>
+                        <div class="value" id="civilDawnTime">--:--</div>
+                    </div>
+                    
+                    <div class="daylight-card">
+                        <h4>Civil Dusk</h4>
+                        <div class="value" id="civilDuskTime">--:--</div>
+                    </div>
+                    
+                    <div class="daylight-card">
+                        <h4>Nautical Dawn</h4>
+                        <div class="value" id="nauticalDawnTime">--:--</div>
+                    </div>
+                    
+                    <div class="daylight-card">
+                        <h4>Nautical Dusk</h4>
+                        <div class="value" id="nauticalDuskTime">--:--</div>
+                    </div>
+                    
+                    <div class="daylight-card">
+                        <h4>Astronomical Dawn</h4>
+                        <div class="value" id="astronomicalDawnTime">--:--</div>
+                    </div>
+                    
+                    <div class="daylight-card">
+                        <h4>Astronomical Dusk</h4>
+                        <div class="value" id="astronomicalDuskTime">--:--</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size
+                const size = Math.random() * 20 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation duration
+                const duration = Math.random() * 20 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                
+                // Random animation delay
+                const delay = Math.random() * 5;
+                particle.style.animationDelay = `${delay}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const toggleIcon = themeToggle.querySelector('.toggle-icon');
+        const toggleText = themeToggle.querySelector('.toggle-text');
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            body.classList.add('light-mode');
+            toggleIcon.classList.replace('fa-moon', 'fa-sun');
+            toggleText.textContent = 'Light Mode';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                toggleIcon.classList.replace('fa-moon', 'fa-sun');
+                toggleText.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'light');
+            } else {
+                toggleIcon.classList.replace('fa-sun', 'fa-moon');
+                toggleText.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+        
+        // Set today's date as default
+        document.getElementById('date').valueAsDate = new Date();
+        
+        // Function to get location name from coordinates using OpenStreetMap Nominatim API
+        async function getLocationName(lat, lon) {
+            try {
+                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10`);
+                const data = await response.json();
+                
+                if (data && data.display_name) {
+                    return data.display_name;
+                } else if (data && data.address) {
+                    const address = data.address;
+                    const parts = [];
+                    
+                    if (address.city || address.town || address.village) {
+                        parts.push(address.city || address.town || address.village);
+                    }
+                    
+                    if (address.state || address.county) {
+                        parts.push(address.state || address.county);
+                    }
+                    
+                    if (address.country) {
+                        parts.push(address.country);
+                    }
+                    
+                    return parts.join(', ');
+                }
+            } catch (error) {
+                console.error('Error getting location name:', error);
+            }
+            
+            return null;
+        }
+        
+        // Get user's current location
+        document.getElementById('getLocationBtn').addEventListener('click', function() {
+            const locationBtn = this;
+            const latitudeInput = document.getElementById('latitude');
+            const longitudeInput = document.getElementById('longitude');
+            const timezoneSelect = document.getElementById('timezone');
+            
+            // Disable button while processing
+            locationBtn.disabled = true;
+            locationBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Detecting Location...';
+            
+            // Hide any previous messages
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    async function(position) {
+                        // Successfully got position
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+                        
+                        // Set the input values
+                        latitudeInput.value = latitude.toFixed(6);
+                        longitudeInput.value = longitude.toFixed(6);
+                        
+                        // Set timezone to auto-detect
+                        timezoneSelect.value = 'auto';
+                        
+                        // Get location name
+                        const locationName = await getLocationName(latitude, longitude);
+                        
+                        // Show success message
+                        const successMessage = document.getElementById('successMessage');
+                        const successText = document.getElementById('successText');
+                        
+                        if (locationName) {
+                            successText.textContent = `Location detected: ${locationName}`;
+                        } else {
+                            successText.textContent = `Location detected: ${latitude.toFixed(4)}°, ${longitude.toFixed(4)}°`;
+                        }
+                        
+                        successMessage.style.display = 'block';
+                        
+                        // Hide success message after 3 seconds
+                        setTimeout(() => {
+                            successMessage.style.display = 'none';
+                        }, 3000);
+                        
+                        // Reset button
+                        locationBtn.disabled = false;
+                        locationBtn.innerHTML = '<i class="fas fa-location-arrow"></i> Use My Current Location';
+                    },
+                    function(error) {
+                        // Handle errors
+                        let errorMessage = '';
+                        switch(error.code) {
+                            case error.PERMISSION_DENIED:
+                                errorMessage = "Location access denied by user. Please enable location permissions or enter coordinates manually.";
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                errorMessage = "Location information is unavailable. Please try again later or enter coordinates manually.";
+                                break;
+                            case error.TIMEOUT:
+                                errorMessage = "Location request timed out. Please try again or enter coordinates manually.";
+                                break;
+                            case error.UNKNOWN_ERROR:
+                                errorMessage = "An unknown error occurred. Please enter coordinates manually.";
+                                break;
+                        }
+                        
+                        showError(errorMessage);
+                        
+                        // Reset button
+                        locationBtn.disabled = false;
+                        locationBtn.innerHTML = '<i class="fas fa-location-arrow"></i> Use My Current Location';
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 60000
+                    }
+                );
+            } else {
+                showError("Geolocation is not supported by your browser. Please enter coordinates manually.");
+                
+                // Reset button
+                locationBtn.disabled = false;
+                locationBtn.innerHTML = '<i class="fas fa-location-arrow"></i> Use My Current Location';
+            }
+        });
+        
+        // Calculate sun times
+        document.getElementById('calculateBtn').addEventListener('click', calculateSunTimes);
+        
+        async function calculateSunTimes() {
+            // Get input values
+            const latitude = parseFloat(document.getElementById('latitude').value);
+            const longitude = parseFloat(document.getElementById('longitude').value);
+            const date = new Date(document.getElementById('date').value);
+            const timezone = document.getElementById('timezone').value;
+            
+            // Validate inputs
+            if (isNaN(latitude) || isNaN(longitude)) {
+                showError("Please enter valid latitude and longitude values.");
+                return;
+            }
+            
+            if (latitude < -90 || latitude > 90) {
+                showError("Latitude must be between -90 and 90 degrees.");
+                return;
+            }
+            
+            if (longitude < -180 || longitude > 180) {
+                showError("Longitude must be between -180 and 180 degrees.");
+                return;
+            }
+            
+            if (!date || isNaN(date.getTime())) {
+                showError("Please select a valid date.");
+                return;
+            }
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('errorMessage').style.display = 'none';
+            
+            // Calculate sun times
+            setTimeout(async () => {
+                try {
+                    // Get timezone offset
+                    let timezoneOffset;
+                    if (timezone === 'auto') {
+                        timezoneOffset = new Date().getTimezoneOffset() / -60;
+                    } else {
+                        timezoneOffset = parseFloat(timezone);
+                    }
+                    
+                    // Calculate sun times
+                    const sunTimes = calculateSunTimesForDate(latitude, longitude, date, timezoneOffset);
+                    
+                    // Get location name
+                    const locationName = await getLocationName(latitude, longitude);
+                    
+                    // Display results
+                    displayResults(sunTimes, latitude, longitude, locationName);
+                    
+                    // Hide loading
+                    document.getElementById('loading').style.display = 'none';
+                } catch (error) {
+                    document.getElementById('loading').style.display = 'none';
+                    showError("An error occurred while calculating sun times. Please try again.");
+                }
+            }, 500);
+        }
+        
+        function calculateSunTimesForDate(lat, lon, date, timezoneOffset) {
+            // Convert to radians
+            const latRad = lat * Math.PI / 180;
+            
+            // Get day of year
+            const start = new Date(date.getFullYear(), 0, 0);
+            const diff = date - start;
+            const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
+            
+            // Calculate solar declination
+            const declination = 23.45 * Math.sin((360 * (284 + dayOfYear) / 365) * Math.PI / 180);
+            const declinationRad = declination * Math.PI / 180;
+            
+            // Calculate hour angle
+            const hourAngle = Math.acos(
+                -Math.tan(latRad) * Math.tan(declinationRad)
+            );
+            
+            // Calculate sunrise and sunset in UTC
+            const sunriseUTC = 12 - (hourAngle * 180 / Math.PI) / 15 - (lon / 15);
+            const sunsetUTC = 12 + (hourAngle * 180 / Math.PI) / 15 - (lon / 15);
+            
+            // Convert to local time
+            const sunriseLocal = sunriseUTC + timezoneOffset;
+            const sunsetLocal = sunsetUTC + timezoneOffset;
+            
+            // Normalize to 0-24 range
+            const normalizeTime = (time) => {
+                while (time < 0) time += 24;
+                while (time >= 24) time -= 24;
+                return time;
+            };
+            
+            const sunriseTime = normalizeTime(sunriseLocal);
+            const sunsetTime = normalizeTime(sunsetLocal);
+            const solarNoonTime = normalizeTime((sunriseTime + sunsetTime) / 2);
+            
+            // Calculate civil twilight (sun 6° below horizon)
+            const civilHourAngle = Math.acos(
+                (-Math.sin(6 * Math.PI / 180) - Math.sin(latRad) * Math.sin(declinationRad)) / 
+                (Math.cos(latRad) * Math.cos(declinationRad))
+            );
+            
+            const civilDawnUTC = 12 - (civilHourAngle * 180 / Math.PI) / 15 - (lon / 15);
+            const civilDuskUTC = 12 + (civilHourAngle * 180 / Math.PI) / 15 - (lon / 15);
+            
+            const civilDawnTime = normalizeTime(civilDawnUTC + timezoneOffset);
+            const civilDuskTime = normalizeTime(civilDuskUTC + timezoneOffset);
+            
+            // Calculate nautical twilight (sun 12° below horizon)
+            const nauticalHourAngle = Math.acos(
+                (-Math.sin(12 * Math.PI / 180) - Math.sin(latRad) * Math.sin(declinationRad)) / 
+                (Math.cos(latRad) * Math.cos(declinationRad))
+            );
+            
+            const nauticalDawnUTC = 12 - (nauticalHourAngle * 180 / Math.PI) / 15 - (lon / 15);
+            const nauticalDuskUTC = 12 + (nauticalHourAngle * 180 / Math.PI) / 15 - (lon / 15);
+            
+            const nauticalDawnTime = normalizeTime(nauticalDawnUTC + timezoneOffset);
+            const nauticalDuskTime = normalizeTime(nauticalDuskUTC + timezoneOffset);
+            
+            // Calculate astronomical twilight (sun 18° below horizon)
+            const astronomicalHourAngle = Math.acos(
+                (-Math.sin(18 * Math.PI / 180) - Math.sin(latRad) * Math.sin(declinationRad)) / 
+                (Math.cos(latRad) * Math.cos(declinationRad))
+            );
+            
+            const astronomicalDawnUTC = 12 - (astronomicalHourAngle * 180 / Math.PI) / 15 - (lon / 15);
+            const astronomicalDuskUTC = 12 + (astronomicalHourAngle * 180 / Math.PI) / 15 - (lon / 15);
+            
+            const astronomicalDawnTime = normalizeTime(astronomicalDawnUTC + timezoneOffset);
+            const astronomicalDuskTime = normalizeTime(astronomicalDuskUTC + timezoneOffset);
+            
+            // Calculate daylight duration
+            let daylightDuration;
+            if (sunsetTime > sunriseTime) {
+                daylightDuration = sunsetTime - sunriseTime;
+            } else {
+                daylightDuration = (24 - sunriseTime) + sunsetTime;
+            }
+            
+            // Format times
+            const formatTime = (time) => {
+                const hours = Math.floor(time);
+                const minutes = Math.round((time - hours) * 60);
+                return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+            };
+            
+            const formatDuration = (duration) => {
+                const hours = Math.floor(duration);
+                const minutes = Math.round((duration - hours) * 60);
+                return `${hours}h ${minutes}m`;
+            };
+            
+            return {
+                sunrise: formatTime(sunriseTime),
+                solarNoon: formatTime(solarNoonTime),
+                sunset: formatTime(sunsetTime),
+                civilDawn: formatTime(civilDawnTime),
+                civilDusk: formatTime(civilDuskTime),
+                nauticalDawn: formatTime(nauticalDawnTime),
+                nauticalDusk: formatTime(nauticalDuskTime),
+                astronomicalDawn: formatTime(astronomicalDawnTime),
+                astronomicalDusk: formatTime(astronomicalDuskTime),
+                daylightDuration: formatDuration(daylightDuration)
+            };
+        }
+        
+        function displayResults(sunTimes, lat, lon, locationName) {
+            // Set location name and coordinates
+            const locationNameElement = document.getElementById('locationName');
+            const locationCoordsElement = document.getElementById('locationCoords');
+            
+            if (locationName) {
+                locationNameElement.textContent = locationName;
+            } else {
+                locationNameElement.textContent = "Unknown Location";
+            }
+            
+            locationCoordsElement.textContent = `${lat.toFixed(4)}°, ${lon.toFixed(4)}°`;
+            
+            // Set sun times
+            document.getElementById('sunriseTime').textContent = sunTimes.sunrise;
+            document.getElementById('solarNoonTime').textContent = sunTimes.solarNoon;
+            document.getElementById('sunsetTime').textContent = sunTimes.sunset;
+            document.getElementById('civilDawnTime').textContent = sunTimes.civilDawn;
+            document.getElementById('civilDuskTime').textContent = sunTimes.civilDusk;
+            document.getElementById('nauticalDawnTime').textContent = sunTimes.nauticalDawn;
+            document.getElementById('nauticalDuskTime').textContent = sunTimes.nauticalDusk;
+            document.getElementById('astronomicalDawnTime').textContent = sunTimes.astronomicalDawn;
+            document.getElementById('astronomicalDuskTime').textContent = sunTimes.astronomicalDusk;
+            document.getElementById('daylightDuration').textContent = sunTimes.daylightDuration;
+            
+            // Show results section
+            document.getElementById('resultsSection').style.display = 'block';
+        }
+        
+        function showError(message) {
+            const errorElement = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            
+            errorText.textContent = message;
+            errorElement.style.display = 'block';
+            
+            // Hide error after 5 seconds
+            setTimeout(() => {
+                errorElement.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async function() {
+            createParticles();
+            
+            // Try to get location on page load
+            const locationBtn = document.getElementById('getLocationBtn');
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    async function(position) {
+                        // Successfully got position
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+                        
+                        // Set the input values
+                        document.getElementById('latitude').value = latitude.toFixed(6);
+                        document.getElementById('longitude').value = longitude.toFixed(6);
+                        
+                        // Set timezone to auto-detect
+                        document.getElementById('timezone').value = 'auto';
+                        
+                        // Get location name
+                        const locationName = await getLocationName(latitude, longitude);
+                        
+                        // Show success message
+                        const successMessage = document.getElementById('successMessage');
+                        const successText = document.getElementById('successText');
+                        
+                        if (locationName) {
+                            successText.textContent = `Location detected: ${locationName}`;
+                        } else {
+                            successText.textContent = `Location detected: ${latitude.toFixed(4)}°, ${longitude.toFixed(4)}°`;
+                        }
+                        
+                        successMessage.style.display = 'block';
+                        
+                        // Hide success message after 3 seconds
+                        setTimeout(() => {
+                            successMessage.style.display = 'none';
+                        }, 3000);
+                    },
+                    function(error) {
+                        // Silently fail on initial load
+                        console.log("Geolocation not available on page load");
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 5000,
+                        maximumAge: 300000 // 5 minutes
+                    }
+                );
+            }
+        });
+    </script>
+</body>
+</html>
