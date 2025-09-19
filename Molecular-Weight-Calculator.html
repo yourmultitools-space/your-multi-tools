@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Molecular Weight Calculator - Your Multi Tools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --dark-text: #f0f0f0;
+            --dark-accent: #4361ee;
+            --dark-secondary: #4cc9f0;
+            --dark-hover: #2a2a2a;
+            --dark-shadow: rgba(0, 0, 0, 0.5);
+            
+            --light-bg: #f8f9fa;
+            --light-card: #ffffff;
+            --light-text: #333333;
+            --light-accent: #4361ee;
+            --light-secondary: #3a86ff;
+            --light-hover: #f0f0f0;
+            --light-shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease, color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body.light-mode {
+            background-color: var(--light-bg);
+            color: var(--light-text);
+        }
+
+        /* Particles background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(67, 97, 238, 0.2);
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 20px;
+            position: relative;
+            z-index: 10;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--dark-secondary);
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .logo-text .domain {
+            font-size: 0.9rem;
+            color: var(--dark-text);
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .logo-text .domain {
+            color: var(--light-text);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--dark-card);
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 15px var(--dark-shadow);
+        }
+
+        .light-mode .theme-toggle {
+            background: var(--light-card);
+            box-shadow: 0 4px 15px var(--light-shadow);
+        }
+
+        .toggle-icon {
+            font-size: 1.4rem;
+        }
+
+        .toggle-text {
+            font-weight: 500;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 40px 20px 60px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero h2 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .light-mode .hero h2 {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            line-height: 1.7;
+            margin-bottom: 40px;
+            color: var(--dark-text);
+            opacity: 0.9;
+        }
+
+        .light-mode .hero p {
+            color: var(--light-text);
+        }
+
+        /* Main Calculator Section */
+        .calculator-section {
+            background: var(--dark-card);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 0 auto 60px;
+            max-width: 900px;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(76, 201, 240, 0.2);
+        }
+
+        .light-mode .calculator-section {
+            background: var(--light-card);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px var(--light-shadow);
+        }
+
+        .calculator-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .calculator-icon {
+            font-size: 2.5rem;
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .calculator-icon {
+            color: var(--light-secondary);
+        }
+
+        .calculator-header h3 {
+            font-size: 2rem;
+            color: var(--dark-text);
+        }
+
+        .light-mode .calculator-header h3 {
+            color: var(--light-text);
+        }
+
+        /* Input Section */
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border: 2px solid var(--dark-accent);
+            background: rgba(30, 30, 30, 0.7);
+            color: var(--dark-text);
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .light-mode .input-wrapper input {
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--light-text);
+            border: 2px solid var(--light-accent);
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: var(--dark-secondary);
+            box-shadow: 0 5px 20px rgba(76, 201, 240, 0.4);
+        }
+
+        .light-mode .input-wrapper input:focus {
+            border-color: var(--light-secondary);
+        }
+
+        .input-helper {
+            font-size: 0.9rem;
+            color: var(--dark-text);
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .light-mode .input-helper {
+            color: var(--light-text);
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--dark-accent), var(--dark-secondary));
+            color: white;
+        }
+
+        .light-mode .btn-primary {
+            background: linear-gradient(45deg, var(--light-accent), var(--light-secondary));
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(67, 97, 238, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(67, 97, 238, 0.15);
+            color: var(--dark-text);
+        }
+
+        .light-mode .btn-secondary {
+            background: rgba(67, 97, 238, 0.08);
+            color: var(--light-text);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(67, 97, 238, 0.3);
+        }
+
+        /* Results Section */
+        .results-section {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(67, 97, 238, 0.1);
+            border: 1px solid rgba(76, 201, 240, 0.3);
+        }
+
+        .light-mode .results-section {
+            background: rgba(67, 97, 238, 0.05);
+            border: 1px solid rgba(67, 97, 238, 0.2);
+        }
+
+        .results-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .results-header h4 {
+            font-size: 1.5rem;
+            color: var(--dark-text);
+        }
+
+        .light-mode .results-header h4 {
+            color: var(--light-text);
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark-secondary);
+            margin-bottom: 15px;
+        }
+
+        .light-mode .result-value {
+            color: var(--light-secondary);
+        }
+
+        .formula-breakdown {
+            margin-top: 20px;
+        }
+
+        .formula-breakdown h5 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--dark-text);
+        }
+
+        .light-mode .formula-breakdown h5 {
+            color: var(--light-text);
+        }
+
+        .element-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .element-item {
+            padding: 8px 15px;
+            background: rgba(30, 30, 30, 0.7);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .light-mode .element-item {
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .element-symbol {
+            font-weight: 600;
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .element-symbol {
+            color: var(--light-secondary);
+        }
+
+        .element-count {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .element-weight {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Examples Section */
+        .examples-section {
+            margin-top: 40px;
+        }
+
+        .examples-header {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--dark-text);
+        }
+
+        .light-mode .examples-header {
+            color: var(--light-text);
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .example-item {
+            padding: 15px;
+            background: rgba(30, 30, 30, 0.7);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(76, 201, 240, 0.2);
+        }
+
+        .light-mode .example-item {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .example-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .example-formula {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .example-formula {
+            color: var(--light-secondary);
+        }
+
+        .example-name {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Error Message */
+        .error-message {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(220, 53, 69, 0.2);
+            border-left: 4px solid #dc3545;
+            color: #f8d7da;
+        }
+
+        .light-mode .error-message {
+            background: rgba(220, 53, 69, 0.1);
+            color: #721c24;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 60px 20px 40px;
+            color: var(--dark-text);
+            opacity: 0.7;
+            font-size: 1.1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+        }
+
+        .light-mode footer {
+            color: var(--light-text);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .footer-logo {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--dark-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .light-mode .footer-links a {
+            color: var(--light-text);
+        }
+
+        .footer-links a:hover {
+            color: var(--dark-secondary);
+            opacity: 1;
+        }
+
+        .light-mode .footer-links a:hover {
+            color: var(--light-secondary);
+        }
+
+        .copyright {
+            margin-top: 20px;
+            font-size: 0.95rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero h2 {
+                font-size: 3rem;
+            }
+            
+            .calculator-section {
+                padding: 30px 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 2.5rem;
+            }
+            
+            .logo-text h1 {
+                font-size: 1.6rem;
+            }
+            
+            .calculator-header h3 {
+                font-size: 1.6rem;
+            }
+            
+            .examples-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+
+        @media (max-width: 576px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-tools logo-icon"></i>
+                <div class="logo-text">
+                    <h1>Molecular Weight Calculator</h1>
+                    <div class="domain">www.yourmultitools.space</div>
+                </div>
+            </div>
+            
+            <div class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon toggle-icon"></i>
+                <div class="toggle-text">Dark Mode</div>
+            </div>
+        </header>
+        
+        <section class="hero">
+            <h2>Molecular Weight Calculator</h2>
+            <p>Calculate the molecular weight of any chemical compound with our easy-to-use tool. Simply enter the chemical formula and get instant results.</p>
+        </section>
+        
+        <section class="calculator-section">
+            <div class="calculator-header">
+                <i class="fas fa-atom calculator-icon"></i>
+                <h3>Chemical Formula Calculator</h3>
+            </div>
+            
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="formulaInput">Enter Chemical Formula</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="formulaInput" placeholder="e.g., H2O, C6H12O6, NaCl">
+                    </div>
+                    <div class="input-helper">
+                        Use standard chemical notation (e.g., H2O for water, C6H12O6 for glucose)
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-primary" id="calculateBtn">
+                        <i class="fas fa-calculator"></i> Calculate
+                    </button>
+                    <button class="btn btn-secondary" id="clearBtn">
+                        <i class="fas fa-eraser"></i> Clear
+                    </button>
+                </div>
+                
+                <div class="error-message" id="errorMessage">
+                    <i class="fas fa-exclamation-circle"></i> 
+                    <span id="errorText">Invalid chemical formula. Please check your input.</span>
+                </div>
+                
+                <div class="results-section" id="resultsSection">
+                    <div class="results-header">
+                        <i class="fas fa-check-circle"></i>
+                        <h4>Calculation Results</h4>
+                    </div>
+                    <div class="result-value" id="resultValue">0 g/mol</div>
+                    <div class="formula-breakdown">
+                        <h5>Formula Breakdown</h5>
+                        <div class="element-list" id="elementList"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="examples-section">
+                <h3 class="examples-header">Common Compounds</h3>
+                <div class="examples-grid">
+                    <div class="example-item" data-formula="H2O">
+                        <div class="example-formula">H2O</div>
+                        <div class="example-name">Water</div>
+                    </div>
+                    <div class="example-item" data-formula="CO2">
+                        <div class="example-formula">CO2</div>
+                        <div class="example-name">Carbon Dioxide</div>
+                    </div>
+                    <div class="example-item" data-formula="NaCl">
+                        <div class="example-formula">NaCl</div>
+                        <div class="example-name">Sodium Chloride</div>
+                    </div>
+                    <div class="example-item" data-formula="C6H12O6">
+                        <div class="example-formula">C6H12O6</div>
+                        <div class="example-name">Glucose</div>
+                    </div>
+                    <div class="example-item" data-formula="NH3">
+                        <div class="example-formula">NH3</div>
+                        <div class="example-name">Ammonia</div>
+                    </div>
+                    <div class="example-item" data-formula="CH4">
+                        <div class="example-formula">CH4</div>
+                        <div class="example-name">Methane</div>
+                    </div>
+                    <div class="example-item" data-formula="C2H5OH">
+                        <div class="example-formula">C2H5OH</div>
+                        <div class="example-name">Ethanol</div>
+                    </div>
+                    <div class="example-item" data-formula="CaCO3">
+                        <div class="example-formula">CaCO3</div>
+                        <div class="example-name">Calcium Carbonate</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size
+                const size = Math.random() * 20 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation duration
+                const duration = Math.random() * 20 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                
+                // Random animation delay
+                const delay = Math.random() * 5;
+                particle.style.animationDelay = `${delay}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const toggleIcon = themeToggle.querySelector('.toggle-icon');
+        const toggleText = themeToggle.querySelector('.toggle-text');
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            body.classList.add('light-mode');
+            toggleIcon.classList.replace('fa-moon', 'fa-sun');
+            toggleText.textContent = 'Light Mode';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                toggleIcon.classList.replace('fa-moon', 'fa-sun');
+                toggleText.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'light');
+            } else {
+                toggleIcon.classList.replace('fa-sun', 'fa-moon');
+                toggleText.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+        
+        // Atomic weights database
+        const atomicWeights = {
+            'H': 1.008,
+            'He': 4.003,
+            'Li': 6.941,
+            'Be': 9.012,
+            'B': 10.811,
+            'C': 12.011,
+            'N': 14.007,
+            'O': 15.999,
+            'F': 18.998,
+            'Ne': 20.180,
+            'Na': 22.990,
+            'Mg': 24.305,
+            'Al': 26.982,
+            'Si': 28.086,
+            'P': 30.974,
+            'S': 32.065,
+            'Cl': 35.453,
+            'Ar': 39.948,
+            'K': 39.098,
+            'Ca': 40.078,
+            'Sc': 44.956,
+            'Ti': 47.867,
+            'V': 50.942,
+            'Cr': 51.996,
+            'Mn': 54.938,
+            'Fe': 55.845,
+            'Co': 58.933,
+            'Ni': 58.693,
+            'Cu': 63.546,
+            'Zn': 65.38,
+            'Ga': 69.723,
+            'Ge': 72.64,
+            'As': 74.922,
+            'Se': 78.96,
+            'Br': 79.904,
+            'Kr': 83.798,
+            'Rb': 85.468,
+            'Sr': 87.62,
+            'Y': 88.906,
+            'Zr': 91.224,
+            'Nb': 92.906,
+            'Mo': 95.94,
+            'Tc': 98,
+            'Ru': 101.07,
+            'Rh': 102.906,
+            'Pd': 106.42,
+            'Ag': 107.868,
+            'Cd': 112.411,
+            'In': 114.818,
+            'Sn': 118.71,
+            'Sb': 121.76,
+            'Te': 127.6,
+            'I': 126.904,
+            'Xe': 131.293,
+            'Cs': 132.905,
+            'Ba': 137.327,
+            'La': 138.905,
+            'Ce': 140.116,
+            'Pr': 140.908,
+            'Nd': 144.242,
+            'Pm': 145,
+            'Sm': 150.36,
+            'Eu': 151.964,
+            'Gd': 157.25,
+            'Tb': 158.925,
+            'Dy': 162.5,
+            'Ho': 164.93,
+            'Er': 167.259,
+            'Tm': 168.934,
+            'Yb': 173.04,
+            'Lu': 174.967,
+            'Hf': 178.49,
+            'Ta': 180.948,
+            'W': 183.84,
+            'Re': 186.207,
+            'Os': 190.23,
+            'Ir': 192.217,
+            'Pt': 195.084,
+            'Au': 196.967,
+            'Hg': 200.59,
+            'Tl': 204.383,
+            'Pb': 207.2,
+            'Bi': 208.98,
+            'Po': 209,
+            'At': 210,
+            'Rn': 222,
+            'Fr': 223,
+            'Ra': 226,
+            'Ac': 227,
+            'Th': 232.038,
+            'Pa': 231.036,
+            'U': 238.029,
+            'Np': 237,
+            'Pu': 244,
+            'Am': 243,
+            'Cm': 247,
+            'Bk': 247,
+            'Cf': 251,
+            'Es': 252,
+            'Fm': 257,
+            'Md': 258,
+            'No': 259,
+            'Lr': 262,
+            'Rf': 267,
+            'Db': 268,
+            'Sg': 271,
+            'Bh': 272,
+            'Hs': 270,
+            'Mt': 276,
+            'Ds': 281,
+            'Rg': 280,
+            'Cn': 285,
+            'Nh': 284,
+            'Fl': 289,
+            'Mc': 288,
+            'Lv': 293,
+            'Ts': 294,
+            'Og': 294
+        };
+        
+        // Calculator functionality
+        const formulaInput = document.getElementById('formulaInput');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+        const resultsSection = document.getElementById('resultsSection');
+        const resultValue = document.getElementById('resultValue');
+        const elementList = document.getElementById('elementList');
+        const exampleItems = document.querySelectorAll('.example-item');
+        
+        // Parse chemical formula and calculate molecular weight
+        function calculateMolecularWeight(formula) {
+            // Reset error message
+            errorMessage.style.display = 'none';
+            
+            // Remove any whitespace
+            formula = formula.replace(/\s+/g, '');
+            
+            // Check if formula is empty
+            if (!formula) {
+                showError('Please enter a chemical formula.');
+                return;
+            }
+            
+            // Parse the formula
+            try {
+                const elements = parseFormula(formula);
+                let totalWeight = 0;
+                
+                // Calculate total molecular weight
+                for (const element in elements) {
+                    if (!atomicWeights[element]) {
+                        showError(`Invalid element symbol: ${element}`);
+                        return;
+                    }
+                    totalWeight += atomicWeights[element] * elements[element];
+                }
+                
+                // Display results
+                displayResults(totalWeight, elements);
+                
+            } catch (error) {
+                showError('Invalid chemical formula. Please check your input.');
+            }
+        }
+        
+        // Parse chemical formula into elements and counts
+        function parseFormula(formula) {
+            const elements = {};
+            
+            // Regular expression to match element symbols and counts
+            const regex = /([A-Z][a-z]?)(\d*)/g;
+            let match;
+            
+            while ((match = regex.exec(formula)) !== null) {
+                const element = match[1];
+                const count = match[2] ? parseInt(match[2]) : 1;
+                
+                if (elements[element]) {
+                    elements[element] += count;
+                } else {
+                    elements[element] = count;
+                }
+            }
+            
+            return elements;
+        }
+        
+        // Display calculation results
+        function displayResults(weight, elements) {
+            // Show results section
+            resultsSection.style.display = 'block';
+            
+            // Display total weight
+            resultValue.textContent = `${weight.toFixed(3)} g/mol`;
+            
+            // Clear previous element list
+            elementList.innerHTML = '';
+            
+            // Add elements to the list
+            for (const element in elements) {
+                const elementItem = document.createElement('div');
+                elementItem.classList.add('element-item');
+                
+                const elementSymbol = document.createElement('span');
+                elementSymbol.classList.add('element-symbol');
+                elementSymbol.textContent = element;
+                
+                const elementCount = document.createElement('span');
+                elementCount.classList.add('element-count');
+                elementCount.textContent = `×${elements[element]}`;
+                
+                const elementWeight = document.createElement('span');
+                elementWeight.classList.add('element-weight');
+                elementWeight.textContent = `= ${(atomicWeights[element] * elements[element]).toFixed(3)}`;
+                
+                elementItem.appendChild(elementSymbol);
+                elementItem.appendChild(elementCount);
+                elementItem.appendChild(elementWeight);
+                
+                elementList.appendChild(elementItem);
+            }
+        }
+        
+        // Show error message
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.style.display = 'block';
+            resultsSection.style.display = 'none';
+        }
+        
+        // Clear input and results
+        function clearInput() {
+            formulaInput.value = '';
+            errorMessage.style.display = 'none';
+            resultsSection.style.display = 'none';
+        }
+        
+        // Event listeners
+        calculateBtn.addEventListener('click', () => {
+            calculateMolecularWeight(formulaInput.value);
+        });
+        
+        clearBtn.addEventListener('click', clearInput);
+        
+        formulaInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                calculateMolecularWeight(formulaInput.value);
+            }
+        });
+        
+        // Example items click event
+        exampleItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const formula = item.getAttribute('data-formula');
+                formulaInput.value = formula;
+                calculateMolecularWeight(formula);
+            });
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+        });
+    </script>
+</body>
+</html>
