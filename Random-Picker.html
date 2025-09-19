@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Picker - Your Multi Tools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --dark-text: #f0f0f0;
+            --dark-accent: #4361ee;
+            --dark-secondary: #4cc9f0;
+            --dark-hover: #2a2a2a;
+            --dark-shadow: rgba(0, 0, 0, 0.5);
+            
+            --light-bg: #f8f9fa;
+            --light-card: #ffffff;
+            --light-text: #333333;
+            --light-accent: #4361ee;
+            --light-secondary: #3a86ff;
+            --light-hover: #f0f0f0;
+            --light-shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease, color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body.light-mode {
+            background-color: var(--light-bg);
+            color: var(--light-text);
+        }
+
+        /* Particles background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(67, 97, 238, 0.2);
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 20px;
+            position: relative;
+            z-index: 10;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--dark-secondary);
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .logo-text .domain {
+            font-size: 0.9rem;
+            color: var(--dark-text);
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .logo-text .domain {
+            color: var(--light-text);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--dark-card);
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 15px var(--dark-shadow);
+        }
+
+        .light-mode .theme-toggle {
+            background: var(--light-card);
+            box-shadow: 0 4px 15px var(--light-shadow);
+        }
+
+        .toggle-icon {
+            font-size: 1.4rem;
+        }
+
+        .toggle-text {
+            font-weight: 500;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 40px 20px 60px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero h2 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .light-mode .hero h2 {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            line-height: 1.7;
+            margin-bottom: 40px;
+            color: var(--dark-text);
+            opacity: 0.9;
+        }
+
+        .light-mode .hero p {
+            color: var(--light-text);
+        }
+
+        /* Tool Section */
+        .tool-section {
+            background: rgba(30, 30, 30, 0.7);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 0 auto 60px;
+            max-width: 1000px;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(76, 201, 240, 0.2);
+        }
+
+        .light-mode .tool-section {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .tool-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .tool-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .light-mode .tool-header h2 {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tool-header p {
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        /* Random Picker Styles */
+        .picker-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .input-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .input-section input {
+            flex: 1;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border: 2px solid var(--dark-accent);
+            background: rgba(30, 30, 30, 0.7);
+            color: var(--dark-text);
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .light-mode .input-section input {
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--light-text);
+            border: 2px solid var(--light-accent);
+        }
+
+        .input-section input:focus {
+            outline: none;
+            border-color: var(--dark-secondary);
+            box-shadow: 0 4px 20px rgba(76, 201, 240, 0.4);
+        }
+
+        .light-mode .input-section input:focus {
+            border-color: var(--light-secondary);
+        }
+
+        .btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--dark-accent), var(--dark-secondary));
+            color: white;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .light-mode .btn-primary {
+            background: linear-gradient(45deg, var(--light-accent), var(--light-secondary));
+            box-shadow: 0 4px 15px rgba(58, 134, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.5);
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #e63946, #f4845f);
+            color: white;
+            box-shadow: 0 4px 15px rgba(230, 57, 70, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(230, 57, 70, 0.5);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #2a9d8f, #52b788);
+            color: white;
+            box-shadow: 0 4px 15px rgba(42, 157, 143, 0.3);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(42, 157, 143, 0.5);
+        }
+
+        .picker-options {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .option-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option-group label {
+            font-weight: 500;
+        }
+
+        .option-group input[type="number"] {
+            width: 70px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 2px solid var(--dark-accent);
+            background: rgba(30, 30, 30, 0.7);
+            color: var(--dark-text);
+            text-align: center;
+        }
+
+        .light-mode .option-group input[type="number"] {
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--light-text);
+            border: 2px solid var(--light-accent);
+        }
+
+        .option-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .items-container {
+            background: var(--dark-card);
+            border-radius: 15px;
+            padding: 25px;
+            min-height: 300px;
+            box-shadow: 0 5px 15px var(--dark-shadow);
+            border: 1px solid rgba(76, 201, 240, 0.1);
+        }
+
+        .light-mode .items-container {
+            background: var(--light-card);
+            box-shadow: 0 5px 15px var(--light-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .items-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .items-header h3 {
+            font-size: 1.5rem;
+        }
+
+        .items-count {
+            background: var(--dark-accent);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .light-mode .items-count {
+            background: var(--light-accent);
+        }
+
+        .items-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .item {
+            background: rgba(67, 97, 238, 0.15);
+            border-radius: 50px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .light-mode .item {
+            background: rgba(67, 97, 238, 0.08);
+        }
+
+        .item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .item.selected {
+            background: linear-gradient(45deg, var(--dark-accent), var(--dark-secondary));
+            color: white;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(76, 201, 240, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(76, 201, 240, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(76, 201, 240, 0);
+            }
+        }
+
+        .item-text {
+            font-weight: 500;
+        }
+
+        .item-remove {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: transform 0.2s ease;
+        }
+
+        .item-remove:hover {
+            transform: scale(1.2);
+        }
+
+        .item.selected .item-remove {
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--dark-text);
+            opacity: 0.6;
+        }
+
+        .light-mode .empty-state {
+            color: var(--light-text);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .empty-state i {
+            color: var(--light-secondary);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .result-container {
+            margin-top: 30px;
+            padding: 25px;
+            background: var(--dark-card);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px var(--dark-shadow);
+            border: 1px solid rgba(76, 201, 240, 0.1);
+            display: none;
+        }
+
+        .light-mode .result-container {
+            background: var(--light-card);
+            box-shadow: 0 5px 15px var(--light-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .result-header h3 {
+            font-size: 1.5rem;
+            color: var(--dark-secondary);
+        }
+
+        .light-mode .result-header h3 {
+            color: var(--light-secondary);
+        }
+
+        .result-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .result-item {
+            background: linear-gradient(45deg, var(--dark-accent), var(--dark-secondary));
+            color: white;
+            border-radius: 50px;
+            padding: 12px 20px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 60px 20px 40px;
+            color: var(--dark-text);
+            opacity: 0.7;
+            font-size: 1.1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+        }
+
+        .light-mode footer {
+            color: var(--light-text);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .footer-logo {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--dark-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .light-mode .footer-links a {
+            color: var(--light-text);
+        }
+
+        .footer-links a:hover {
+            color: var(--dark-secondary);
+            opacity: 1;
+        }
+
+        .light-mode .footer-links a:hover {
+            color: var(--light-secondary);
+        }
+
+        .copyright {
+            margin-top: 20px;
+            font-size: 0.95rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero h2 {
+                font-size: 3rem;
+            }
+            
+            .tool-header h2 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 2.5rem;
+            }
+            
+            .logo-text h1 {
+                font-size: 1.6rem;
+            }
+            
+            .tool-section {
+                padding: 30px 20px;
+            }
+            
+            .input-section {
+                flex-direction: column;
+            }
+            
+            .picker-options {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .items-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .result-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-tools logo-icon"></i>
+                <div class="logo-text">
+                    <h1>Random Picker</h1>
+                    <div class="domain">www.yourmultitools.space</div>
+                </div>
+            </div>
+            
+            <div class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon toggle-icon"></i>
+                <div class="toggle-text">Dark Mode</div>
+            </div>
+        </header>
+        
+        <section class="hero">
+            <h2>Random Picker</h2>
+            <p>Randomly select items from a list. Perfect for making decisions, choosing winners, or just having fun!</p>
+        </section>
+        
+        <section class="tool-section">
+            <div class="tool-header">
+                <h2>Random Picker Tool</h2>
+                <p>Add items to your list and let the Random Picker choose for you. You can pick one item or multiple items at once.</p>
+            </div>
+            
+            <div class="picker-container">
+                <div class="input-section">
+                    <input type="text" id="itemInput" placeholder="Enter an item to add to the list...">
+                    <button class="btn btn-primary" id="addItemBtn">
+                        <i class="fas fa-plus"></i> Add Item
+                    </button>
+                </div>
+                
+                <div class="picker-options">
+                    <div class="option-group">
+                        <label for="pickCount">Number to pick:</label>
+                        <input type="number" id="pickCount" min="1" value="1">
+                    </div>
+                    
+                    <div class="option-group">
+                        <input type="checkbox" id="allowDuplicates">
+                        <label for="allowDuplicates">Allow duplicates</label>
+                    </div>
+                    
+                    <div class="option-group">
+                        <input type="checkbox" id="removeAfterPick">
+                        <label for="removeAfterPick">Remove after pick</label>
+                    </div>
+                </div>
+                
+                <div class="items-container">
+                    <div class="items-header">
+                        <h3>Your Items</h3>
+                        <div class="items-count" id="itemsCount">0 items</div>
+                    </div>
+                    
+                    <div class="items-list" id="itemsList">
+                        <div class="empty-state" id="emptyState">
+                            <i class="fas fa-list-ul"></i>
+                            <p>No items added yet. Start by adding some items to your list!</p>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn btn-success" id="pickBtn" disabled>
+                            <i class="fas fa-random"></i> Pick Random Item(s)
+                        </button>
+                        <button class="btn btn-danger" id="clearBtn" disabled>
+                            <i class="fas fa-trash-alt"></i> Clear All
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="result-container" id="resultContainer">
+                    <div class="result-header">
+                        <h3>Result</h3>
+                        <button class="btn btn-primary" id="closeResultBtn">
+                            <i class="fas fa-times"></i> Close
+                        </button>
+                    </div>
+                    <div class="result-items" id="resultItems"></div>
+                </div>
+            </div>
+        </section>
+        
+       
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size
+                const size = Math.random() * 20 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation duration
+                const duration = Math.random() * 20 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                
+                // Random animation delay
+                const delay = Math.random() * 5;
+                particle.style.animationDelay = `${delay}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const toggleIcon = themeToggle.querySelector('.toggle-icon');
+        const toggleText = themeToggle.querySelector('.toggle-text');
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            body.classList.add('light-mode');
+            toggleIcon.classList.replace('fa-moon', 'fa-sun');
+            toggleText.textContent = 'Light Mode';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                toggleIcon.classList.replace('fa-moon', 'fa-sun');
+                toggleText.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'light');
+            } else {
+                toggleIcon.classList.replace('fa-sun', 'fa-moon');
+                toggleText.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+        
+        // Random Picker Functionality
+        const itemInput = document.getElementById('itemInput');
+        const addItemBtn = document.getElementById('addItemBtn');
+        const pickCountInput = document.getElementById('pickCount');
+        const allowDuplicatesCheckbox = document.getElementById('allowDuplicates');
+        const removeAfterPickCheckbox = document.getElementById('removeAfterPick');
+        const itemsList = document.getElementById('itemsList');
+        const itemsCount = document.getElementById('itemsCount');
+        const emptyState = document.getElementById('emptyState');
+        const pickBtn = document.getElementById('pickBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const resultContainer = document.getElementById('resultContainer');
+        const resultItems = document.getElementById('resultItems');
+        const closeResultBtn = document.getElementById('closeResultBtn');
+        
+        let items = [];
+        
+        // Add item to the list
+        function addItem() {
+            const itemText = itemInput.value.trim();
+            
+            if (itemText === '') {
+                return;
+            }
+            
+            items.push(itemText);
+            itemInput.value = '';
+            updateItemsList();
+            updateButtonsState();
+        }
+        
+        // Remove item from the list
+        function removeItem(index) {
+            items.splice(index, 1);
+            updateItemsList();
+            updateButtonsState();
+        }
+        
+        // Update the items list display
+        function updateItemsList() {
+            // Update items count
+            itemsCount.textContent = `${items.length} item${items.length !== 1 ? 's' : ''}`;
+            
+            // Clear the list
+            itemsList.innerHTML = '';
+            
+            // Show empty state if no items
+            if (items.length === 0) {
+                itemsList.appendChild(emptyState);
+                return;
+            }
+            
+            // Add items to the list
+            items.forEach((item, index) => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'item';
+                itemElement.innerHTML = `
+                    <span class="item-text">${item}</span>
+                    <button class="item-remove" data-index="${index}">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                itemElement.querySelector('.item-remove').addEventListener('click', () => {
+                    removeItem(index);
+                });
+                
+                itemsList.appendChild(itemElement);
+            });
+        }
+        
+        // Update buttons state
+        function updateButtonsState() {
+            pickBtn.disabled = items.length === 0;
+            clearBtn.disabled = items.length === 0;
+            
+            // Update pick count max value
+            pickCountInput.max = items.length;
+            
+            // If current pick count is greater than items count, adjust it
+            if (parseInt(pickCountInput.value) > items.length) {
+                pickCountInput.value = items.length > 0 ? items.length : 1;
+            }
+        }
+        
+        // Pick random items
+        function pickRandomItems() {
+            const count = parseInt(pickCountInput.value);
+            const allowDuplicates = allowDuplicatesCheckbox.checked;
+            const removeAfterPick = removeAfterPickCheckbox.checked;
+            
+            if (count <= 0 || count > items.length) {
+                return;
+            }
+            
+            // Clear previous results
+            resultItems.innerHTML = '';
+            
+            // Create a copy of items array if we don't want to modify the original
+            let itemsToPickFrom = [...items];
+            let pickedItems = [];
+            
+            // If we're not allowing duplicates and we're removing items after pick,
+            // we need to work with the original array
+            if (!allowDuplicates && removeAfterPick) {
+                itemsToPickFrom = items;
+            }
+            
+            // Highlight items that are being picked
+            const itemElements = document.querySelectorAll('.item');
+            itemElements.forEach(el => el.classList.remove('selected'));
+            
+            // Pick items
+            for (let i = 0; i < count; i++) {
+                // If we're not allowing duplicates and we've run out of items, break
+                if (!allowDuplicates && itemsToPickFrom.length === 0) {
+                    break;
+                }
+                
+                // Pick a random index
+                const randomIndex = Math.floor(Math.random() * itemsToPickFrom.length);
+                const pickedItem = itemsToPickFrom[randomIndex];
+                
+                // Add to picked items
+                pickedItems.push(pickedItem);
+                
+                // Highlight the picked item in the list
+                const originalIndex = items.indexOf(pickedItem);
+                if (originalIndex !== -1 && itemElements[originalIndex]) {
+                    itemElements[originalIndex].classList.add('selected');
+                }
+                
+                // Remove from items to pick from if not allowing duplicates
+                if (!allowDuplicates) {
+                    itemsToPickFrom.splice(randomIndex, 1);
+                    
+                    // Remove from original items if remove after pick is enabled
+                    if (removeAfterPick) {
+                        items.splice(originalIndex, 1);
+                    }
+                }
+            }
+            
+            // Show results after a short delay to allow the animation to be seen
+            setTimeout(() => {
+                // Add picked items to results
+                pickedItems.forEach(item => {
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'result-item';
+                    resultItem.textContent = item;
+                    resultItems.appendChild(resultItem);
+                });
+                
+                // Show result container
+                resultContainer.style.display = 'block';
+                
+                // Update the items list if items were removed
+                if (removeAfterPick) {
+                    updateItemsList();
+                    updateButtonsState();
+                }
+                
+                // Remove highlighting after a delay
+                setTimeout(() => {
+                    itemElements.forEach(el => el.classList.remove('selected'));
+                }, 1000);
+            }, 1000);
+        }
+        
+        // Clear all items
+        function clearAllItems() {
+            if (confirm('Are you sure you want to clear all items?')) {
+                items = [];
+                updateItemsList();
+                updateButtonsState();
+                resultContainer.style.display = 'none';
+            }
+        }
+        
+        // Close result container
+        function closeResult() {
+            resultContainer.style.display = 'none';
+        }
+        
+        // Event listeners
+        addItemBtn.addEventListener('click', addItem);
+        itemInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addItem();
+            }
+        });
+        pickBtn.addEventListener('click', pickRandomItems);
+        clearBtn.addEventListener('click', clearAllItems);
+        closeResultBtn.addEventListener('click', closeResult);
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            updateItemsList();
+            updateButtonsState();
+        });
+    </script>
+</body>
+</html>
