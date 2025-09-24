@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Your Multi Tools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --dark-text: #f0f0f0;
+            --dark-accent: #4361ee;
+            --dark-secondary: #4cc9f0;
+            --dark-hover: #2a2a2a;
+            --dark-shadow: rgba(0, 0, 0, 0.5);
+            
+            --light-bg: #f8f9fa;
+            --light-card: #ffffff;
+            --light-text: #333333;
+            --light-accent: #4361ee;
+            --light-secondary: #3a86ff;
+            --light-hover: #f0f0f0;
+            --light-shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease, color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body.light-mode {
+            background-color: var(--light-bg);
+            color: var(--light-text);
+        }
+
+        /* Particles background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(67, 97, 238, 0.2);
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 20px;
+            position: relative;
+            z-index: 10;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--dark-secondary);
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .logo-text .domain {
+            font-size: 0.9rem;
+            color: var(--dark-text);
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .logo-text .domain {
+            color: var(--light-text);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--dark-card);
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 15px var(--dark-shadow);
+        }
+
+        .light-mode .theme-toggle {
+            background: var(--light-card);
+            box-shadow: 0 4px 15px var(--light-shadow);
+        }
+
+        .toggle-icon {
+            font-size: 1.4rem;
+        }
+
+        .toggle-text {
+            font-weight: 500;
+        }
+
+        /* Privacy Policy Content */
+        .privacy-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
+            background: var(--dark-card);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px var(--dark-shadow);
+            border: 1px solid rgba(76, 201, 240, 0.1);
+        }
+
+        .light-mode .privacy-container {
+            background: var(--light-card);
+            box-shadow: 0 10px 30px var(--light-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .privacy-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(76, 201, 240, 0.2);
+        }
+
+        .light-mode .privacy-header {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .privacy-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .light-mode .privacy-header h2 {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .privacy-header p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        .privacy-section {
+            margin-bottom: 30px;
+        }
+
+        .privacy-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--dark-secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .light-mode .privacy-section h3 {
+            color: var(--light-secondary);
+        }
+
+        .privacy-section h3 i {
+            font-size: 1.2rem;
+        }
+
+        .privacy-section p, .privacy-section li {
+            line-height: 1.7;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .privacy-section ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .privacy-section li {
+            margin-bottom: 10px;
+        }
+
+        .last-updated {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(76, 201, 240, 0.2);
+            font-style: italic;
+            opacity: 0.7;
+        }
+
+        .light-mode .last-updated {
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .highlight-box {
+            background: rgba(67, 97, 238, 0.1);
+            border-left: 4px solid var(--dark-secondary);
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+        }
+
+        .light-mode .highlight-box {
+            background: rgba(67, 97, 238, 0.05);
+            border-left: 4px solid var(--light-secondary);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 60px 20px 40px;
+            color: var(--dark-text);
+            opacity: 0.7;
+            font-size: 1.1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+        }
+
+        .light-mode footer {
+            color: var(--light-text);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .light-mode .footer-logo {
+            background: linear-gradient(45deg, var(--light-secondary), var(--light-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--dark-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .light-mode .footer-links a {
+            color: var(--light-text);
+        }
+
+        .footer-links a:hover {
+            color: var(--dark-secondary);
+            opacity: 1;
+        }
+
+        .light-mode .footer-links a:hover {
+            color: var(--light-secondary);
+        }
+
+        .copyright {
+            margin-top: 20px;
+            font-size: 0.95rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .privacy-container {
+                padding: 20px;
+            }
+            
+            .privacy-header h2 {
+                font-size: 2.2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .logo-text h1 {
+                font-size: 1.6rem;
+            }
+            
+            .privacy-container {
+                margin: 30px auto;
+            }
+            
+            .privacy-header h2 {
+                font-size: 2rem;
+            }
+            
+            .privacy-section h3 {
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .privacy-container {
+                padding: 15px;
+            }
+            
+            .privacy-header h2 {
+                font-size: 1.8rem;
+            }
+            
+            .footer-links {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-tools logo-icon"></i>
+                <div class="logo-text">
+                    <h1>Your Multi Tools</h1>
+                    <div class="domain">www.yourmultitools.space</div>
+                </div>
+            </div>
+            
+            <div class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon toggle-icon"></i>
+                <div class="toggle-text">Dark Mode</div>
+            </div>
+        </header>
+        
+        <main>
+            <div class="privacy-container">
+                <div class="privacy-header">
+                    <h2>Privacy Policy</h2>
+                    <p>Your privacy is important to us. This Privacy Policy explains how we handle your information when you visit our website www.yourmultitools.space.</p>
+                </div>
+                
+                <div class="highlight-box">
+                    <h3><i class="fas fa-shield-alt"></i> Our Commitment to Your Privacy</h3>
+                    <p>At Your Multi Tools, we are committed to protecting your privacy. We want to make it clear that <strong>we do not collect any personal data or user information</strong> when you use our website. Any temporary data that may be generated during your session is automatically deleted and not stored.</p>
+                </div>
+                
+                <div class="privacy-section">
+                    <h3><i class="fas fa-info-circle"></i> Information We Do Not Collect</h3>
+                    <p>Unlike many websites, we do not collect any of the following information:</p>
+                    <ul>
+                        <li><strong>Personal Data:</strong> We do not collect any personally identifiable information such as your name, email address, phone number, or any other personal details.</li>
+                        <li><strong>Usage Data:</strong> We do not track how you access or use our website. We do not collect information such as your IP address, browser type, pages visited, time spent on our site, or any other usage statistics.</li>
+                        <li><strong>Cookies:</strong> We do not use cookies or similar tracking technologies to track your activity on our website.</li>
+                        <li><strong>Files and Data:</strong> Any files you upload or process using our tools are not stored on our servers after your session ends. All data is automatically deleted.</li>
+                    </ul>
+                </div>
+                
+                <div class="privacy-section">
+                    <h3><i class="fas fa-cogs"></i> How We Do Not Use Your Information</h3>
+                    <p>Since we do not collect any user data, we do not use your information for any purpose. This means:</p>
+                    <ul>
+                        <li>We do not use your data to provide or maintain our services</li>
+                        <li>We do not send you notifications or marketing materials</li>
+                        <li>We do not analyze user behavior to improve our services</li>
+                        <li>We do not share or sell your data to third parties</li>
+                        <li>We do not use your data for advertising or profiling</li>
+                    </ul>
+                </div>
+                
+                <div class="privacy-section">
+                    <h3><i class="fas fa-share-alt"></i> Information Sharing</h3>
+                    <p>Since we do not collect any user data, we do not share any information with third parties. We do not share your data with service providers, business partners, affiliates, or any other entities because we simply do not have any data to share.</p>
+                </div>
+                
+                <div class="privacy-section">
+                    <h3><i class="fas fa-shield-alt"></i> Data Security</h3>
+                    <p>Because we do not collect or store any user data, there is no risk of data breaches or unauthorized access to your information. Any temporary data that may be generated during your use of our tools is automatically deleted when your session ends or immediately after processing.</p>
+                </div>
+                
+                <div class="privacy-section">
+                    <h3><i class="fas fa-user-shield"></i> Your Privacy Rights</h3>
+                    <p>Since we do not collect any personal data, you do not need to exercise any data protection rights with us. There is no data to access, correct, update, or delete because we do not store any information about you.</p>
+                </div>
+                
+                <div class="privacy-section">
+                    <h3><i class="fas fa-child"></i> Children's Privacy</h3>
+                    <p>Our website does not collect any information from users of any age, including children under 13. We do not knowingly collect personally identifiable information from children because we do not collect any personal information at all.</p>
+                </div>
+                
+                <div class="privacy-section">
+                    <h3><i class="fas fa-sync-alt"></i> Changes to This Privacy Policy</h3>
+                    <p>While we do not anticipate significant changes to this Privacy Policy since we do not collect data, we may update it from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date at the bottom of this Privacy Policy.</p>
+                </div>
+                
+                <div class="privacy-section">
+                    <h3><i class="fas fa-envelope"></i> Contact Us</h3>
+                    <p>If you have any questions about this Privacy Policy, please contact us by email: <h4>yourmultitools.space@gmail.com</h4>
+                </div>
+                
+                <div class="last-updated">
+                    <p>Last Updated: November 15, 2025</p>
+                </div>
+            </div>
+        </main>
+        
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size
+                const size = Math.random() * 20 + 5;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation duration
+                const duration = Math.random() * 20 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                
+                // Random animation delay
+                const delay = Math.random() * 5;
+                particle.style.animationDelay = `${delay}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const toggleIcon = themeToggle.querySelector('.toggle-icon');
+        const toggleText = themeToggle.querySelector('.toggle-text');
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            body.classList.add('light-mode');
+            toggleIcon.classList.replace('fa-moon', 'fa-sun');
+            toggleText.textContent = 'Light Mode';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                toggleIcon.classList.replace('fa-moon', 'fa-sun');
+                toggleText.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'light');
+            } else {
+                toggleIcon.classList.replace('fa-sun', 'fa-moon');
+                toggleText.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+        });
+    </script>
+</body>
+</html>
